@@ -2,11 +2,9 @@
 
 name: Typecheck code
 on:
-  push:
   pull_request:
 permissions:
   contents: read
-  pull-requests: read
 jobs:
   typecheck:
     runs-on: ubuntu-latest
