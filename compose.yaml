@@ -3,10 +3,11 @@ services:
     build: backend
     ports:
       - "8000:8000"
-    command: npm start
+    command: npm run dev
     volumes:
       # Mount ./backend to /backend on container
       - ./backend:/backend
+    user: ${UID_GID}
 
   frontend:
     build: frontend
@@ -15,6 +16,7 @@ services:
     command: npm run dev
     volumes:
       - ./frontend:/frontend
+    user: ${UID_GID}
 
   mongo:
     image: mongo

@@ -4,7 +4,8 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "tsc --watch --preserveWatchOutput & node --watch dist/app.js",
+    "dev": "tsc ; tsc --watch --preserveWatchOutput & node --watch dist/app.js",
+    "start": "node dist/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",

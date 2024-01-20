@@ -9,11 +9,27 @@ This repo serves as a template for a repository that follows the Scrum process. 
 Setup
 ```
 $ echo "UID_GID=$(id -u):$(id -g)" >> .env
+$ cd backend
+$ npm install
+$ cd -
+$ cd frontend
+$ npm install
+$ cd -
 ```
 
-Run application
+Run entire application
 ```
 $ docker compose up
+```
+
+Run backend only
+```
+$ docker compose up backend
+```
+
+Run frontend only
+```
+$ docker compose up frontend
 ```
 
 ## Issues
