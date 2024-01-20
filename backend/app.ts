@@ -4,7 +4,6 @@ const app = express();
 const port = 8000;
 
 app.get("/", (req, res) => {
-    let x: string = 4;
     res.send("Hello World!");
 });
 
