@@ -5,7 +5,11 @@
 
 This repo serves as a template for a repository that follows the Scrum process. The following information describes how the native features/workflows of Github can be customized to work in a scrum development process.
 
-## Running
+## Setup and run
+Setup
+```
+$ echo "UID_GID=$(id -u):$(id -g)" >> .env
+```
 
 Run application
 ```
