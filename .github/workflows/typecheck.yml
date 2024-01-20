@@ -16,8 +16,8 @@ jobs:
         with:
           node-version: 20
       - name: Typecheck backend
-        run: npm install && npx tsc
+        run: npm install && npx tsc --noEmit
         working-directory: backend
       - name: Typecheck frontend
-        run: npm install && npx tsc
+        run: npm install && npx tsc --noEmit
         working-directory: frontend
