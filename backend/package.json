@@ -5,6 +5,7 @@
   "main": "app.js",
   "scripts": {
     "dev": "tsc ; tsc --watch --preserveWatchOutput & node --watch dist/app.js",
+    "build": "tsc",
     "start": "node dist/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
