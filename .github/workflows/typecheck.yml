@@ -17,15 +17,11 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-  check-backend:
-    needs: setup
-    steps:
-      - run: cd backend
       - run: npm install
+        working-directory: backend
       - run: npx tsc
-  check-frontend:
-    needs: setup
-    steps:
-      - run: cd frontend
+        working-directory: backend
       - run: npm install
+        working-directory: frontend
       - run: npx tsc
+        working-directory: frontend
