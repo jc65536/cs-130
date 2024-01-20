@@ -1,0 +1,31 @@
+# From https://docs.github.com/en/actions/examples/using-scripts-to-test-your-code-on-a-runner
+
+name: Typecheck code
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+  pull-requests: read
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+  check-backend:
+    needs: setup
+    steps:
+      - run: cd backend
+      - run: npm install
+      - run: npx tsc
+  check-frontend:
+    needs: setup
+    steps:
+      - run: cd frontend
+      - run: npm install
+      - run: npx tsc
