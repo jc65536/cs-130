@@ -1,6 +1,7 @@
 services:
   backend:
-    build: backend
+    image: node:20
+    working_dir: /backend
     ports:
       - "8000:8000"
     command: npm run dev
@@ -10,7 +11,8 @@ services:
       - ./backend:/backend
 
   frontend:
-    build: frontend
+    image: node:20
+    working_dir: /frontend
     ports:
       - "3000:3000"
     command: npm run dev
