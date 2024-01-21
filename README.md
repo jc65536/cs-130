@@ -5,22 +5,30 @@
 
 This repo serves as a template for a repository that follows the Scrum process. The following information describes how the native features/workflows of Github can be customized to work in a scrum development process.
 
-## Setup and run
-Setup
+## Development setup
+Build and run dev container - in any terminal, run
 ```
-$ echo "UID_GID=$(id -u):$(id -g)" >> .env
-$ cd backend
-$ npm install
-$ cd -
-$ cd frontend
-$ npm install
-$ cd -
+$ docker compose up dev
 ```
 
-Run entire application
+Then, open VS Code Remote Explorer and attach to `ootd` container. Now you're on
+the latest LTS version of Node. The project directory is `/ootd`.
+
+### Run backend
+In the dev container, run:
 ```
-$ docker compose up
+$ cd /ootd/backend
+$ npm run dev
 ```
+This will watch all files and automatically recompile and reload the server.
+
+### Run frontend
+In the dev container, run:
+```
+$ cd /ootd/frontend
+$ npm run dev
+```
+Next.js will automatically reload on file change.
 
 ## Issues
 
