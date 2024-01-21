@@ -4,8 +4,10 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "dev": "tsc && { tsc -w --preserveWatchOutput & node --watch dist/app.js ; }",
-    "start": "tsc && node dist/app.js",
+    "predev": "tsc",
+    "dev": "tsc -w --preserveWatchOutput & node --watch --watch-preserve-output dist/app.js",
+    "build": "tsc",
+    "start": "node dist/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
