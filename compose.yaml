@@ -1,4 +1,8 @@
 services:
+  dev:
+    build: .
+    command: tail -f /dev/null # Stay up
+
   backend:
     build: backend
     ports:
@@ -7,7 +11,6 @@ services:
     volumes:
       # Mount ./backend to /backend on container
       - ./backend:/backend
-    user: ${UID_GID}
 
   frontend:
     build: frontend
@@ -16,7 +19,6 @@ services:
     command: npm run dev
     volumes:
       - ./frontend:/frontend
-    user: ${UID_GID}
 
   mongo:
     image: mongo
