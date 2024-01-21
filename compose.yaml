@@ -1,18 +1,10 @@
 services:
-  dev:
-    build: .
-    ports:
-      - "8000:8000"
-      - "3000:3000"
-    command: tail -f /dev/null # Stay up
-    volumes:
-      - dev-volume:/ootd
-
   backend:
     build: backend
     ports:
       - "8000:8000"
     command: npm run dev
+    user: ${UID_GID}
     volumes:
       # Mount ./backend to /backend on container
       - ./backend:/backend
@@ -22,6 +14,7 @@ services:
     ports:
       - "3000:3000"
     command: npm run dev
+    user: ${UID_GID}
     volumes:
       - ./frontend:/frontend
 
@@ -41,6 +34,3 @@ services:
       ME_CONFIG_MONGODB_ADMINUSERNAME: root
       ME_CONFIG_MONGODB_ADMINPASSWORD: example
       ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/
-
-volumes:
-  dev-volume:

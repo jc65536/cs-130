@@ -6,6 +6,11 @@
 This repo serves as a template for a repository that follows the Scrum process. The following information describes how the native features/workflows of Github can be customized to work in a scrum development process.
 
 ## Development setup
+Create `.env`:
+```
+$ echo "UID_GID=$(id -u):$(id -g)" > .env
+```
+
 Build and run dev container - in any terminal, run
 ```
 $ docker compose up dev
