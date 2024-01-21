@@ -1,6 +1,9 @@
 services:
   dev:
     build: .
+    ports:
+      - "8000:8000"
+      - "3000:3000"
     command: tail -f /dev/null # Stay up
     volumes:
       - dev-volume:/ootd
