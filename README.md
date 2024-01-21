@@ -11,29 +11,16 @@ Create `.env`:
 $ echo "UID_GID=$(id -u):$(id -g)" > .env
 ```
 
-Build and run dev container - in any terminal, run
+Install Node packages:
 ```
-$ docker compose up dev
+$ cd backend && npm install && cd -
+$ cd frontend && npm install && cd -
 ```
 
-Then, open VS Code Remote Explorer and attach to `ootd` container. Now you're on
-the latest LTS version of Node. The project directory is `/ootd`.
-
-### Run backend
-In the dev container, run:
+Run entire application (you should be in repo root):
 ```
-$ cd /ootd/backend
-$ npm run dev
+$ docker compose up
 ```
-This will watch all files and automatically recompile and reload the server.
-
-### Run frontend
-In the dev container, run:
-```
-$ cd /ootd/frontend
-$ npm run dev
-```
-Next.js will automatically reload on file change.
 
 ## Issues
 
