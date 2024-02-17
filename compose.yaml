@@ -5,7 +5,6 @@ services:
     ports:
       - "8000:8000"
     command: npm run dev
-    user: ${UID_GID}
     volumes:
       # Mount ./backend to /backend on container
       - ./backend:/backend
@@ -16,7 +15,6 @@ services:
     ports:
       - "3000:3000"
     command: npm run dev
-    user: ${UID_GID}
     volumes:
       - ./frontend:/frontend
 
