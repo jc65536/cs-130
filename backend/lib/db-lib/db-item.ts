@@ -1,21 +1,23 @@
 import { getClient } from './db-client';
 import { COLLECTION } from '../enums';
+import { ObjectId } from 'mongodb';
+import { convertTo24CharHex } from '../convert-hex';
 
 /**
  * A database item. All database items should extend this class.
  */
 export abstract class DbItem {
   /**
-   * The id of the item in a collection
+   * The object id of the item in a collection
    */
-  public readonly id: number;
+  public readonly id: ObjectId;
 
   /**
    * The collection this database item belongs to
    */
   public readonly collectionName: COLLECTION;
 
-  constructor(id: number, collectionName: COLLECTION, _key: string | null = null) {
+  constructor(id: ObjectId, collectionName: COLLECTION, _key: string | null = null) {
     this.id = id;
     this.collectionName = collectionName;
   }

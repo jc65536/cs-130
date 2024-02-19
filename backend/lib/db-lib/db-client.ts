@@ -1,4 +1,5 @@
 import { Collection, Db, Document, ObjectId, MongoClient, WithId, ServerApiVersion } from "mongodb";
+import { COLLECTION } from '../enums';
 
 // Replace the placeholder with your Atlas connection string
 const uri = "mongodb://root:example@mongo:27017/";
@@ -57,7 +58,7 @@ export class DbClient {
      *
      * @param collectionName the name of the collection
      */
-    public async openCollection(collectionName: string): Promise<Collection<Document>> {
+    public async openCollection(collectionName: COLLECTION): Promise<Collection<Document>> {
         if (this.collections[collectionName] != null)
             return this.collections[collectionName];
 
@@ -77,9 +78,9 @@ export class DbClient {
      * @param collectionName the collection to query from
      * @returns the soda document associated with the query
      */
-    public async findDbItem(collectionName: string, id: string): Promise<any | null> {
+    public async findDbItem(collectionName: COLLECTION, id: ObjectId): Promise<any | null> {
         const collection = await this.openCollection(collectionName);
-        const item = await collection.find(new ObjectId(id));
+        const item = await collection.find({_id: id});
         return item ?? null;
     }
 
@@ -90,7 +91,7 @@ export class DbClient {
      * @returns all the items in a collection
      * the items are represent as json objects
      */
-    public async getCollectionItems(collectionName: string): Promise<WithId<Document>[]> {
+    public async getCollectionItems(collectionName: COLLECTION): Promise<WithId<Document>[]> {
         const collection = await this.openCollection(collectionName);
         const docs = await collection.find();
         const data: WithId<Document>[] = [];
@@ -122,7 +123,7 @@ export class DbClient {
      */
     public async deleteDbItem(item: DbItem): Promise<any> {
         const collection = await this.openCollection(item.collectionName);
-        return collection.deleteOne({"_id": new ObjectId(item.id)});
+        return collection.deleteOne({_id: item.id});
     }
 }
 

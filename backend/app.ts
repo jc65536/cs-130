@@ -10,11 +10,11 @@ app.get("/", (req, res) => {
 
 // test endpoint
 app.get("/test-create-user", async (req, res) => {
-    const u = new User(123);
-    u.posts.push("post1");
-    u.posts.push("post2");
-    await u.writeToDatabase();
-    res.send("wrote user to database!");
+    // const u = new User();
+    // u.posts.push("post1");
+    // u.posts.push("post2");
+    // await u.writeToDatabase();
+    // res.send("wrote user to database!");
 });
 
 app.listen(port, () => {
