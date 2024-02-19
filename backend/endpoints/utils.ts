@@ -56,15 +56,18 @@ export async function validateGoogleOAuthToken(req: Request, res: Response, next
         return userid;
     }
 
-    const userid = await verify().catch((err) => {
+    var userid;
+    try {
+        userid = await verify();
+    } catch (err) {
         console.error("Error validating google oauth token: ",err);
-        res.status(401).json("invalid google oauth token").end();
-    });
+        return res.status(401).json("invalid google oauth token").end();
+    }
 
     console.log("successfully ran verifyId");
     console.log("userid: ",userid);
     if (!userid) {
-        res.status(401).json("invalid user id from google oauth token").end();
+        return res.status(401).json("invalid user id from google oauth token").end();
     } else {
         // get hashed version of the user id to use as object id for mongodb
         console.log("successfully verified id");
