@@ -1,5 +1,5 @@
 import express from "express";
-import { User } from "./lib/user";
+import { user_router } from "./endpoints/user-endpoints";
 
 const app = express();
 const port = 8000;
@@ -8,14 +8,7 @@ app.get("/", (req, res) => {
     res.send("Hello World!");
 });
 
-// test endpoint
-app.get("/test-create-user", async (req, res) => {
-    // const u = new User();
-    // u.posts.push("post1");
-    // u.posts.push("post2");
-    // await u.writeToDatabase();
-    // res.send("wrote user to database!");
-});
+app.use("/user", user_router);
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`);

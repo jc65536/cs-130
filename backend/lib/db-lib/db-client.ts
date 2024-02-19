@@ -80,7 +80,7 @@ export class DbClient {
      */
     public async findDbItem(collectionName: COLLECTION, id: ObjectId): Promise<any | null> {
         const collection = await this.openCollection(collectionName);
-        const item = await collection.find({_id: id});
+        const item = await collection.findOne({_id: id});
         return item ?? null;
     }
 

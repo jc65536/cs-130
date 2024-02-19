@@ -1,7 +1,6 @@
 import { getClient } from './db-client';
 import { COLLECTION } from '../enums';
 import { ObjectId } from 'mongodb';
-import { convertTo24CharHex } from '../convert-hex';
 
 /**
  * A database item. All database items should extend this class.
