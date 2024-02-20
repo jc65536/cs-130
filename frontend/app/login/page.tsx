@@ -1,5 +1,5 @@
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import { OAUTH_CLIENT_ID, backend_url } from "./settings";
+import { OAUTH_CLIENT_ID, backend_url } from "../settings";
 import LoginButton from "./login-button";
 
 export default function Home() {
