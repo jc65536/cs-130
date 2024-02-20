@@ -5,7 +5,7 @@ import cors from "cors";
 const app = express();
 const port = 8000;
 
-app.use(cors({ origin: "http://localhost:3000" }))
+app.use(cors({ origin: process.env["FRONTEND_HOST"] }))
 
 app.get("/", (req, res) => {
     res.send("Hello World!");

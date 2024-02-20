@@ -8,6 +8,8 @@ services:
     volumes:
       # Mount ./backend to /backend on container
       - ./backend:/backend
+    environment:
+      FRONTEND_HOST: "http://localhost:3000"
 
   frontend:
     image: node:20
@@ -17,6 +19,8 @@ services:
     command: npm run dev
     volumes:
       - ./frontend:/frontend
+    environment:
+      BACKEND_HOST: "http://localhost:8000"
 
   mongo:
     image: mongo
