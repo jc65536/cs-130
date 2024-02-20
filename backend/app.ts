@@ -1,8 +1,11 @@
 import express from "express";
 import { user_router } from "./endpoints/user-endpoints";
+import cors from "cors";
 
 const app = express();
 const port = 8000;
+
+app.use(cors({ origin: "http://localhost:3000" }))
 
 app.get("/", (req, res) => {
     res.send("Hello World!");

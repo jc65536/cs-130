@@ -9,7 +9,7 @@ export const user_router = Router();
 
 user_router.use(validateGoogleOAuthToken);
 
-user_router.get("/", (req: Request, res: Response) => {
+user_router.post("/", (req: Request, res: Response) => {
     const user = new User(new ObjectId(res.locals.userObjectId));
     res.status(200).json(user.toJson());
 });
