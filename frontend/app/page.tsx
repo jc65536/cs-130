@@ -1,5 +1,7 @@
+
+
 export function Home() {
     return (
-        0
+        <main>red red red light</main>
     );
 }
