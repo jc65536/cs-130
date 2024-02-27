@@ -8,3 +8,16 @@ main {
 #title {
   text-align: center;
 }
+
+.tag {
+  height: 24px;
+  width: 24px;
+  border-radius: 100%;
+  background-color: red;
+  position: relative;
+}
+
+.tooltip {
+  position: relative;
+  background-color: #00000020;
+}
