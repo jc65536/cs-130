@@ -20,7 +20,7 @@ export default function NewPostPhoto(props: NewPostPhotoProps) {
         const y = e.clientY - yo;
         const dot = <TagDot {...props.dotProps}
             key={genKey()} x={x} y={y}
-            rmDot={() => setTags(dots.filter(t => t !== dot))} />;
+            rmDot={() => setTags(dots.filter(d => d.key !== dot.key))} />;
         setTags([dot, ...dots]);
     };
 
