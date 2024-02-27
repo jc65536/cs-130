@@ -13,19 +13,9 @@ user_router.post("/", (req: Request, res: Response) => {
     const user = new User(new ObjectId(res.locals.userObjectId));
     res.status(200).json(user.toJson());
 });
-user_router.get("/users/:userId/post/:postId", (req: Request, res: Response) => {
+// for getting all posts from a user
+user_router.get("/users/:userId/posts", (req: Request, res: Response) => {
+    const user = req.get('userId');
     
-    res.status(200).json();
-});
-
-user_router.get("/users/:userId/post/:postId/", (req: Request, res: Response) => {
-    res.status(200).json();
-});
-
-user_router.get("/users/:userId/post/:postId/clothes/", (req: Request, res: Response) => {
-    res.status(200).json();
-});
-
-user_router.get("/users/:userId/clothing/:clothingId/", (req: Request, res: Response) => {
     res.status(200).json();
 });

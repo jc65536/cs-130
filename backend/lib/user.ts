@@ -23,6 +23,15 @@ export class User extends DbItem {
     }
 
     /**
+     * 
+     * @param user the user item
+     * @returns 
+     */
+    public static async getPosts(user: User): Promise<String[] | null> {
+        return user.posts;
+    }
+
+    /**
        * Converts the object into a form for the database
        * @returns a database entry
        */

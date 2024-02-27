@@ -11,15 +11,8 @@ exports.user_router.post("/", (req, res) => {
     const user = new user_1.User(new mongodb_1.ObjectId(res.locals.userObjectId));
     res.status(200).json(user.toJson());
 });
-exports.user_router.get("/users/:userId/post/:postId", (req, res) => {
-    res.status(200).json();
-});
-exports.user_router.get("/users/:userId/post/:postId/", (req, res) => {
-    res.status(200).json();
-});
-exports.user_router.get("/users/:userId/post/:postId/clothes/", (req, res) => {
-    res.status(200).json();
-});
-exports.user_router.get("/users/:userId/clothing/:clothingId/", (req, res) => {
+// for getting all posts from a user
+exports.user_router.get("/users/:userId/posts", (req, res) => {
+    const user = req.get('userId');
     res.status(200).json();
 });

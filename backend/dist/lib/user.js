@@ -22,6 +22,14 @@ class User extends db_item_1.DbItem {
         return new User(new mongodb_1.ObjectId(objectId));
     }
     /**
+     *
+     * @param user the user item
+     * @returns
+     */
+    static async getPosts(user) {
+        return user.posts;
+    }
+    /**
        * Converts the object into a form for the database
        * @returns a database entry
        */
