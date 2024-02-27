@@ -3,7 +3,7 @@
 export default function Home() {
     return (
         <main>
-            Homepage (feed goes here)
+            This is your wardrobe! (it's empty)
         </main>
     );
 }

@@ -1,0 +1,21 @@
+nav {
+    width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+    padding: 12px 0;
+}
+
+nav button {
+    background: none;
+    border: none;
+    border-radius: 20px;
+    padding: 0;
+}
+
+nav button img {
+    margin: 0;
+}
+
+nav button:focus {
+    background-color: #aaaaaa;
+}
