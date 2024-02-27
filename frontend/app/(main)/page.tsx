@@ -1,7 +1,9 @@
-
+import PostItemCardList from "../components/post-item-card-list";
 
 export default function Home() {
     return (
-        <main>red red red light</main>
+        <main>
+            <PostItemCardList></PostItemCardList>
+        </main>
     );
 }
