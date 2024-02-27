@@ -15,9 +15,19 @@ main {
   border-radius: 100%;
   background-color: red;
   position: relative;
+  transform: translateX(-50%) translateY(-50%);
 }
 
 .tooltip {
   position: relative;
   background-color: #00000020;
+}
+
+.new-post-photo {
+  border: 1px solid red;
+  position: relative;
+}
+
+.new-post-photo > .tag {
+  position: absolute;
 }

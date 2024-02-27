@@ -1,24 +1,26 @@
-"use client"
-
 import { useEffect, useState } from "react";
 import { TagEditorProps_ } from "./tag-editor";
 
 export type IncompleteTag = {
     id: number | null,
     name: string,
-}
+};
 
 export type Tag = {
     id: number,
     name: string,
-}
+};
 
-export type TagDotProps = {
-    x: number,
-    y: number,
+export type TagDotProps_ = {
     openEditor: (props: TagEditorProps_) => void,
     addTag: (tag: Tag) => (tags: Tag[]) => Tag[],
     rmTag: (tag: Tag) => (tags: Tag[]) => Tag[],
+}
+
+export type TagDotProps = TagDotProps_ & {
+    x: number,
+    y: number,
+    rmDot: () => void,
 };
 
 export default function TagDot(props: TagDotProps) {
@@ -37,6 +39,7 @@ export default function TagDot(props: TagDotProps) {
         tooltip,
         setTooltip,
         addTag,
+        rmDot: props.rmDot,
     };
 
     useEffect(() =>
@@ -47,11 +50,13 @@ export default function TagDot(props: TagDotProps) {
 
     const tooltipElem = <div className="tooltip">{tooltip}</div>;
 
+    const style = { left: props.x, top: props.y };
+
     if (tag === null)
-        return <div className="tag">{tooltipElem}</div>
+        return <div className="tag" style={style}>{tooltipElem}</div>
 
     return (
-        <div className="tag" onClick={() =>
+        <div className="tag" style={style} onClick={() =>
             props.openEditor({
                 rmTag: () => props.rmTag(tag),
                 ...editorProps,

@@ -7,6 +7,7 @@ export type TagEditorProps_ = {
     setTooltip: (s: string) => void;
     addTag: (tag: Tag) => (tags: Tag[]) => Tag[],
     rmTag: () => (tags: Tag[]) => Tag[],
+    rmDot: () => void,
 }
 
 export type TagEditorProps = TagEditorProps_ & {
@@ -39,7 +40,10 @@ export default function TagEditor(props: TagEditorProps) {
             <div className="suggestions-container">
                 {...suggestions}
             </div>
-            <button className="tag-rm" onClick={() => props.closeEditor(props.rmTag())}>
+            <button className="tag-rm" onClick={() => {
+                props.rmDot();
+                props.closeEditor(props.rmTag());
+            }}>
                 Remove tag
             </button>
         </div>

@@ -1,6 +1,7 @@
 "use client"
 
-import TagDot, { IncompleteTag, Tag } from "@/app/components/tag";
+import NewPostPhoto from "@/app/components/new-post-photo";
+import { Tag, TagDotProps_ } from "@/app/components/tag";
 import TagEditor, { TagEditorProps, TagEditorProps_ } from "@/app/components/tag-editor";
 import { useState } from "react";
 
@@ -23,6 +24,12 @@ export default function Home() {
         ? null
         : <TagEditor {...editorProps}></TagEditor>;
 
+    const dotProps: TagDotProps_ = {
+        addTag: tag => tags => [tag, ...tags],
+        rmTag: tag => tags => tags.filter(t => t !== tag),
+        openEditor
+    };
+
     return (
         <main>
             <div id="blur-setting-container">
@@ -33,14 +40,8 @@ export default function Home() {
             <div>Post caption</div>
             <div>cancel button</div>
             <div>post button</div>
-            <div>
-                <TagDot x={0}
-                    y={0}
-                    addTag={tag => tags => [tag, ...tags]}
-                    rmTag={tag => tags => tags.filter(t => t !== tag)}
-                    openEditor={openEditor}></TagDot>
-                {tagEditor}
-            </div>
+            <NewPostPhoto imgSrc="/tango.jpg" dotProps={dotProps} />
+            {tagEditor}
         </main>
     );
 }
