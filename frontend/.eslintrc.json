@@ -2,7 +2,7 @@
   "extends": "next/core-web-vitals",
   "plugins": ["@stylistic"],
   "rules": {
-    "@stylistic/quotes": ["double", "error"],
-    "@stylistic/semi": ["always", "error"]
+    "@stylistic/quotes": ["error", "double"],
+    "@stylistic/semi": ["error", "always"]
   }
 }
