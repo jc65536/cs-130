@@ -3,7 +3,7 @@
 export default function Home() {
     return (
         <main>
-            Homepage (feed goes here)
+            Make a new post!
         </main>
     );
 }
