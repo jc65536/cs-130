@@ -34,33 +34,31 @@ export default function TagDot(props: TagDotProps) {
         return props.addTag(tag);
     };
 
-    const editorProps = {
-        complete: tag !== null,
+    const complete = tag !== null;
+
+    const rmTag = complete
+        ? props.rmTag(tag)
+        : (tags: Tag[]) => tags;
+
+    const editorProps: TagEditorProps_ = {
         tooltip,
         setTooltip,
-        addTag,
+        addTag: tag => tags => addTag(tag)(rmTag(tags)),
+        rmTag,
         rmDot: props.rmDot,
     };
 
-    useEffect(() =>
-        props.openEditor({
-            rmTag: () => _ => [],
-            ...editorProps,
-        }), []);
+    useEffect(() => props.openEditor(editorProps), []);
+
+    useEffect(() => props.openEditor(editorProps), [tooltip])
 
     const tooltipElem = <div className="tooltip">{tooltip}</div>;
 
     const style = { left: props.x, top: props.y };
 
-    if (tag === null)
-        return <div className="tag" style={style}>{tooltipElem}</div>
-
     return (
-        <div className="tag" style={style} onClick={() =>
-            props.openEditor({
-                rmTag: () => props.rmTag(tag),
-                ...editorProps,
-            })}>
+        <div className="tag" style={style}
+            onClick={() => props.openEditor(editorProps)}>
             {tooltipElem}
         </div>
     );

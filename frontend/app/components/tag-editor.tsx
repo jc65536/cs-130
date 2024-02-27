@@ -1,12 +1,10 @@
-import { useEffect } from "react";
-import { Tag, IncompleteTag } from "./tag";
+import { Tag } from "./tag";
 
 export type TagEditorProps_ = {
-    complete: boolean,
     tooltip: string,
     setTooltip: (s: string) => void;
     addTag: (tag: Tag) => (tags: Tag[]) => Tag[],
-    rmTag: () => (tags: Tag[]) => Tag[],
+    rmTag: (tags: Tag[]) => Tag[],
     rmDot: () => void,
 }
 
@@ -16,9 +14,7 @@ export type TagEditorProps = TagEditorProps_ & {
 
 export default function TagEditor(props: TagEditorProps) {
     const selectSuggestion = (tag: Tag) => () =>
-        props.closeEditor(tags => props.addTag(tag)(
-            props.complete ? tags : props.rmTag()(tags)
-        ));
+        props.closeEditor(props.addTag(tag));
 
     const getSuggestions = () => [1, 2, 3, 4]
         .map(id => {
@@ -35,14 +31,14 @@ export default function TagEditor(props: TagEditorProps) {
     return (
         <div>
             <input className="tag-edit"
-                defaultValue={props.tooltip}
+                value={props.tooltip}
                 onChange={e => props.setTooltip(e.target.value)}></input>
             <div className="suggestions-container">
                 {...suggestions}
             </div>
             <button className="tag-rm" onClick={() => {
                 props.rmDot();
-                props.closeEditor(props.rmTag());
+                props.closeEditor(props.rmTag);
             }}>
                 Remove tag
             </button>
