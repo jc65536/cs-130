@@ -42,15 +42,16 @@ export default function TagDot(props: TagDotProps) {
 
     const editorProps: TagEditorProps_ = {
         tooltip,
-        setTooltip,
-        addTag: tag => tags => addTag(tag)(rmTag(tags)),
+        setTooltip: (tooltip) => {
+            setTooltip(tooltip);
+            props.openEditor({ ...editorProps, tooltip });
+        },
+        addTag,
         rmTag,
         rmDot: props.rmDot,
     };
 
     useEffect(() => props.openEditor(editorProps), []);
-
-    useEffect(() => props.openEditor(editorProps), [tooltip])
 
     const tooltipElem = <div className="tooltip">{tooltip}</div>;
 

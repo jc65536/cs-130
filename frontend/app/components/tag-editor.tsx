@@ -14,7 +14,7 @@ export type TagEditorProps = TagEditorProps_ & {
 
 export default function TagEditor(props: TagEditorProps) {
     const selectSuggestion = (tag: Tag) => () =>
-        props.closeEditor(props.addTag(tag));
+        props.closeEditor(tags => props.addTag(tag)(props.rmTag(tags)));
 
     const getSuggestions = () => [1, 2, 3, 4]
         .map(id => {

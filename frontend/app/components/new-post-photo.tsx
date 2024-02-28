@@ -12,7 +12,7 @@ const genKey = (() => {
 })();
 
 export default function NewPostPhoto(props: NewPostPhotoProps) {
-    const [dots, setTags] = useState<ReactElement[]>([]);
+    const [dots, setDots] = useState<ReactElement[]>([]);
 
     const handleClick: MouseEventHandler = e => {
         const { x: xo, y: yo } = e.currentTarget.getBoundingClientRect();
@@ -20,8 +20,8 @@ export default function NewPostPhoto(props: NewPostPhotoProps) {
         const y = e.clientY - yo;
         const dot = <TagDot {...props.dotProps}
             key={genKey()} x={x} y={y}
-            rmDot={() => setTags(dots.filter(d => d.key !== dot.key))} />;
-        setTags([dot, ...dots]);
+            rmDot={() => setDots(dots => dots.filter(d => d !== dot))} />;
+        setDots([dot, ...dots]);
     };
 
     return (
