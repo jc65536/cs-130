@@ -84,7 +84,13 @@ export default function TagEditor(props: TagEditorProps) {
     const selectSuggestion = (tag: Tag) =>
         closeEditor(fn(props.rmTag).pipe(props.addTag(tag)));
 
-    const getSuggestions = () => autocomplete(props.tooltip)
+    const addNewTag = () => {
+        closeEditor(fn(props.rmTag).pipe(props.addTag({ name: props.tooltip, id: -1 })));
+    };
+
+    const completions = autocomplete(props.tooltip);
+
+    const suggestions = completions
         .map(tag => {
             return (
                 <p className="suggestion" key={tag.id}>
@@ -97,6 +103,19 @@ export default function TagEditor(props: TagEditorProps) {
             );
         });
 
+    const addNewOption = props.tooltip.length > 0 &&
+        completions.every(({ name }) => props.tooltip !== name)
+        ? (
+            <p className="suggestion">
+                <label>
+                    <input name="tag" type="radio"
+                        onChange={e => e.target.checked && addNewTag()} />
+                    Add a new tag
+                </label>
+            </p>
+        )
+        : null;
+
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         props.invalidateTag();
         props.setTooltip(e.target.value);
@@ -108,7 +127,8 @@ export default function TagEditor(props: TagEditorProps) {
                 value={props.tooltip}
                 onChange={handleChange}></input>
             <div className="suggestions-container">
-                {...getSuggestions()}
+                {...suggestions}
+                {addNewOption}
             </div>
             <button className="tag-rm"
                 onClick={() => {
