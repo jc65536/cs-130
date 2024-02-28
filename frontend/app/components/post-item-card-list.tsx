@@ -1,11 +1,11 @@
 import React from 'react';
-import PostItemCard from './post-item-card.tsx'; 
+import PostItemCard, { Post } from './post-item-card';
 import styles from '../card.module.css';
 
 // Dummy data for demonstration
-var posts = [];
+var posts: Post[] = [];
 for (let id = 1; id <= 20; id++) {
-    posts.push({ id, caption: `Caption ${id}` });
+  posts.push({ id, caption: `Caption ${id}` });
 }
 
 

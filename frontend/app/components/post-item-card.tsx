@@ -3,9 +3,13 @@ import Image from 'next/image';
 import Link from 'next/link';
 import styles from '../card.module.css';
 
+export type Post = {
+    id: number,
+    caption: string,
+}
 
 // export default function PostItemCard = ({ id, caption }) => {
-export default function PostItemCard({ id, caption }) {
+export default function PostItemCard({ id, caption }: Post) {
     // const [isLiked, setIsLiked] = useState(false);
 
     // const toggleLike = () => {
