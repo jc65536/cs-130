@@ -19,14 +19,11 @@ export default function TagEditor(props: TagEditorProps) {
         return props.closeEditor(f);
     };
 
-    // Close editor when you click anywhere else
     const detectOutsideClick = (e: MouseEvent) => {
         if (!(e.target instanceof HTMLElement))
             return;
 
-        const editor = e.target.closest(".tag-editor");
-
-        if (editor !== null)
+        if (e.target.closest(".tag-editor") !== null)
             return;
 
         closeEditor(x => x);
@@ -53,8 +50,6 @@ export default function TagEditor(props: TagEditorProps) {
             );
         });
 
-    const suggestions = getSuggestions();
-
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         props.invalidateTag();
         props.setTooltip(e.target.value);
@@ -66,7 +61,7 @@ export default function TagEditor(props: TagEditorProps) {
                 value={props.tooltip}
                 onChange={handleChange}></input>
             <div className="suggestions-container">
-                {...suggestions}
+                {...getSuggestions()}
             </div>
             <button className="tag-rm" onClick={() => {
                 props.rmDot();

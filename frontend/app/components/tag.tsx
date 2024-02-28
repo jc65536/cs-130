@@ -12,6 +12,8 @@ export type Tag = {
     name: string,
 };
 
+const isComplete = (tag: IncompleteTag): tag is Tag => tag.id !== null;
+
 export type TagDotProps_ = {
     openEditor: (props: TagEditorProps) => void,
     addTag: (tag: Tag) => (tags: Tag[]) => Tag[],
@@ -29,29 +31,25 @@ export type TagDotProps = TagDotProps_ & {
 export default function TagDot(props: TagDotProps) {
     const complete = useRef(false);
 
-    const [tag, setTag] = useState<Tag | null>(null);
-
-    const [tooltip, setTooltip] = useState("");
+    const [tag, setTag] = useState<IncompleteTag>({ name: "", id: null });
 
     const editorProps: TagEditorProps = {
         ...props,
-        tooltip,
+        tooltip: tag.name,
         setTooltip: (tooltip) => {
-            setTooltip(tooltip);
+            setTag({ ...tag, name: tooltip });
             props.openEditor({ ...editorProps, tooltip });
         },
-        addTag: tag => tags => {
+        addTag: tag => fn(props.addTag(tag)).before(_ => {
             complete.current = true;
             setTag(tag);
-            setTooltip(tag.name);
-            return props.addTag(tag)(tags);
-        },
-        rmTag: tag === null ? x => x : tags => {
-            complete.current = false;
-            setTag(null);
-            setTooltip("")
-            return props.rmTag(tag)(tags);
-        },
+        }),
+        rmTag: isComplete(tag)
+            ? fn(props.rmTag(tag)).before(_ => {
+                complete.current = false;
+                setTag({ name: "", id: null });
+            })
+            : x => x,
         closeEditor: fn(props.closeEditor(props.dotKey))
             .after(() => complete.current || props.rmDot()),
         invalidateTag: () => complete.current = false,
@@ -59,14 +57,10 @@ export default function TagDot(props: TagDotProps) {
 
     useEffect(() => props.openEditor(editorProps), []);
 
-    const tooltipElem = <div className="tooltip">{tooltip}</div>;
-
-    const style = { left: props.x, top: props.y };
-
     return (
-        <div className="tag" style={style}
+        <div className="tag" style={{ left: props.x, top: props.y }}
             onClick={() => props.openEditor(editorProps)}>
-            {tooltipElem}
+            <div className="tooltip">{tag.name}</div>
         </div>
     );
 }
