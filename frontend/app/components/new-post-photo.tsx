@@ -1,9 +1,8 @@
 import { MouseEventHandler, ReactElement, useState } from "react";
 import TagDot, { TagDotProps_ } from "./tag";
 
-export type NewPostPhotoProps = {
+export type NewPostPhotoProps = TagDotProps_ & {
     imgSrc: string,
-    dotProps: TagDotProps_,
 };
 
 const genKey = (() => {
@@ -20,11 +19,11 @@ export default function NewPostPhoto(props: NewPostPhotoProps) {
         const y = e.clientY - rect.y;
         const key = genKey();
         const dot = (
-            <TagDot {...props.dotProps}
+            <TagDot {...props}
                 key={key} dotKey={key} x={x} y={y}
                 rmDot={() => setDots(dots => dots.filter(d => d !== dot))} />
         );
-        setDots([dot, ...dots]);
+        setDots([...dots, dot]);
     };
 
     return (

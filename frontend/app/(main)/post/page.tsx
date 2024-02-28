@@ -3,7 +3,7 @@
 import NewPostPhoto from "@/app/components/new-post-photo";
 import { Tag, TagDotProps_ } from "@/app/components/tag";
 import TagEditor, { TagEditorProps } from "@/app/components/tag-editor";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 
 export default function Home() {
@@ -36,7 +36,7 @@ export default function Home() {
             <div>Post caption</div>
             <div>cancel button</div>
             <div>post button</div>
-            <NewPostPhoto imgSrc="/tango.jpg" dotProps={dotProps} />
+            <NewPostPhoto imgSrc="/tango.jpg" {...dotProps} />
             {tagEditor}
         </main>
     );

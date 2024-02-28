@@ -1,5 +1,6 @@
-import { ChangeEvent, useEffect, useRef } from "react";
+import { ChangeEvent, useEffect } from "react";
 import { Tag } from "./tag";
+import { fn } from "@/app/util";
 
 export type TagEditorProps = {
     dotKey: number,
@@ -9,35 +10,32 @@ export type TagEditorProps = {
     rmTag: (tags: Tag[]) => Tag[],
     rmDot: () => void,
     closeEditor: (f: (tags: Tag[]) => Tag[]) => void,
-    invalidate: () => void,
+    invalidateTag: () => void,
 };
 
 export default function TagEditor(props: TagEditorProps) {
+    const closeEditor = (f: (tags: Tag[]) => Tag[]) => {
+        document.removeEventListener("click", detectOutsideClick);
+        return props.closeEditor(f);
+    };
+
     // Close editor when you click anywhere else
-    useEffect(() => {
-        const detectOutsideClick = (e: MouseEvent) => {
-            if (!(e.target instanceof HTMLElement))
-                return;
+    const detectOutsideClick = (e: MouseEvent) => {
+        if (!(e.target instanceof HTMLElement))
+            return;
 
-            const editor = e.target.closest(".tag-editor");
+        const editor = e.target.closest(".tag-editor");
 
-            if (editor !== null) {
-                console.log("inside click");
-                return;
-            }
+        if (editor !== null)
+            return;
 
-            console.log("outside click");
+        closeEditor(x => x);
+    };
 
-            props.closeEditor(x => x);
-
-            document.removeEventListener("click", detectOutsideClick);
-        };
-
-        document.addEventListener("click", detectOutsideClick);
-    }, []);
+    useEffect(() => document.addEventListener("click", detectOutsideClick), []);
 
     const selectSuggestion = (tag: Tag) =>
-        props.closeEditor(tags => props.addTag(tag)(props.rmTag(tags)));
+        closeEditor(fn(props.rmTag).pipe(props.addTag(tag)));
 
     const getSuggestions = () => [1, 2, 3, 4]
         .map(id => {
@@ -58,7 +56,7 @@ export default function TagEditor(props: TagEditorProps) {
     const suggestions = getSuggestions();
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-        props.invalidate();
+        props.invalidateTag();
         props.setTooltip(e.target.value);
     };
 
@@ -72,7 +70,7 @@ export default function TagEditor(props: TagEditorProps) {
             </div>
             <button className="tag-rm" onClick={() => {
                 props.rmDot();
-                props.closeEditor(props.rmTag);
+                closeEditor(props.rmTag);
             }}>
                 Remove tag
             </button>

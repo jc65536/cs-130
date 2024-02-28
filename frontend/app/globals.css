@@ -37,4 +37,5 @@ main {
 
 .new-post-photo > .tag {
   position: absolute;
+  box-shadow: 0px 4px 4px #00000080;
 }
