@@ -15,12 +15,15 @@ export default function NewPostPhoto(props: NewPostPhotoProps) {
     const [dots, setDots] = useState<ReactElement[]>([]);
 
     const handleClick: MouseEventHandler = e => {
-        const { x: xo, y: yo } = e.currentTarget.getBoundingClientRect();
-        const x = e.clientX - xo;
-        const y = e.clientY - yo;
-        const dot = <TagDot {...props.dotProps}
-            key={genKey()} x={x} y={y}
-            rmDot={() => setDots(dots => dots.filter(d => d !== dot))} />;
+        const rect = e.currentTarget.getBoundingClientRect();
+        const x = e.clientX - rect.x;
+        const y = e.clientY - rect.y;
+        const key = genKey();
+        const dot = (
+            <TagDot {...props.dotProps}
+                key={key} dotKey={key} x={x} y={y}
+                rmDot={() => setDots(dots => dots.filter(d => d !== dot))} />
+        );
         setDots([dot, ...dots]);
     };
 

@@ -3,21 +3,21 @@
 import NewPostPhoto from "@/app/components/new-post-photo";
 import { Tag, TagDotProps_ } from "@/app/components/tag";
 import TagEditor, { TagEditorProps } from "@/app/components/tag-editor";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 
 export default function Home() {
     const [editorProps, setEditorProps] = useState<TagEditorProps | null>(null);
     const [tags, setTags] = useState<Tag[]>([]);
 
-    const closeEditor = (f: (tags: Tag[]) => Tag[]) => {
+    const closeEditor = (dotKey: number) => (f: (tags: Tag[]) => Tag[]) => {
         setTags(f(tags));
-        setEditorProps(null);
+        setEditorProps(props => props?.dotKey === dotKey ? null : props);
     };
 
     const tagEditor = editorProps === null
         ? null
-        : <TagEditor {...editorProps}></TagEditor>;
+        : <TagEditor key={editorProps.dotKey} {...editorProps}></TagEditor>;
 
     const dotProps: TagDotProps_ = {
         addTag: tag => tags => [tag, ...tags],

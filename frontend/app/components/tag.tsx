@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { TagEditorProps } from "./tag-editor";
 
 export type IncompleteTag = {
@@ -15,31 +15,40 @@ export type TagDotProps_ = {
     openEditor: (props: TagEditorProps) => void,
     addTag: (tag: Tag) => (tags: Tag[]) => Tag[],
     rmTag: (tag: Tag) => (tags: Tag[]) => Tag[],
-    closeEditor: (f: (tags: Tag[]) => Tag[]) => void,
+    closeEditor: (dotKey: number) => (f: (tags: Tag[]) => Tag[]) => void,
 }
 
 export type TagDotProps = TagDotProps_ & {
+    dotKey: number,
     x: number,
     y: number,
     rmDot: () => void,
 };
 
 export default function TagDot(props: TagDotProps) {
+    const complete = useRef(false);
+
     const [tag, setTag] = useState<Tag | null>(null);
 
     const [tooltip, setTooltip] = useState("");
 
     const addTag = (tag: Tag) => {
+        complete.current = true;
         setTag(tag);
         setTooltip(tag.name);
         return props.addTag(tag);
     };
 
-    const complete = tag !== null;
+    const rmTag = tag === null
+        ? (tags: Tag[]) => tags
+        : props.rmTag(tag);
 
-    const rmTag = complete
-        ? props.rmTag(tag)
-        : (tags: Tag[]) => tags;
+    const closeEditor = (f: (tags: Tag[]) => Tag[]) => props.closeEditor(props.dotKey)(tags => {
+        const ret = f(tags);
+        if (!complete.current)
+            props.rmDot();
+        return ret;
+    });
 
     const editorProps: TagEditorProps = {
         ...props,
@@ -50,6 +59,8 @@ export default function TagDot(props: TagDotProps) {
         },
         addTag,
         rmTag,
+        closeEditor,
+        invalidate: () => complete.current = false,
     };
 
     useEffect(() => props.openEditor(editorProps), []);
