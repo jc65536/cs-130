@@ -1,14 +1,11 @@
 import { Tag } from "./tag";
 
-export type TagEditorProps_ = {
+export type TagEditorProps = {
     tooltip: string,
     setTooltip: (s: string) => void;
     addTag: (tag: Tag) => (tags: Tag[]) => Tag[],
     rmTag: (tags: Tag[]) => Tag[],
     rmDot: () => void,
-}
-
-export type TagEditorProps = TagEditorProps_ & {
     closeEditor: (f: (tags: Tag[]) => Tag[]) => void,
 };
 

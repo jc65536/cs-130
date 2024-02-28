@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { TagEditorProps_ } from "./tag-editor";
+import { TagEditorProps } from "./tag-editor";
 
 export type IncompleteTag = {
     id: number | null,
@@ -12,9 +12,10 @@ export type Tag = {
 };
 
 export type TagDotProps_ = {
-    openEditor: (props: TagEditorProps_) => void,
+    openEditor: (props: TagEditorProps) => void,
     addTag: (tag: Tag) => (tags: Tag[]) => Tag[],
     rmTag: (tag: Tag) => (tags: Tag[]) => Tag[],
+    closeEditor: (f: (tags: Tag[]) => Tag[]) => void,
 }
 
 export type TagDotProps = TagDotProps_ & {
@@ -40,7 +41,8 @@ export default function TagDot(props: TagDotProps) {
         ? props.rmTag(tag)
         : (tags: Tag[]) => tags;
 
-    const editorProps: TagEditorProps_ = {
+    const editorProps: TagEditorProps = {
+        ...props,
         tooltip,
         setTooltip: (tooltip) => {
             setTooltip(tooltip);
@@ -48,7 +50,6 @@ export default function TagDot(props: TagDotProps) {
         },
         addTag,
         rmTag,
-        rmDot: props.rmDot,
     };
 
     useEffect(() => props.openEditor(editorProps), []);

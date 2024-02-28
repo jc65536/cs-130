@@ -2,7 +2,7 @@
 
 import NewPostPhoto from "@/app/components/new-post-photo";
 import { Tag, TagDotProps_ } from "@/app/components/tag";
-import TagEditor, { TagEditorProps, TagEditorProps_ } from "@/app/components/tag-editor";
+import TagEditor, { TagEditorProps } from "@/app/components/tag-editor";
 import { useState } from "react";
 
 
@@ -10,14 +10,9 @@ export default function Home() {
     const [editorProps, setEditorProps] = useState<TagEditorProps | null>(null);
     const [tags, setTags] = useState<Tag[]>([]);
 
-    const openEditor = (props: TagEditorProps_) => {
-        setEditorProps({
-            ...props,
-            closeEditor: (f: (tags: Tag[]) => Tag[]) => {
-                setTags(f(tags));
-                setEditorProps(null);
-            },
-        });
+    const closeEditor = (f: (tags: Tag[]) => Tag[]) => {
+        setTags(f(tags));
+        setEditorProps(null);
     };
 
     const tagEditor = editorProps === null
@@ -27,7 +22,8 @@ export default function Home() {
     const dotProps: TagDotProps_ = {
         addTag: tag => tags => [tag, ...tags],
         rmTag: tag => tags => tags.filter(t => t !== tag),
-        openEditor
+        openEditor: setEditorProps,
+        closeEditor
     };
 
     return (
