@@ -1,9 +1,8 @@
-@import url("@/style/nav-bar.css");
-
-#homepage {
+main {
   display: flex;
   flex-direction: column;
   align-items: center;
+  /* max-width:360px; */
 }
 
 #title {
