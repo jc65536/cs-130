@@ -57,10 +57,14 @@ export default function TagDot(props: TagDotProps) {
 
     useEffect(() => props.openEditor(editorProps), []);
 
+    const tooltip = tag.name.length > 0
+        ? <div className="tooltip">{tag.name}</div>
+        : null;
+
     return (
         <div className="tag" style={{ left: props.x, top: props.y }}
             onClick={() => props.openEditor(editorProps)}>
-            <div className="tooltip">{tag.name}</div>
+            {tooltip}
         </div>
     );
 }
