@@ -26,13 +26,7 @@ const store = new MongoDBStore({
 const app = express();
 const port = 8000;
 
-app.use(cors({ origin: process.env["FRONTEND_HOST"] }))
-
-app.get("/", (req, res) => {
-    res.send("Hello World!");
-});
-
-app.use(validateUser);
+app.use(cors({ origin: process.env["FRONTEND_HOST"], credentials: true }))
 
 app.use(session({
     secret: SESSION_SECRET_KEY,
@@ -47,6 +41,11 @@ app.use(session({
     },
 }));
 
+app.use(validateUser);
+
+app.get("/", (req, res) => {
+    res.send("Hello World!");
+});
 
 app.use("/login", login_router);
 
