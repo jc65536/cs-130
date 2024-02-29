@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getClient = exports.DbClient = void 0;
+exports.getClient = exports.DbClient = exports.uri = void 0;
 const mongodb_1 = require("mongodb");
 // Replace the placeholder with your Atlas connection string
-const uri = "mongodb://root:example@mongo:27017/";
+exports.uri = "mongodb://root:example@mongo:27017/";
 /**
  * A Client for managing database connections.
  */
@@ -28,14 +28,19 @@ class DbClient {
      */
     _mongoDB;
     constructor() {
-        const mongoClient = new mongodb_1.MongoClient(uri, {
+        console.log(exports.uri);
+        console.log("Trying to connect to mongod client");
+        const mongoClient = new mongodb_1.MongoClient(exports.uri, {
             serverApi: {
                 version: mongodb_1.ServerApiVersion.v1,
                 strict: true,
                 deprecationErrors: true,
             }
         });
+        mongoClient.connect();
         this._mongoDB = mongoClient.db("admin");
+        this.mongoDB.command({ ping: 1 });
+        console.log("successfulyl connected to mongodb");
         this.collections = {};
     }
     /**
@@ -113,7 +118,7 @@ class DbClient {
 }
 exports.DbClient = DbClient;
 let CLIENT;
-async function getClient() {
+function getClient() {
     if (CLIENT != undefined)
         return CLIENT;
     CLIENT = new DbClient();
