@@ -4,7 +4,7 @@ import LoginButton from "./login-button";
 
 export default function Login() {
   return (
-    <main id="homepage">
+    <main className="homepage">
       <h1 id="title">OOTD</h1>
 
       <GoogleOAuthProvider clientId={OAUTH_CLIENT_ID}>

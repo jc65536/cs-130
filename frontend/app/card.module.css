@@ -1,0 +1,47 @@
+/* PostItemCard.module.css */
+.card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 8px;
+    margin: 8px;
+    width: 160px;
+  }
+  
+.caption {
+  /* text-align: center; */
+  margin: 0; 
+  flex-grow: 1;
+}
+
+.likeButton {
+  border: 1px solid black;
+  background-color: transparent;
+  cursor: pointer;
+  font-size: 10px;
+  color: #333;
+}
+
+.likeButton.liked {
+  color: red;
+}
+
+.cardbody {
+  display: flex; /* Use flex display to align items in a row */
+  justify-content: space-between; /* Space out items */
+  align-items: center;
+  width: 75%;
+}
+
+.postListContainer {
+  display: flex;
+  flex-wrap: wrap;
+  overflow-x: auto; /* Enables horizontal scrolling */
+  gap: 16px; /* Adjust the spacing between items */
+  justify-content: flex-start;
+  max-width: 1080px;
+}
+
+
