@@ -2,7 +2,9 @@ import { Collection, Db, Document, ObjectId, MongoClient, WithId, ServerApiVersi
 import { COLLECTION } from '../enums';
 
 // Replace the placeholder with your Atlas connection string
-const uri = "mongodb://root:example@mongo:27017/";
+export const uri = "mongodb://root:example@mongo:27017/";
+// const MONGODB_USER_PASSWORD = process.env["MONGODB_USER_PASSWORD"]
+// const uri = "mongodb+srv://darrenzhang22:"+MONGODB_USER_PASSWORD+"@cs130-db.nwgwcug.mongodb.net/?retryWrites=true&w=majority&appName=cs130-db";
 
 import { DbItem } from './db-item';
 
@@ -36,6 +38,8 @@ export class DbClient {
     private _mongoDB?: Db;
 
     public constructor() {
+        console.log(uri);
+        console.log("Trying to connect to mongod client")
         const mongoClient = new MongoClient(uri, {
             serverApi: {
                 version: ServerApiVersion.v1,
@@ -43,7 +47,10 @@ export class DbClient {
                 deprecationErrors: true,
             }
         });
+        mongoClient.connect();
         this._mongoDB = mongoClient.db("admin");
+        this.mongoDB.command({ ping: 1 });
+        console.log("successfulyl connected to mongodb")
         this.collections = {};
     }
 
@@ -129,7 +136,7 @@ export class DbClient {
 
 let CLIENT: DbClient;
 
-export async function getClient(): Promise<DbClient> {
+export function getClient(): DbClient {
     if (CLIENT != undefined) return CLIENT;
 
     CLIENT = new DbClient();

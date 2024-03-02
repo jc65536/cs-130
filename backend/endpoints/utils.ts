@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from "express";
+import express, { NextFunction, Request, Response } from "express";
 import { OAuth2Client } from "google-auth-library";
 import crypto from 'crypto';
 import { ObjectId } from "mongodb";
@@ -23,71 +23,109 @@ function convertTo24CharHex(s: String) {
 }
 
 /**
- * middleware function to authenticate the google oauth token
- * the token should be placed in the headers as an bearer authorization token
+ * middleware function to authenticate the user by either:
+ * * validating the google oauth token when the original url is /login
+ * * or checking that the session contains the userID
+ * when the /login route is called, the token should be placed in the headers as an bearer authorization token
  * the request should be formatted like headers: {Authorization: "Bearer {token}"}
  * 
  * this validates the google oauth token with google to get the user id and checks if the token has expired
  * then it hashes the user id into a 24 character hash to use as the id for mongodb
  * note, mongodb requries 24 character length hexadecimal strings as object ids
  * 
- * this will set res.locals.userID and res.locals.userObjectId which can be accessed in later middleware functions
- * res.locals.userID will be the google user id
- * res.locals.userObjectId will be the 24 character hexadecimal hash of the user id (this is used for indexing the database)
+ * this will set req.session.userID and req.session.userObjectId which can be accessed in later middleware functions and be placed as a cookie
+ * req.session.userID will be the google user id
+ * req.session.userObjectId will be the 24 character hexadecimal hash of the user id (this is used for indexing the database)
+ * 
+ * if the userID from the google token is different than the userID in the session (aka the user logged in with a different account before)
+ * we generate a new session and override the userID with the new userID
+ * 
+ * if this is called not at the /login route, it will check:
+ * that the session contains a valid user id and userObjectId
  * @param req 
  * @param res 
  * @param next 
  */
-export async function validateGoogleOAuthToken(req: Request, res: Response, next:NextFunction) {
-    const authHeader = req.headers.authorization;
-    const token = authHeader && authHeader.split(' ')[1];
-    console.log("inside the start of validateGoogleOAuthToken");
-    // using my google oauth token rn for testing purposes
-    // const token = "eyJhbGciOiJSUzI1NiIsImtpZCI6IjU1YzE4OGE4MzU0NmZjMTg4ZTUxNTc2YmE3MjgzNmUwNjAwZThiNzMiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiIxMjEwNDQyMjU3MDAtNmdvdHBlbmo1OGlhbzJmbzJxa201NzNoMTFjN2hib2YuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJhdWQiOiIxMjEwNDQyMjU3MDAtNmdvdHBlbmo1OGlhbzJmbzJxa201NzNoMTFjN2hib2YuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJzdWIiOiIxMTI4MTI3NzY1ODc1NDkxNTg3OTEiLCJlbWFpbCI6ImRhcnJlbnpoYW5nMjJAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsIm5iZiI6MTcwODMzMTYxNiwibmFtZSI6IkRhcnJlbiBaaGFuZyIsInBpY3R1cmUiOiJodHRwczovL2xoMy5nb29nbGV1c2VyY29udGVudC5jb20vYS9BQ2c4b2NJV0I3dzVjb1JVeHQxRDhrT3BZZEpVZGN1TV9ZYmpfdHJxZVBXNFo3SXQ9czk2LWMiLCJnaXZlbl9uYW1lIjoiRGFycmVuIiwiZmFtaWx5X25hbWUiOiJaaGFuZyIsImxvY2FsZSI6ImVuIiwiaWF0IjoxNzA4MzMxOTE2LCJleHAiOjE3MDgzMzU1MTYsImp0aSI6ImJiNWI5NGI1ODZhY2RhN2RlN2Q2NzY0N2MxMGIwZTM1ZDM2ODg4NmIifQ.U2JeyIR5JflQ9h9uGY05rZc9keFie-tPuQekCbKshIB_8gzv1G3ltZabcdNPvkEDjcMsWuuLESo6Zm6vrB-q_EzWKxZsZ8VSHbPN4zusxVh3MO6OyuxGbF8VUBd_1rcMyrn-scXHIj3WnaLqBbZgl_9a8jkIYOMvfjTBEKdiqgslWxMoAFFyU35edIHi_XX2nC3q-_tCgSLguE_HOObIMoxy7RXz8YXExZqFRN8XDge4CPNXiZ3puLT4X6DGV2DFHlIUqPT5-PH4DZ2IxMs3GDrYNzUpYn2RvbGDSkBnudVNLHbxr4Tjkb7xwzYUJr7-wqwqfUmBzlc7hB0IOE4_6w";
-    
-    async function verify() {
-        const ticket = await client.verifyIdToken({
-            idToken: token ?? '',
-            audience: CLIENT_ID,  // Specify the CLIENT_ID of the app that accesses the backend
-        });
-        const userid = ticket.getUserId();
-        console.log("userid: ");
-        console.log(userid);
-        return userid;
-    }
+export async function validateUser(req: Request, res: Response, next: NextFunction) {
+    if (req.originalUrl == '/login') { // verify google token and write user id to session
+        const authHeader = req.headers.authorization;
+        const token = authHeader && authHeader.split(' ')[1];
+        console.log("inside the start of validateGoogleOAuthToken");
 
-    var userid;
-    try {
-        userid = await verify();
-    } catch (err) {
-        console.error("Error validating google oauth token: ",err);
-        return res.status(401).json("invalid google oauth token").end();
-    }
+        async function verify() {
+            const ticket = await client.verifyIdToken({
+                idToken: token ?? '',
+                audience: CLIENT_ID,  // Specify the CLIENT_ID of the app that accesses the backend
+            });
+            const userid = ticket.getUserId();
+            console.log("userid: ");
+            console.log(userid);
+            return userid;
+        }
 
-    console.log("successfully ran verifyId");
-    console.log("userid: ",userid);
-    if (!userid) {
-        return res.status(401).json("invalid user id from google oauth token").end();
-    } else {
+        var userid;
+        try {
+            userid = await verify();
+        } catch (err) {
+            console.error("Error validating google oauth token: ", err);
+            req.session.destroy((err) => {
+                if (err) {
+                    console.error('Error destroying session:', err);
+                    res.status(500).send('Error destroying session');
+                }
+            });
+            return res.status(401).json("invalid google oauth token").end();
+        }
+
+        console.log("successfully ran verifyId");
+        console.log("userid: ", userid);
+        if (!userid) {
+            req.session.destroy((err) => {
+                if (err) {
+                    console.error('Error destroying session:', err);
+                    res.status(500).send('Error destroying session');
+                } else {
+                    console.log("Successfully destroyed user session");
+                }
+            });
+            return res.status(401).json("invalid user id from google oauth token").end();
+        }
+        if (req.session.userID && req.session.userID != userid) {
+            req.session.regenerate((err) => {
+                if (err) {
+                    console.error("Error regenerating new session after receiving new google userid: " + err);
+                    res.status(500).send('Error regenerating session');
+                } else {
+                    console.log("Successfully generated new session: " + req.sessionID);
+                }
+            });
+        }
         // get hashed version of the user id to use as object id for mongodb
-        console.log("successfully verified id");
         const userIdHash = convertTo24CharHex(userid);
         const userObjId = new ObjectId(userIdHash);
-        console.log("user object id: ",userObjId);
 
         // if user doesn't exist in database, add the user to the database
         const dbClient: DbClient = await getClient();
         const document = await dbClient.findDbItem(COLLECTION.USERS, userObjId);
         if (document == null) {
-            console.log("writing user to db");
             const user = new User(userObjId);
             await user.writeToDatabase();
-        } 
+        }
+        req.session.userID = userid;
+        req.session.userObjectId = userIdHash;
 
-        console.log("document: ",document);
-        console.log("successfully created/verified user in database");
-        res.locals.userID = userid;
-        res.locals.userObjectId = userIdHash;
+        next();
+    } else { // verify session contains user id
+        if (!req.session.userID || !req.session.userObjectId) {
+            return res.status(401).json("User is not signed in. Session does not contain user id");
+        } else {
+            const dbClient: DbClient = getClient();
+            const document = await dbClient.findDbItem(COLLECTION.USERS, new ObjectId(req.session.userObjectId));
+            if (document == null) {
+                return res.status(401).json("User is not signed in. Invalid user id in session");
+            }
+        }
+        console.log("session contains user id: " + req.session.userID+", objectID: "+req.session.userObjectId);
         next();
     }
 }
