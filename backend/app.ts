@@ -32,7 +32,7 @@ app.use(session({
     secret: SESSION_SECRET_KEY,
     resave: false,
     saveUninitialized: false, // Only create new session if client does not already have a session cookie
-    store: store,
+    store: store, // all the sessions and their data will be written to the sessions collections in MongoDB
     cookie: {
         httpOnly: true,
         secure: false,
