@@ -2,15 +2,17 @@ import { convertTo24CharHex } from "./convert-hex";
 import { DbItem } from "./db-lib/db-item";
 import { COLLECTION } from "./enums";
 import { ObjectId } from "mongodb";
-// import { getClient } from "./db-lib/db-client";
+import { Wardrobe } from "./wardrobe";
 
 export class User extends DbItem {
     posts: String[];
+    wardrobe: String;
     // private dbClient = getClient();
 
     constructor(id: ObjectId) {
         super(id, COLLECTION.USERS)
         this.posts = [];
+        this.wardrobe = '';
     }
 
     /**
@@ -21,7 +23,12 @@ export class User extends DbItem {
      */
     public static async create(userUID: string): Promise<User | null> {
         const objectId = convertTo24CharHex(userUID);
-        return new User(new ObjectId(objectId));
+        //create wardrobe for the user
+        const newWardrobe = await Wardrobe.create(userUID);
+        const wardrobeUID = newWardrobe != null ? newWardrobe?.id.toString() : '';
+        const newUser = new User(new ObjectId(objectId));
+        newUser.wardrobe = wardrobeUID;
+        return newUser;
     }
 
     /**

@@ -105,3 +105,8 @@ export async function validateGoogleOAuthToken(req: Request, res: Response, next
         next();
     }
 }
+
+
+export async function createNewPost(req: Request, res: Response, next:NextFunction) {
+    const authHeader = req.headers.authorization;
+}

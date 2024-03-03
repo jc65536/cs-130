@@ -8,6 +8,9 @@ export class Post extends DbItem {
     clothes: String[];
     image: String;
     caption: String;
+    rating: Number;
+    ratingCount: Number;
+    userUID: String;
 
     /**
      * 
@@ -17,11 +20,14 @@ export class Post extends DbItem {
      * @param tags string array of ids for Clothing class dbItem
      * @returns 
      */
-    constructor(id: ObjectId, image:String, caption:String, clothes:String[]) {
+    constructor(id: ObjectId, userUID:String, image:String, caption:String, clothes:String[]) {
         super(id, COLLECTION.POSTS)
+        this.userUID = userUID;
         this.image = image;
         this.caption = caption;
         this.clothes = clothes;
+        this.rating = 0;
+        this.ratingCount = 0;
     }
 
     /**
@@ -36,7 +42,7 @@ export class Post extends DbItem {
         //add the object under the users post string
         const dbClient = await getClient();
         const user = await dbClient.findDbItem(COLLECTION.USERS, objectId);
-        const newPost = new Post(new ObjectId(), image, caption, clothes);
+        const newPost = new Post(new ObjectId(), userUID, image, caption, clothes);
         await user.addPost(newPost.id.toString());
 
         return newPost;
@@ -56,6 +62,12 @@ export class Post extends DbItem {
     public async getCaption(): Promise<String | null> {
         return this.caption;
     }
+    public async getRating(): Promise<Number | null> {
+        return this.rating;
+    }
+    public async getRatingCount(): Promise<Number | null> {
+        return this.ratingCount;
+    }
 
     public async addClothes(clothingUID: string): Promise<void> {
         this.clothes.push(clothingUID);
@@ -66,6 +78,10 @@ export class Post extends DbItem {
     public async updateCaption(newCaption: string): Promise<void> {
         this.caption = newCaption;
     }
+    public async updateRating(newRating: Number): Promise<void> {
+        this.ratingCount = +this.ratingCount + 1;
+        this.rating = (+this.rating + +newRating) / (+this.ratingCount);
+    }
 
     /**
        * Converts the object into a form for the database
@@ -75,9 +91,12 @@ export class Post extends DbItem {
         const { collectionName: _c, ...entry } = this;
         return {
             ...entry,
+            userUID: this.userUID,
             clothes: this.clothes,
             image: this.image,
-            caption: this.caption
+            caption: this.caption,
+            rating: this.rating,
+            ratingCount: this.ratingCount
         };
     }
 }
