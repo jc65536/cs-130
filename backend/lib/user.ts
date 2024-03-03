@@ -1,7 +1,13 @@
 import { convertTo24CharHex } from "../endpoints/utils";
+import { getClient } from "./db-lib/db-client";
 import { DbItem } from "./db-lib/db-item";
 import { COLLECTION } from "./enums";
-import { ObjectId } from "mongodb";
+import { ObjectId, WithId } from "mongodb";
+
+type UserDatabaseEntry = {
+    _id: ObjectId,
+    posts: String[],
+};
 
 export class User extends DbItem {
     posts: String[];
@@ -11,6 +17,13 @@ export class User extends DbItem {
         this.posts = [];
     }
 
+    public static async fromId(userObjectId: ObjectId) {
+        const dbClient = getClient();
+        const document: UserDatabaseEntry = await dbClient.findDbItem(COLLECTION.USERS, userObjectId);
+        const user = new User(userObjectId);
+        user.posts = document.posts;
+        return user;
+    }
     /**
      * 
      * @param userUID the user's google ID

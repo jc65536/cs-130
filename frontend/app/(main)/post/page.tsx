@@ -12,6 +12,7 @@ export default function Home() {
     const [tags, setTags] = useState<Tag[]>([]);
     const [image, setImage] = useState<File>();
     const [imagePreview, setImagePreview] = useState<string>();
+    // const [imageRes, setImageRes] = useState<string>();
 
     const closeEditor = (dotKey: number) => (f: (tags: Tag[]) => Tag[]) => {
         setTags(f(tags));
@@ -61,22 +62,14 @@ export default function Home() {
         // // Create FormData object to send the image
         const formData = new FormData();
         formData.append('image', image);
-        console.log(formData);
+
         try {
             uploadPhoto(formData);
         } catch (err) {
-            console.error("The error is: "+err);
+            console.error("The error is: " + err);
         }
     };
 
-    // if I uncomment the body of this, I get these weird errors
-    // Warning: An error occurred during hydration. 
-    //    The server HTML was replaced with client content in <#document>
-    // Uncaught Error: There was an error while hydrating. 
-    //    Because the error happened outside of a Suspense boundary, 
-    //    the entire root will switch to client rendering.
-    // Uncaught TypeError: process.exit is not a function
-    // The above error occurred in the <ServerRoot> component:
     const uploadPhoto = async (formData: FormData) => {
         try {
             const response = await fetch(backend_url('/posts/upload'), {
@@ -87,12 +80,28 @@ export default function Home() {
 
             if (response.ok) {
                 console.log('Image uploaded successfully');
+
+                // code to test that I can download the image back from the server
+                // const jsonRes = await response.json();
+                // console.log(jsonRes);
+                // const imageRes = await fetch(backend_url('/posts/image/'+jsonRes.filename), {
+                //     method: 'GET',
+                //     credentials: 'include'
+                // })
+                // console.log("Downloaded image");
+                // console.log(imageRes);
+
+                // const imgBlob = await imageRes.blob();
+                // const url = URL.createObjectURL(imgBlob);
+                // console.log(url);
+                // setImageRes(url);
+
             } else {
                 console.error('Failed to upload image');
             }
         } catch (error) {
             console.error('Error:', error);
-        } 
+        }
     }
 
     return (
@@ -101,6 +110,8 @@ export default function Home() {
                 <p>Blur my face</p>
                 <div>toggle button</div>
             </div>
+            {/* code to test that I can download the image back from the server and also display it */}
+            {/* {imageRes && <img src={imageRes} />} */}
             <div>Post image</div>
             <div>Post caption</div>
             <div>cancel button</div>
@@ -108,11 +119,9 @@ export default function Home() {
             <div>
                 <form onSubmit={handleSubmit}>
                     <input type="file" onChange={handleFileChange} />
-                    <>
-                        {imagePreview && 
-                            <NewPostPhoto imgSrc={imagePreview} {...dotProps} />
-                        }
-                    </>
+                    {imagePreview &&
+                        <NewPostPhoto imgSrc={imagePreview} {...dotProps} />
+                    }
                     <button type="submit">Post Outfit</button>
                 </form>
             </div>
