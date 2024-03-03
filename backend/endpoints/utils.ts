@@ -15,7 +15,7 @@ const CLIENT_ID = "121044225700-6gotpenj58iao2fo2qkm573h11c7hbof.apps.googleuser
  * @returns a 24 character hexadecimal string to use as the id for mongoDB
  * mongoDB requires a 24 character hexadecimal string as the document id
  */
-function convertTo24CharHex(s: String) {
+export function convertTo24CharHex(s: String) {
     const hash = crypto.createHash('sha256');
     hash.update(Buffer.from(s));
     const fullHash = hash.digest('hex');
