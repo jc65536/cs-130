@@ -1,4 +1,4 @@
-import { convertTo24CharHex } from "./convert-hex";
+import { convertTo24CharHex } from "../endpoints/utils";
 import { DbItem } from "./db-lib/db-item";
 import { COLLECTION } from "./enums";
 import { ObjectId } from "mongodb";
@@ -48,6 +48,15 @@ export class User extends DbItem {
      */
     public async addPost(postUID: string): Promise<void> {
         this.posts.push(postUID);
+    }
+
+    /**
+     * 
+     * @param user the user item
+     * @returns 
+     */
+    public static async getPosts(user: User): Promise<String[] | null> {
+        return user.posts;
     }
 
     /**

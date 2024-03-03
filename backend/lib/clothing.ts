@@ -1,4 +1,4 @@
-import { convertTo24CharHex } from "./convert-hex";
+import { convertTo24CharHex } from "../endpoints/utils";
 import { DbItem } from "./db-lib/db-item";
 import { COLLECTION } from "./enums";
 import { ObjectId } from "mongodb";

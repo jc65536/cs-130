@@ -1,4 +1,4 @@
-import { convertTo24CharHex } from "./convert-hex";
+import { convertTo24CharHex } from "../endpoints/utils";
 import { DbItem } from "./db-lib/db-item";
 import { COLLECTION } from "./enums";
 import { ObjectId } from "mongodb";
@@ -6,7 +6,7 @@ import { getClient } from "./db-lib/db-client";
 
 export class Post extends DbItem {
     clothes: String[];
-    image: String;
+    imageFilename: String;
     caption: String;
     rating: Number;
     ratingCount: Number;
@@ -20,10 +20,10 @@ export class Post extends DbItem {
      * @param tags string array of ids for Clothing class dbItem
      * @returns 
      */
-    constructor(id: ObjectId, userUID:String, image:String, caption:String, clothes:String[]) {
+    constructor(id: ObjectId, userUID:String, imageFilename:String, caption:String, clothes:String[]) {
         super(id, COLLECTION.POSTS)
         this.userUID = userUID;
-        this.image = image;
+        this.imageFilename = imageFilename;
         this.caption = caption;
         this.clothes = clothes;
         this.rating = 0;
@@ -56,8 +56,8 @@ export class Post extends DbItem {
     public async getClothes(): Promise<String[] | null> {
         return this.clothes;
     }
-    public async getImage(): Promise<String | null> {
-        return this.image;
+    public async getImageFilename(): Promise<String | null> {
+        return this.imageFilename;
     }
     public async getCaption(): Promise<String | null> {
         return this.caption;
@@ -72,8 +72,8 @@ export class Post extends DbItem {
     public async addClothes(clothingUID: string): Promise<void> {
         this.clothes.push(clothingUID);
     }
-    public async updateImage(newImage: string): Promise<void> {
-        this.image = newImage;
+    public async updateImageFilename(newImageFilename: string): Promise<void> {
+        this.imageFilename = newImageFilename;
     }
     public async updateCaption(newCaption: string): Promise<void> {
         this.caption = newCaption;
@@ -93,7 +93,7 @@ export class Post extends DbItem {
             ...entry,
             userUID: this.userUID,
             clothes: this.clothes,
-            image: this.image,
+            imageFilename: this.imageFilename,
             caption: this.caption,
             rating: this.rating,
             ratingCount: this.ratingCount

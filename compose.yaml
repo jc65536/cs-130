@@ -10,6 +10,8 @@ services:
       - ./backend:/backend
     environment:
       FRONTEND_HOST: "http://localhost:3000"
+      MONGODB_USER_PASSWORD: "oGTU3K4rKEaJyQmP"
+      SESSION_SECRET_KEY: 'ootd is amazing'
 
   frontend:
     image: node:20

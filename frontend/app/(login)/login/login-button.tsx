@@ -8,8 +8,9 @@ export default function LoginButton(props: { postUrl: string }) {
         console.log(credential);
         fetch(props.postUrl, {
             method: "POST",
-            headers: { "Authorization": `Bearer ${credential}` }
-        });
+            headers: { "Authorization": `Bearer ${credential}` },
+            credentials: "include",
+        }).then(_ => fetch("http://localhost:8000", { credentials: "include" }));
     };
 
     return (

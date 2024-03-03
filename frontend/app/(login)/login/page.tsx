@@ -4,11 +4,11 @@ import LoginButton from "./login-button";
 
 export default function Login() {
   return (
-    <main id="homepage">
+    <main className="homepage">
       <h1 id="title">OOTD</h1>
 
       <GoogleOAuthProvider clientId={OAUTH_CLIENT_ID}>
-        <LoginButton postUrl={backend_url("/user")} />
+        <LoginButton postUrl={backend_url("/login")} />
       </GoogleOAuthProvider>
 
       <p>Some random text</p>

@@ -1,11 +1,46 @@
-@import url("@/style/nav-bar.css");
-
-#homepage {
+main {
   display: flex;
   flex-direction: column;
   align-items: center;
+  /* max-width:360px; */
 }
 
 #title {
   text-align: center;
+}
+
+.tag {
+  height: 20px;
+  width: 20px;
+  border-radius: 100%;
+  background-color: #ff0000;
+  transform: translateX(-50%) translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: absolute;
+  box-shadow: 0px 4px 4px #00000080;
+}
+
+.tooltip {
+  position: relative;
+  background-color: #000000a0;
+  color: #ffffff;
+  text-align: center;
+  width: max-content;
+  padding: 4px 6px;
+  border-radius: 6px;
+  transform: translateY(-110%);
+  font: 0.8rem sans-serif;
+}
+
+.new-post-photo {
+  border: 1px solid red;
+  position: relative;
+  display: flex;
+  max-width: 90%;
+}
+
+.new-post-photo > img {
+  max-width: 100%;
 }
