@@ -22,7 +22,7 @@ services:
     volumes:
       - ./frontend:/frontend
     environment:
-      BACKEND_HOST: "http://localhost:8000"
+      NEXT_PUBLIC_BACKEND_HOST: "http://localhost:8000"
 
   mongo:
     image: mongo

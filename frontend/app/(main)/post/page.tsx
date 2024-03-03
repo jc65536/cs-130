@@ -78,21 +78,21 @@ export default function Home() {
     // Uncaught TypeError: process.exit is not a function
     // The above error occurred in the <ServerRoot> component:
     const uploadPhoto = async (formData: FormData) => {
-        // try {
-        //     const response = await fetch(backend_url('/posts/upload'), {
-        //         method: 'POST',
-        //         credentials: 'include',
-        //         body: formData,
-        //     });
+        try {
+            const response = await fetch(backend_url('/posts/upload'), {
+                method: 'POST',
+                credentials: 'include',
+                body: formData,
+            });
 
-        //     if (response.ok) {
-        //         console.log('Image uploaded successfully');
-        //     } else {
-        //         console.error('Failed to upload image');
-        //     }
-        // } catch (error) {
-        //     console.error('Error:', error);
-        // } 
+            if (response.ok) {
+                console.log('Image uploaded successfully');
+            } else {
+                console.error('Failed to upload image');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        } 
     }
 
     return (
