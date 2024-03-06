@@ -4,6 +4,16 @@ import { COLLECTION } from "./enums";
 import { ObjectId } from "mongodb";
 import { getClient } from "./db-lib/db-client";
 
+type ClothingDatabaseEntry = {
+    tags: String[],
+    reusedCount: Number,
+    rating: Number,
+    ratingCount: Number,
+    cost: Number,
+    onSale: Boolean,
+    userUID: String
+}
+
 export class Clothing extends DbItem {
     tags: String[];
     reusedCount: Number;
@@ -18,15 +28,29 @@ export class Clothing extends DbItem {
      * @param 
      * @returns 
      */
-    constructor(id: ObjectId, userUID:String, tags:String[], reusedCount:Number, cost:Number, onSale:Boolean) {
+    constructor(id: ObjectId) {
         super(id, COLLECTION.POSTS)
-        this.userUID = userUID;
-        this.tags = tags;
-        this.reusedCount = reusedCount;
+        this.userUID = '';
+        this.tags = [];
+        this.reusedCount = 0;
         this.rating = 0;
         this.ratingCount = 0;
-        this.cost = cost;
-        this.onSale = onSale;
+        this.cost = 0;
+        this.onSale = false;
+    }
+
+    public static async fromId(clothingObjectId: ObjectId) {
+        const dbClient = getClient();
+        const document: ClothingDatabaseEntry = await dbClient.findDbItem(COLLECTION.CLOTHES, clothingObjectId);
+        const clothing = new Clothing(clothingObjectId);
+        clothing.tags = document.tags;
+        clothing.reusedCount = document.reusedCount;
+        clothing.cost = document.cost;
+        clothing.rating = document.rating;
+        clothing.ratingCount = document.ratingCount;
+        clothing.onSale = document.onSale;
+        clothing.userUID = document.userUID;
+        return clothing;
     }
 
     /**
@@ -39,9 +63,15 @@ export class Clothing extends DbItem {
         const objectId = new ObjectId(convertTo24CharHex(userUID));
         // find the user
         //add the object under the users post string
-        const dbClient = await getClient();
+        const dbClient = getClient();
         const post = await dbClient.findDbItem(COLLECTION.POSTS, objectId);
-        const newClothing = new Clothing(new ObjectId(), userUID, tags, reusedCount, cost, onSale);
+        const newClothing = new Clothing(new ObjectId());
+        newClothing.tags = tags;
+        newClothing.reusedCount = reusedCount;
+        newClothing.rating = rating;
+        newClothing.ratingCount = ratingCount;
+        newClothing.cost = cost;
+        newClothing.onSale = onSale;
         await post.addClothing(newClothing.id.toString());
         return newClothing;
     }

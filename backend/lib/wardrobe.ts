@@ -3,6 +3,12 @@ import { COLLECTION } from "./enums";
 import { ObjectId } from "mongodb";
 import { getClient } from "./db-lib/db-client";
 
+type WardrobeDatabaseEntry = {
+    _id: ObjectId,
+    posts: String[],
+    clothes:String[]
+};
+
 export class Wardrobe extends DbItem {
     clothes: String[];
     posts: String[];
@@ -13,13 +19,23 @@ export class Wardrobe extends DbItem {
      * @param 
      * @returns 
      */
-    constructor(id: ObjectId, userUID:String, clothes:String[], posts:String[]) {
+    constructor(id: ObjectId) {
         super(id, COLLECTION.POSTS)
-        this.userUID = userUID;
-        this.clothes = clothes;
-        this.posts = posts;
+        this.userUID = '';
+        this.clothes = [];
+        this.posts = [];
     }
 
+    public static async fromId(userObjectId: ObjectId) {
+        const dbClient = getClient();
+        const user = await dbClient.findDbItem(COLLECTION.USERS, userObjectId);
+        const wardrobeObjId =  new ObjectId(user.wardrobe);
+        const document: WardrobeDatabaseEntry = await dbClient.findDbItem(COLLECTION.WARDROBE, wardrobeObjId);
+        const wardrobe = new Wardrobe(wardrobeObjId);
+        wardrobe.posts = document.posts;
+        wardrobe.clothes = document.clothes;
+        return wardrobe;
+    }
     /**
      * 
      * @param userUID the user's google ID
@@ -27,7 +43,17 @@ export class Wardrobe extends DbItem {
      * @returns 
      */
     public static async create(userUID: string): Promise<Wardrobe | null> {
-        return new Wardrobe(new ObjectId(), userUID, [], []);;
+        const newWardrobe = new Wardrobe(new ObjectId());
+        newWardrobe.userUID = userUID;
+        return newWardrobe;
+    }
+
+    public async getClothes(): Promise<String[] | null> {
+        return this.clothes;
+    }
+
+    public async getPosts(): Promise<String[] | null> {
+        return this.posts;
     }
     
 

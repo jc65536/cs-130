@@ -11,6 +11,7 @@ const connect_mongodb_session_1 = __importDefault(require("connect-mongodb-sessi
 const login_endpoints_1 = require("./endpoints/login-endpoints");
 const utils_1 = require("./endpoints/utils");
 const db_client_1 = require("./lib/db-lib/db-client");
+const posts_endpoints_1 = require("./endpoints/posts-endpoints");
 const SESSION_SECRET_KEY = process.env["SESSION_SECRET_KEY"] ?? "";
 const MongoDBStore = (0, connect_mongodb_session_1.default)(express_session_1.default);
 const store = new MongoDBStore({
@@ -38,6 +39,7 @@ app.get("/", (req, res) => {
 });
 app.use("/login", login_endpoints_1.login_router);
 app.use("/user", user_endpoints_1.user_router);
+app.use("/posts", posts_endpoints_1.posts_router);
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`);
 });

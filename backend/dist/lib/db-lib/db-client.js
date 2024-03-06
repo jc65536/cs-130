@@ -69,7 +69,7 @@ class DbClient {
      *
      * @param id the id of the document
      * @param collectionName the collection to query from
-     * @returns the soda document associated with the query
+     * @returns the document associated with the query
      */
     async findDbItem(collectionName, id) {
         const collection = await this.openCollection(collectionName);

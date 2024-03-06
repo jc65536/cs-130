@@ -1,8 +1,15 @@
 import { convertTo24CharHex } from "../endpoints/utils";
+import { getClient } from "./db-lib/db-client";
 import { DbItem } from "./db-lib/db-item";
 import { COLLECTION } from "./enums";
-import { ObjectId } from "mongodb";
+import { ObjectId, WithId } from "mongodb";
 import { Wardrobe } from "./wardrobe";
+
+type UserDatabaseEntry = {
+    _id: ObjectId,
+    posts: String[],
+    wardrobe: String
+};
 
 export class User extends DbItem {
     posts: String[];
@@ -15,6 +22,14 @@ export class User extends DbItem {
         this.wardrobe = '';
     }
 
+    public static async fromId(userObjectId: ObjectId) {
+        const dbClient = getClient();
+        const document: UserDatabaseEntry = await dbClient.findDbItem(COLLECTION.USERS, userObjectId);
+        const user = new User(userObjectId);
+        user.posts = document.posts;
+        user.wardrobe = document.wardrobe;
+        return user;
+    }
     /**
      * 
      * @param userUID the user's google ID
@@ -51,15 +66,6 @@ export class User extends DbItem {
     }
 
     /**
-     * 
-     * @param user the user item
-     * @returns 
-     */
-    public static async getPosts(user: User): Promise<String[] | null> {
-        return user.posts;
-    }
-
-    /**
        * Converts the object into a form for the database
        * @returns a database entry
        */
@@ -68,6 +74,7 @@ export class User extends DbItem {
         return {
             ...entry,
             posts: this.posts,
+            wardrobe: this.wardrobe
         };
     }
 }

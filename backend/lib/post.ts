@@ -4,6 +4,16 @@ import { COLLECTION } from "./enums";
 import { ObjectId } from "mongodb";
 import { getClient } from "./db-lib/db-client";
 
+type PostDatabaseEntry = {
+    _id: ObjectId,
+    clothes: String[],
+    imageFilename: String,
+    caption: String,
+    rating: Number,
+    ratingCount: Number,
+    userUID: String
+};
+
 export class Post extends DbItem {
     clothes: String[];
     imageFilename: String;
@@ -20,14 +30,27 @@ export class Post extends DbItem {
      * @param tags string array of ids for Clothing class dbItem
      * @returns 
      */
-    constructor(id: ObjectId, userUID:String, imageFilename:String, caption:String, clothes:String[]) {
+    constructor(id: ObjectId) {
         super(id, COLLECTION.POSTS)
-        this.userUID = userUID;
-        this.imageFilename = imageFilename;
-        this.caption = caption;
-        this.clothes = clothes;
+        this.userUID = '';
+        this.imageFilename = '';
+        this.caption = '';
+        this.clothes = [];
         this.rating = 0;
         this.ratingCount = 0;
+    }
+
+    public static async fromId(postObjectId: ObjectId) {
+        const dbClient = getClient();
+        const document: PostDatabaseEntry = await dbClient.findDbItem(COLLECTION.POSTS, postObjectId);
+        const post = new Post(postObjectId);
+        post.clothes = document.clothes;
+        post.imageFilename = document.imageFilename;
+        post.caption = document.caption;
+        post.rating = document.rating;
+        post.ratingCount = document.ratingCount;
+        post.userUID = document.userUID;
+        return post;
     }
 
     /**
@@ -40,11 +63,14 @@ export class Post extends DbItem {
         const objectId = new ObjectId(convertTo24CharHex(userUID));
         // find the user
         //add the object under the users post string
-        const dbClient = await getClient();
+        const dbClient = getClient();
         const user = await dbClient.findDbItem(COLLECTION.USERS, objectId);
-        const newPost = new Post(new ObjectId(), userUID, image, caption, clothes);
+        const newPost = new Post(new ObjectId());
+        newPost.imageFilename = image;
+        newPost.caption = caption;
+        newPost.clothes = clothes;
+        newPost.userUID = userUID;
         await user.addPost(newPost.id.toString());
-
         return newPost;
     }
 
@@ -69,13 +95,13 @@ export class Post extends DbItem {
         return this.ratingCount;
     }
 
-    public async addClothes(clothingUID: string): Promise<void> {
-        this.clothes.push(clothingUID);
+    public async addClothes(clothingUID: String[]): Promise<void> {
+        this.clothes.concat(clothingUID);
     }
-    public async updateImageFilename(newImageFilename: string): Promise<void> {
+    public async updateImageFilename(newImageFilename: String): Promise<void> {
         this.imageFilename = newImageFilename;
     }
-    public async updateCaption(newCaption: string): Promise<void> {
+    public async updateCaption(newCaption: String): Promise<void> {
         this.caption = newCaption;
     }
     public async updateRating(newRating: Number): Promise<void> {

@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.User = void 0;
 const utils_1 = require("../endpoints/utils");
+const db_client_1 = require("./db-lib/db-client");
 const db_item_1 = require("./db-lib/db-item");
 const enums_1 = require("./enums");
 const mongodb_1 = require("mongodb");
@@ -14,6 +15,14 @@ class User extends db_item_1.DbItem {
         super(id, enums_1.COLLECTION.USERS);
         this.posts = [];
         this.wardrobe = '';
+    }
+    static async fromId(userObjectId) {
+        const dbClient = (0, db_client_1.getClient)();
+        const document = await dbClient.findDbItem(enums_1.COLLECTION.USERS, userObjectId);
+        const user = new User(userObjectId);
+        user.posts = document.posts;
+        user.wardrobe = document.wardrobe;
+        return user;
     }
     /**
      *
@@ -48,14 +57,6 @@ class User extends db_item_1.DbItem {
         this.posts.push(postUID);
     }
     /**
-     *
-     * @param user the user item
-     * @returns
-     */
-    static async getPosts(user) {
-        return user.posts;
-    }
-    /**
        * Converts the object into a form for the database
        * @returns a database entry
        */
@@ -64,6 +65,7 @@ class User extends db_item_1.DbItem {
         return {
             ...entry,
             posts: this.posts,
+            wardrobe: this.wardrobe
         };
     }
 }
