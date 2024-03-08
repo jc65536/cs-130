@@ -5,6 +5,7 @@ import { ObjectId } from "mongodb";
 import { User } from "../lib/user";
 import { DbClient, getClient } from "../lib/db-lib/db-client";
 import { COLLECTION } from "../lib/enums";
+import session, { SessionOptions } from 'express-session';
 
 const client = new OAuth2Client();
 const CLIENT_ID = "121044225700-6gotpenj58iao2fo2qkm573h11c7hbof.apps.googleusercontent.com";
@@ -108,8 +109,7 @@ export async function validateUser(req: Request, res: Response, next: NextFuncti
         const dbClient: DbClient = await getClient();
         const document = await dbClient.findDbItem(COLLECTION.USERS, userObjId);
         if (document == null) {
-            const user = new User(userObjId);
-            await user.writeToDatabase();
+            const user = await User.create(userObjId);
         }
         req.session.userID = userid;
         req.session.userObjectId = userIdHash;
@@ -128,4 +128,9 @@ export async function validateUser(req: Request, res: Response, next: NextFuncti
         console.log("session contains user id: " + req.session.userID+", objectID: "+req.session.userObjectId);
         next();
     }
+}
+
+
+export async function createNewPost(req: Request, res: Response, next:NextFunction) {
+    const authHeader = req.headers.authorization;
 }

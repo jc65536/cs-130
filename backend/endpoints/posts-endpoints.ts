@@ -7,6 +7,7 @@ dotenv.config();
 
 import { getClient, uri } from '../lib/db-lib/db-client';
 import { User } from '../lib/user';
+import { Post } from "../lib/post"
 
 
 const storage = new GridFsStorage({
@@ -35,10 +36,12 @@ export const posts_router = Router();
 // the filename to use when downloading the image from the server will be in the filename property in the response
 posts_router.post("/upload", upload.single('image'), async (req: Request, res: Response) => {
     const user = await User.fromId(new ObjectId(req.session.userObjectId));
-    if (req.file?.filename) {
-        user.posts.push(req.file?.filename);
+    // TODO: change this to create a new Posts object and add the post id to User
+    if (req.file?.filename && req.session.userID && req.session.userObjectId) {
+        // user.posts.push(req.file?.filename);
+        const post = await Post.create(new ObjectId(req.session.userObjectId), req.file.filename, "", []);
         console.log("added new post: " + req.file.filename);
-        await user.writeToDatabase();
+        // await user.writeToDatabase();
     }
     console.log(user.toJson());
     res.status(200).json(req.file);
@@ -75,4 +78,30 @@ posts_router.get('/image/:filename', (req, res) => {
         })
     }
 
+});
+
+//get post's rating
+posts_router.get("/:postId/rating",async (req: Request, res: Response) => {
+    const post = await Post.fromId(new ObjectId(req.params["postId"]));
+    res.status(200).json(post.rating);
+});
+
+//update post's rating with single new rating
+posts_router.post("/:postId/rating", async (req: Request, res: Response) => {
+    const post = await Post.fromId(new ObjectId(req.params["postId"]));
+    post.updateRating(+req.body.rating);
+    res.status(200).json();
+});
+
+//gets clothes from post
+posts_router.get("/:postId/clothes", async (req: Request, res: Response) => {
+    const post = await Post.fromId(new ObjectId(req.params["postId"]));
+    res.status(200).json(post.clothes);
+});
+
+//add clothes to post
+posts_router.post("/:postId/clothes", async (req: Request, res: Response) => {
+    const post = await Post.fromId(new ObjectId(req.params["postId"]));
+    post.addClothes(req.body.clothes); //expects array
+    res.status(200).json();
 });
