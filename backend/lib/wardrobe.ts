@@ -5,14 +5,15 @@ import { getClient } from "./db-lib/db-client";
 
 type WardrobeDatabaseEntry = {
     _id: ObjectId,
-    posts: String[],
-    clothes:String[]
+    posts: ObjectId[],
+    clothes: ObjectId[],
+    userObjectId: ObjectId,
 };
 
 export class Wardrobe extends DbItem {
-    clothes: String[];
-    posts: String[];
-    userUID: String;
+    clothes: ObjectId[];
+    posts: ObjectId[];
+    userObjectId: ObjectId;
 
     /**
      * 
@@ -20,12 +21,17 @@ export class Wardrobe extends DbItem {
      * @returns 
      */
     constructor(id: ObjectId) {
-        super(id, COLLECTION.POSTS)
-        this.userUID = '';
+        super(id, COLLECTION.WARDROBE)
+        this.userObjectId = new ObjectId();
         this.clothes = [];
         this.posts = [];
     }
 
+    /**
+     * Get wardrobe from userObjectId because each user has one unique wardrobe
+     * @param userObjectId 
+     * @returns 
+     */
     public static async fromId(userObjectId: ObjectId) {
         const dbClient = getClient();
         const user = await dbClient.findDbItem(COLLECTION.USERS, userObjectId);
@@ -38,21 +44,23 @@ export class Wardrobe extends DbItem {
     }
     /**
      * 
-     * @param userUID the user's google ID
+     * @param userObjectID the user's google ID
      * should be retrieved from Google API using the google OAuth token
+     * this is usually called by User.create()
      * @returns 
      */
-    public static async create(userUID: string): Promise<Wardrobe | null> {
+    public static async create(userObjectId: ObjectId): Promise<Wardrobe | null> {
         const newWardrobe = new Wardrobe(new ObjectId());
-        newWardrobe.userUID = userUID;
+        newWardrobe.userObjectId = userObjectId;
+        await newWardrobe.writeToDatabase();
         return newWardrobe;
     }
 
-    public async getClothes(): Promise<String[] | null> {
+    public async getClothes(): Promise<ObjectId[] | null> {
         return this.clothes;
     }
 
-    public async getPosts(): Promise<String[] | null> {
+    public async getPosts(): Promise<ObjectId[] | null> {
         return this.posts;
     }
     
@@ -67,7 +75,7 @@ export class Wardrobe extends DbItem {
             ...entry,
             clothes: this.clothes,
             posts: this.posts,
-            userUID: this.userUID
+            userObjectId: this.userObjectId
         };
     }
 }

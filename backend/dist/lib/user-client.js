@@ -1,20 +1,19 @@
 "use strict";
+// import { getClient } from "./db-lib/db-client";
+// import { COLLECTION } from "./enums";
+// import { ObjectId } from "mongodb";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UserClient = void 0;
-const db_client_1 = require("./db-lib/db-client");
-const enums_1 = require("./enums");
-class UserClient {
-    static dbClient = (0, db_client_1.getClient)();
-    /**
-     *
-     * @param userUID the user's ID
-     * @returns
-     */
-    static async getPosts(userUID) {
-        const dbClient = await this.dbClient;
-        const user = await dbClient.findDbItem(enums_1.COLLECTION.USERS, userUID);
-        const posts = await user.getPosts();
-        return posts;
-    }
-}
-exports.UserClient = UserClient;
+// export class UserClient {
+//     private static dbClient = getClient();
+//     /**
+//      * 
+//      * @param userUID the user's ID
+//      * @returns 
+//      */
+//         public static async getPosts( userUID: ObjectId ): Promise<String | null> {
+//             const dbClient = await this.dbClient;
+//             const user = await dbClient.findDbItem(COLLECTION.USERS, userUID);
+//             const posts = await user.getPosts();
+//             return posts;
+//         }
+// }

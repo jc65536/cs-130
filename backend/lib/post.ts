@@ -3,36 +3,37 @@ import { DbItem } from "./db-lib/db-item";
 import { COLLECTION } from "./enums";
 import { ObjectId } from "mongodb";
 import { getClient } from "./db-lib/db-client";
+import { User } from "./user";
 
-type PostDatabaseEntry = {
+export type PostDatabaseEntry = {
     _id: ObjectId,
-    clothes: String[],
+    clothes: ObjectId[],
     imageFilename: String,
     caption: String,
-    rating: Number,
-    ratingCount: Number,
-    userUID: String
+    rating: number,
+    ratingCount: number,
+    userObjectId: ObjectId
 };
 
 export class Post extends DbItem {
-    clothes: String[];
+    clothes: ObjectId[];
     imageFilename: String;
     caption: String;
-    rating: Number;
-    ratingCount: Number;
-    userUID: String;
+    rating: number;
+    ratingCount: number;
+    userObjectId: ObjectId | null;
 
     /**
      * 
      * @param id ObjectId from mongo
-     * @param image idk figure out later placeholder
+     * @param imageFilename string
      * @param caption String
      * @param tags string array of ids for Clothing class dbItem
      * @returns 
      */
     constructor(id: ObjectId) {
         super(id, COLLECTION.POSTS)
-        this.userUID = '';
+        this.userObjectId = null;
         this.imageFilename = '';
         this.caption = '';
         this.clothes = [];
@@ -49,7 +50,7 @@ export class Post extends DbItem {
         post.caption = document.caption;
         post.rating = document.rating;
         post.ratingCount = document.ratingCount;
-        post.userUID = document.userUID;
+        post.userObjectId = new ObjectId(document.userObjectId);
         return post;
     }
 
@@ -57,20 +58,22 @@ export class Post extends DbItem {
      * 
      * @param userUID the user's google ID
      * should be retrieved from Google API using the google OAuth token
-     * @returns 
+     * also adds the post to the user's posts list
+     * @returns the new Post object
      */
-    public static async create(userUID: string, image:String, caption:String, clothes:String[]): Promise<Post | null> {
-        const objectId = new ObjectId(convertTo24CharHex(userUID));
+    public static async create(userObjectId: ObjectId, image:String, caption:String, clothes:ObjectId[]): Promise<Post | null> {
         // find the user
         //add the object under the users post string
-        const dbClient = getClient();
-        const user = await dbClient.findDbItem(COLLECTION.USERS, objectId);
         const newPost = new Post(new ObjectId());
         newPost.imageFilename = image;
         newPost.caption = caption;
         newPost.clothes = clothes;
-        newPost.userUID = userUID;
-        await user.addPost(newPost.id.toString());
+        newPost.userObjectId = userObjectId;
+
+        const user = await User.fromId(userObjectId);
+        await user.addPost(newPost.id);
+        await user.writeToDatabase();
+        await newPost.writeToDatabase();
         return newPost;
     }
 
@@ -79,7 +82,7 @@ export class Post extends DbItem {
      * @param postUID the user ID
      * @returns 
      */
-    public async getClothes(): Promise<String[] | null> {
+    public async getClothes(): Promise<ObjectId[] | null> {
         return this.clothes;
     }
     public async getImageFilename(): Promise<String | null> {
@@ -88,14 +91,14 @@ export class Post extends DbItem {
     public async getCaption(): Promise<String | null> {
         return this.caption;
     }
-    public async getRating(): Promise<Number | null> {
+    public async getRating(): Promise<number | null> {
         return this.rating;
     }
-    public async getRatingCount(): Promise<Number | null> {
+    public async getRatingCount(): Promise<number | null> {
         return this.ratingCount;
     }
 
-    public async addClothes(clothingUID: String[]): Promise<void> {
+    public async addClothes(clothingUID: ObjectId[]): Promise<void> {
         this.clothes.concat(clothingUID);
     }
     public async updateImageFilename(newImageFilename: String): Promise<void> {
@@ -104,9 +107,10 @@ export class Post extends DbItem {
     public async updateCaption(newCaption: String): Promise<void> {
         this.caption = newCaption;
     }
-    public async updateRating(newRating: Number): Promise<void> {
-        this.ratingCount = +this.ratingCount + 1;
-        this.rating = (+this.rating + +newRating) / (+this.ratingCount);
+    // TODO: double check this, this might be wrong
+    public async updateRating(newRating: number): Promise<void> {
+        this.rating = (this.rating * this.ratingCount + newRating) / (this.ratingCount+1);
+        this.ratingCount++;
     }
 
     /**
@@ -117,7 +121,7 @@ export class Post extends DbItem {
         const { collectionName: _c, ...entry } = this;
         return {
             ...entry,
-            userUID: this.userUID,
+            userObjectId: this.userObjectId,
             clothes: this.clothes,
             imageFilename: this.imageFilename,
             caption: this.caption,

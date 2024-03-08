@@ -7,19 +7,19 @@ import { Wardrobe } from "./wardrobe";
 
 type UserDatabaseEntry = {
     _id: ObjectId,
-    posts: String[],
-    wardrobe: String
+    posts: ObjectId[], // the ids of the Post objects
+    wardrobe: ObjectId
 };
 
 export class User extends DbItem {
-    posts: String[];
-    wardrobe: String;
+    posts: ObjectId[];
+    wardrobe: ObjectId | null;
     // private dbClient = getClient();
 
     constructor(id: ObjectId) {
         super(id, COLLECTION.USERS)
         this.posts = [];
-        this.wardrobe = '';
+        this.wardrobe = null;
     }
 
     public static async fromId(userObjectId: ObjectId) {
@@ -32,36 +32,34 @@ export class User extends DbItem {
     }
     /**
      * 
-     * @param userUID the user's google ID
+     * @param userObjectId the user's google ID
      * should be retrieved from Google API using the google OAuth token
      * @returns 
      */
-    public static async create(userUID: string): Promise<User | null> {
-        const objectId = convertTo24CharHex(userUID);
+    public static async create(userObjectId: ObjectId): Promise<User | null> {
         //create wardrobe for the user
-        const newWardrobe = await Wardrobe.create(userUID);
-        const wardrobeUID = newWardrobe != null ? newWardrobe?.id.toString() : '';
-        const newUser = new User(new ObjectId(objectId));
+        const newWardrobe = await Wardrobe.create(userObjectId);
+        const wardrobeUID = newWardrobe != null ? newWardrobe?.id : null;
+        const newUser = new User(userObjectId);
         newUser.wardrobe = wardrobeUID;
+        await newUser.writeToDatabase();
         return newUser;
     }
 
     /**
      * 
-     * @param userUID the user ID
      * @returns all posts of the user in String format
      */
-    public async getPosts(): Promise<String[] | null> {
+    public async getPosts(): Promise<ObjectId[] | null> {
         return this.posts;
     }
 
     /**
      * 
-     * @param userUID the user ID
      * @param postUID the new postUID to add to the post String of User
      * @returns void
      */
-    public async addPost(postUID: string): Promise<void> {
+    public async addPost(postUID: ObjectId): Promise<void> {
         this.posts.push(postUID);
     }
 

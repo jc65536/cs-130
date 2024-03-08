@@ -109,8 +109,7 @@ export async function validateUser(req: Request, res: Response, next: NextFuncti
         const dbClient: DbClient = await getClient();
         const document = await dbClient.findDbItem(COLLECTION.USERS, userObjId);
         if (document == null) {
-            const user = new User(userObjId);
-            await user.writeToDatabase();
+            const user = await User.create(userObjId);
         }
         req.session.userID = userid;
         req.session.userObjectId = userIdHash;

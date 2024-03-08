@@ -3,26 +3,27 @@ import { DbItem } from "./db-lib/db-item";
 import { COLLECTION } from "./enums";
 import { ObjectId } from "mongodb";
 import { getClient } from "./db-lib/db-client";
+import {Post, PostDatabaseEntry} from './post';
 
 type ClothingDatabaseEntry = {
+    _id: ObjectId,
     tags: String[],
-    reusedCount: Number,
-    rating: Number,
-    ratingCount: Number,
-    cost: Number,
+    reusedCount: number,
+    rating: number,
+    ratingCount: number,
+    cost: number,
     onSale: Boolean,
-    userUID: String
+    userObjectId: ObjectId
 }
 
 export class Clothing extends DbItem {
     tags: String[];
-    reusedCount: Number;
-    rating: Number;
-    ratingCount: Number;
-    cost: Number;
+    reusedCount: number;
+    rating: number;
+    ratingCount: number;
+    cost: number;
     onSale: Boolean;
-    userUID: String;
-
+    userObjectId: ObjectId;
     /**
      * 
      * @param 
@@ -30,7 +31,7 @@ export class Clothing extends DbItem {
      */
     constructor(id: ObjectId) {
         super(id, COLLECTION.POSTS)
-        this.userUID = '';
+        this.userObjectId = new ObjectId();
         this.tags = [];
         this.reusedCount = 0;
         this.rating = 0;
@@ -49,7 +50,7 @@ export class Clothing extends DbItem {
         clothing.rating = document.rating;
         clothing.ratingCount = document.ratingCount;
         clothing.onSale = document.onSale;
-        clothing.userUID = document.userUID;
+        clothing.userObjectId = document.userObjectId;
         return clothing;
     }
 
@@ -59,12 +60,9 @@ export class Clothing extends DbItem {
      * should be retrieved from Google API using the google OAuth token
      * @returns 
      */
-    public static async create(userUID: string, tags:String[], reusedCount:Number, rating:Number, ratingCount:Number, cost:Number, onSale:Boolean): Promise<Clothing | null> {
-        const objectId = new ObjectId(convertTo24CharHex(userUID));
+    public static async create(postObjectId: ObjectId, tags:String[], reusedCount:number, rating:number, ratingCount:number, cost:number, onSale:Boolean): Promise<Clothing | null> {
         // find the user
         //add the object under the users post string
-        const dbClient = getClient();
-        const post = await dbClient.findDbItem(COLLECTION.POSTS, objectId);
         const newClothing = new Clothing(new ObjectId());
         newClothing.tags = tags;
         newClothing.reusedCount = reusedCount;
@@ -72,10 +70,11 @@ export class Clothing extends DbItem {
         newClothing.ratingCount = ratingCount;
         newClothing.cost = cost;
         newClothing.onSale = onSale;
-        await post.addClothing(newClothing.id.toString());
+        const post = await Post.fromId(postObjectId);
+        await post.addClothes([newClothing.id]);
         return newClothing;
     }
-    public async getReusedCount(): Promise<Number | null> {
+    public async getReusedCount(): Promise<number | null> {
         return this.ratingCount;
     }
     public async getCost(): Promise<Number | null> {
@@ -100,16 +99,16 @@ export class Clothing extends DbItem {
     public async toggleOnSale(): Promise<void> {
         this.onSale = !this.onSale;
     }
-    public async updateCost(cost: Number): Promise<void> {
+    public async updateCost(cost: number): Promise<void> {
         this.cost = cost;
     }
-    public async updateReusedCount(count: Number = -1): Promise<void> {
+    public async updateReusedCount(count: number = -1): Promise<void> {
         if (count == -1) this.reusedCount = +this.reusedCount + 1;
         else this.reusedCount = count;
     }
-    public async updateRating(newRating: Number): Promise<void> {
-        this.ratingCount = +this.ratingCount + 1;
-        this.rating = (+this.rating + +newRating) / (+this.ratingCount);
+    public async updateRating(newRating: number): Promise<void> {
+        this.rating = (this.rating * this.ratingCount + newRating) / (this.ratingCount+1);
+        this.ratingCount++;
     }
 
     /**
@@ -120,7 +119,7 @@ export class Clothing extends DbItem {
         const { collectionName: _c, ...entry } = this;
         return {
             ...entry,
-            userUID: this.userUID,
+            userObjectId: this.userObjectId,
             tags: this.tags,
             reusedCount: this.reusedCount,
             rating: this.rating,
