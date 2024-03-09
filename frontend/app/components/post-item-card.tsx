@@ -22,22 +22,28 @@ export default function PostItemCard({ id, caption }: Post) {
 
     return (
         <div className={styles.card}>
-        <figure>
-            <Link href="/posts">
-                <Image
-                // src={`https://picsum.photos/seed/${id}/120/160`}
-                src={`https://picsum.photos/id/${id}/120/160`}
-                alt={caption}
-                width={120}
-                height={160}
-                />
-            </Link>
-        </figure>
+        <div className={styles.cardImgContain}>
+            <figure>
+                <Link href="/posts">
+                    <Image
+                    // src={`https://picsum.photos/seed/${id}/120/160`}
+                    src={`https://picsum.photos/id/${id}/120/160`}
+                    alt={caption}
+                    width={120}
+                    height={160}
+                    />
+                </Link>
+            </figure>
+        </div>
         <div className={styles.cardbody}>
+            <div className={styles.topContain}>
+                <button className={`${styles.likeButton}`}>
+                    <div className={`${styles.heart}`}></div>
+                    <span>Like</span>
+                </button>
+                <p className={styles.username}>Username</p>
+            </div>
             <p className={styles.caption}>{caption}</p>
-            <button className={`${styles.likeButton}`}>
-                Like
-            </button>
         </div>
         </div>
     );
