@@ -1,4 +1,4 @@
-import { MouseEventHandler, ReactElement, useState } from "react";
+import { MouseEventHandler, ReactElement, useEffect, useState } from "react";
 import TagDot, { TagDotProps_ } from "./tag";
 
 export type NewPostPhotoProps = TagDotProps_ & {
@@ -12,6 +12,10 @@ const genKey = (() => {
 
 export default function NewPostPhoto(props: NewPostPhotoProps) {
     const [dots, setDots] = useState<ReactElement[]>([]);
+
+    useEffect(() => {
+        setDots([]);
+    }, [props.imgSrc]);
 
     const handleClick: MouseEventHandler = e => {
         const rect = e.currentTarget.getBoundingClientRect();

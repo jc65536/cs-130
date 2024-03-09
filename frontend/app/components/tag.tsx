@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { TagEditorProps } from "./tag-editor";
-import { fn } from "@/app/util";
+import { fn } from "../util";
 
 export type IncompleteTag = {
     id: number | null,
@@ -33,6 +33,10 @@ export default function TagDot(props: TagDotProps) {
 
     const [tag, setTag] = useState<IncompleteTag>({ name: "", id: null });
 
+    const rmTag = isComplete(tag)
+        ? props.rmTag(tag)
+        : (x: Tag[]) => x;
+
     const editorProps: TagEditorProps = {
         ...props,
         tooltip: tag.name,
@@ -40,18 +44,13 @@ export default function TagDot(props: TagDotProps) {
             setTag({ ...tag, name: tooltip });
             props.openEditor({ ...editorProps, tooltip });
         },
-        addTag: tag => fn(props.addTag(tag)).before(_ => {
-            complete.current = true;
-            setTag(tag);
-        }),
-        rmTag: isComplete(tag)
-            ? fn(props.rmTag(tag)).before(_ => {
-                complete.current = false;
-                setTag({ name: "", id: null });
-            })
-            : x => x,
+        rmTag,
+        addTag: fn(props.addTag)
+            .before(setTag)
+            .pipe(fn(rmTag).pipe)
+            .before(_ => complete.current = true),
         closeEditor: fn(props.closeEditor(props.dotKey))
-            .after(() => complete.current || props.rmDot()),
+            .before(_ => complete.current || props.rmDot()),
         invalidateTag: () => complete.current = false,
     };
 

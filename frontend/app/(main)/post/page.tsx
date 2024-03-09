@@ -4,15 +4,23 @@ import NewPostPhoto from "@/app/components/new-post-photo";
 import { backend_url } from "@/app/settings";
 import { Tag, TagDotProps_ } from "@/app/components/tag";
 import TagEditor, { TagEditorProps } from "@/app/components/tag-editor";
-import { ChangeEvent, useState, useEffect } from "react";
+import { ChangeEvent, useState, useEffect, MouseEvent, useRef } from "react";
 
 
 export default function Home() {
+    const blurRef = useRef<HTMLInputElement>(null);
+    const photoRef = useRef<HTMLInputElement>(null);
+    const capRef = useRef<HTMLInputElement>(null);
+
     const [editorProps, setEditorProps] = useState<TagEditorProps | null>(null);
     const [tags, setTags] = useState<Tag[]>([]);
     const [image, setImage] = useState<File>();
     const [imagePreview, setImagePreview] = useState<string>();
     // const [imageRes, setImageRes] = useState<string>();
+
+    useEffect(() => {
+        console.log(tags);
+    }, [tags]);
 
     const closeEditor = (dotKey: number) => (f: (tags: Tag[]) => Tag[]) => {
         setTags(f(tags));
@@ -46,6 +54,8 @@ export default function Home() {
 
     // Function to handle file selection
     const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+        setEditorProps(null);
+        setTags([]);
         e.preventDefault();
         const file = e.target.files?.[0];
         setImage(file);
@@ -104,29 +114,49 @@ export default function Home() {
         }
     }
 
+    const post = async (e: MouseEvent<HTMLButtonElement>) => {
+        const blur = blurRef.current?.checked;
+        const caption = capRef.current?.value;
+
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            const imageData = reader.result;
+            console.log({
+                blur,
+                caption,
+                tags,
+            });
+        };
+
+        if (image !== undefined)
+            reader.readAsDataURL(image);
+    };
+
     return (
         <main>
-            <div id="blur-setting-container">
-                <p>Blur my face</p>
-                <div>toggle button</div>
-            </div>
-            {/* code to test that I can download the image back from the server and also display it */}
-            {/* {imageRes && <img src={imageRes} />} */}
-            <div>Post image</div>
-            <div>Post caption</div>
-            <div>cancel button</div>
-            <div>post button</div>
-            <div>
-                <form onSubmit={handleSubmit}>
-                    <input type="file" onChange={handleFileChange} />
-                    {imagePreview &&
-                        <NewPostPhoto imgSrc={imagePreview} {...dotProps} />
-                    }
-                    <button type="submit">Post Outfit</button>
-                </form>
-            </div>
-            {/* <NewPostPhoto imgSrc="/tango.jpg" {...dotProps} /> */}
-            {tagEditor}
+            <form onSubmit={handleSubmit}>
+                <div id="blur-setting-container">
+                    <label>
+                        Blur my face
+                        <input type="checkbox" name="blur" id="blur" ref={blurRef} />
+                    </label>
+                </div>
+                <div>
+                    <input type="file" onChange={handleFileChange} id="photo" ref={photoRef} />
+                    {imagePreview && <NewPostPhoto imgSrc={imagePreview} {...dotProps} />}
+                </div>
+                {/* <NewPostPhoto imgSrc="/tango.jpg" {...dotProps} /> */}
+                {tagEditor}
+                <p>
+                    <label>
+                        Caption:
+                        <input name="caption" id="caption" ref={capRef}></input>
+                    </label>
+                </p>
+
+                <button type="button" id="cancel">Cancel</button>
+                <button type="submit" onClick={post}>Post Outfit</button>
+            </form>
         </main>
     );
 }

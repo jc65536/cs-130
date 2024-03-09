@@ -1,6 +1,6 @@
-import { ChangeEvent, useEffect } from "react";
+import { ChangeEvent, useEffect, useRef } from "react";
 import { Tag } from "./tag";
-import { fn } from "@/app/util";
+import { fn } from "../util";
 
 export type TagEditorProps = {
     dotKey: number,
@@ -19,7 +19,6 @@ const autocompleteCache: { [key: string]: Tag[] } = {};
 
 // This will fetch from backend
 const fetchAutocomplete = (frag: string): Tag[] => {
-    console.log("fetch called!");
     return [
         "apple",
         "apricot",
@@ -41,9 +40,6 @@ const fetchAutocomplete = (frag: string): Tag[] => {
 };
 
 const autocomplete = (frag: string): Tag[] => {
-    console.log(autocompleteCache);
-    console.log(Object.keys(autocompleteCache));
-
     if (frag in autocompleteCache)
         return autocompleteCache[frag];
 
@@ -64,12 +60,7 @@ const autocomplete = (frag: string): Tag[] => {
 // autocompleteCache[frag] ?? (autocompleteCache[frag] =
 
 export default function TagEditor(props: TagEditorProps) {
-    const closeEditor = (f: (tags: Tag[]) => Tag[]) => {
-        document.removeEventListener("click", detectOutsideClick);
-        return props.closeEditor(f);
-    };
-
-    const detectOutsideClick = (e: MouseEvent) => {
+    const clickListener = useRef<(e: MouseEvent) => void>(e => {
         if (!(e.target instanceof HTMLElement))
             return;
 
@@ -77,31 +68,30 @@ export default function TagEditor(props: TagEditorProps) {
             return;
 
         closeEditor(x => x);
-    };
+    });
 
-    useEffect(() => document.addEventListener("click", detectOutsideClick), []);
+    const closeEditor = fn(props.closeEditor).before(_ =>
+        document.removeEventListener("click", clickListener.current));
 
-    const selectSuggestion = (tag: Tag) =>
-        closeEditor(fn(props.rmTag).pipe(props.addTag(tag)));
+    useEffect(() => document.addEventListener("click", clickListener.current), []);
 
-    const addNewTag = () => {
-        closeEditor(fn(props.rmTag).pipe(props.addTag({ name: props.tooltip, id: -1 })));
-    };
+    const selectSuggestion = fn(props.addTag).pipe(closeEditor);
+
+    const addNewTag = () =>
+        closeEditor(props.addTag({ name: props.tooltip, id: -1 }));
 
     const completions = autocomplete(props.tooltip);
 
     const suggestions = completions
-        .map(tag => {
-            return (
-                <p className="suggestion" key={tag.id}>
-                    <label>
-                        <input name="tag" type="radio"
-                            onChange={e => e.target.checked && selectSuggestion(tag)} />
-                        {tag.name}
-                    </label>
-                </p>
-            );
-        });
+        .map(tag => (
+            <p className="suggestion" key={tag.id}>
+                <label>
+                    <input name="tag" type="radio"
+                        onChange={_ => selectSuggestion(tag)} />
+                    {tag.name}
+                </label>
+            </p>
+        ));
 
     const addNewOption = props.tooltip.length > 0 &&
         completions.every(({ name }) => props.tooltip !== name)
@@ -109,7 +99,7 @@ export default function TagEditor(props: TagEditorProps) {
             <p className="suggestion">
                 <label>
                     <input name="tag" type="radio"
-                        onChange={e => e.target.checked && addNewTag()} />
+                        onChange={addNewTag} />
                     Add a new tag
                 </label>
             </p>
