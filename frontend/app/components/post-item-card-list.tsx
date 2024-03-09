@@ -1,6 +1,6 @@
 import React from 'react';
 import PostItemCard, { Post } from './post-item-card';
-import styles from '../../style/card.module.css';
+import styles from '../card.module.css';
 
 // Dummy data for demonstration
 var posts: Post[] = [];
