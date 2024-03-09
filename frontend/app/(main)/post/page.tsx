@@ -6,7 +6,7 @@ import { Tag, TagDotProps_ } from "@/app/components/tag";
 import TagEditor, { TagEditorProps } from "@/app/components/tag-editor";
 import { ChangeEvent, useState, useEffect, MouseEvent, useRef } from "react";
 import { fn } from "@/app/util";
-
+import "@/app/new-post.css";
 
 export default function Home() {
     const blurRef = useRef<HTMLInputElement>(null);
@@ -18,10 +18,6 @@ export default function Home() {
     const [image, setImage] = useState<File>();
     const [imagePreview, setImagePreview] = useState<string>();
     // const [imageRes, setImageRes] = useState<string>();
-
-    useEffect(() => {
-        console.log(tags);
-    }, [tags]);
 
     const closeEditor = (dotKey: number) => fn(setTags).effectAfter(_ =>
         setEditorProps(props => props?.dotKey === dotKey ? null : props));
@@ -132,28 +128,28 @@ export default function Home() {
 
     return (
         <main>
-            <form onSubmit={handleSubmit}>
-                <div id="blur-setting-container">
-                    <label>
-                        Blur my face
-                        <input type="checkbox" name="blur" id="blur" ref={blurRef} />
-                    </label>
-                </div>
-                <div>
-                    <input type="file" onChange={handleFileChange} id="photo" ref={photoRef} />
-                    {imagePreview && <NewPostPhoto imgSrc={imagePreview} {...dotProps} />}
-                </div>
-                {/* <NewPostPhoto imgSrc="/tango.jpg" {...dotProps} /> */}
-                {tagEditor}
+            <form className="post-form" onSubmit={handleSubmit}>
                 <p>
                     <label>
-                        Caption:
-                        <input name="caption" id="caption" ref={capRef}></input>
+                        Blur my face
+                        <input type="checkbox" className="blur" ref={blurRef} />
                     </label>
                 </p>
 
-                <button type="button" id="cancel">Cancel</button>
-                <button type="submit" onClick={post}>Post Outfit</button>
+                <input type="file" onChange={handleFileChange} className="photo-select" ref={photoRef} />
+
+                {imagePreview && <NewPostPhoto imgSrc={imagePreview} {...dotProps} />}
+
+                {tagEditor}
+
+                <p>
+                    <label>Caption: <input className="caption" ref={capRef}></input></label>
+                </p>
+
+                <div className="button-container">
+                    <button type="button" className="cancel">Cancel</button>
+                    <button type="submit" onClick={post}>Post Outfit</button>
+                </div>
             </form>
         </main>
     );
