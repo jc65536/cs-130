@@ -117,18 +117,17 @@ export default function Home() {
         const blur = blurRef.current?.checked;
         const caption = capRef.current?.value;
 
-        const reader = new FileReader();
-        reader.onloadend = () => {
-            const imageData = reader.result;
-            console.log({
-                blur,
-                caption,
-                tags,
-            });
-        };
+        console.log({
+            blur,
+            caption,
+            tags,
+        });
 
-        if (image !== undefined)
-            reader.readAsDataURL(image);
+        if (image !== undefined) {
+            const imageData = new FormData();
+            imageData.append("image", image);
+            console.log(imageData);
+        }
     };
 
     return (
