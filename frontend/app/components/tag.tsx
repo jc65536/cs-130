@@ -1,13 +1,22 @@
 import { useEffect, useRef, useState } from "react";
 import { TagEditorProps } from "./tag-editor";
-import { fn } from "@/app/util";
+import { fn } from "../util";
 
 export type IncompleteTag = {
     id: number | null,
     name: string,
+    x: number,
+    y: number,
 };
 
 export type Tag = {
+    id: number,
+    name: string,
+    x: number,
+    y: number,
+};
+
+export type TagLabel = {
     id: number,
     name: string,
 };
@@ -31,7 +40,11 @@ export type TagDotProps = TagDotProps_ & {
 export default function TagDot(props: TagDotProps) {
     const complete = useRef(false);
 
-    const [tag, setTag] = useState<IncompleteTag>({ name: "", id: null });
+    const [tag, setTag] = useState<IncompleteTag>({ name: "", id: null, x: props.x, y: props.y });
+
+    const rmTag = isComplete(tag)
+        ? props.rmTag(tag)
+        : (x: Tag[]) => x;
 
     const editorProps: TagEditorProps = {
         ...props,
@@ -40,18 +53,13 @@ export default function TagDot(props: TagDotProps) {
             setTag({ ...tag, name: tooltip });
             props.openEditor({ ...editorProps, tooltip });
         },
-        addTag: tag => fn(props.addTag(tag)).before(_ => {
-            complete.current = true;
-            setTag(tag);
-        }),
-        rmTag: isComplete(tag)
-            ? fn(props.rmTag(tag)).before(_ => {
-                complete.current = false;
-                setTag({ name: "", id: null });
-            })
-            : x => x,
+        rmTag,
+        addTag: fn((label: TagLabel): Tag => ({ ...label, x: props.x, y: props.y }))
+            .pipe(fn(props.addTag).effectBefore(setTag))
+            .pipe(fn(rmTag).pipe)
+            .effectAfter(_ => complete.current = true),
         closeEditor: fn(props.closeEditor(props.dotKey))
-            .after(() => complete.current || props.rmDot()),
+            .effectAfter(_ => complete.current || props.rmDot()),
         invalidateTag: () => complete.current = false,
     };
 
