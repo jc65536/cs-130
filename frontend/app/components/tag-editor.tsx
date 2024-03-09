@@ -1,24 +1,22 @@
 import { ChangeEvent, useEffect, useRef } from "react";
-import { Tag } from "./tag";
+import { Tag, TagLabel } from "./tag";
 import { fn } from "../util";
 
 export type TagEditorProps = {
     dotKey: number,
     tooltip: string,
     setTooltip: (s: string) => void;
-    addTag: (tag: Tag) => (tags: Tag[]) => Tag[],
+    addTag: (tag: TagLabel) => (tags: Tag[]) => Tag[],
     rmTag: (tags: Tag[]) => Tag[],
     rmDot: () => void,
     closeEditor: (f: (tags: Tag[]) => Tag[]) => void,
     invalidateTag: () => void,
 };
 
-const autocompleteCache: { [key: string]: Tag[] } = {};
-
-
+const autocompleteCache: { [key: string]: TagLabel[] } = {};
 
 // This will fetch from backend
-const fetchAutocomplete = (frag: string): Tag[] => {
+const fetchAutocomplete = (frag: string): TagLabel[] => {
     return [
         "apple",
         "apricot",
@@ -39,7 +37,7 @@ const fetchAutocomplete = (frag: string): Tag[] => {
         .filter(({ name }) => name.startsWith(frag));
 };
 
-const autocomplete = (frag: string): Tag[] => {
+const autocomplete = (frag: string): TagLabel[] => {
     if (frag in autocompleteCache)
         return autocompleteCache[frag];
 
@@ -70,7 +68,7 @@ export default function TagEditor(props: TagEditorProps) {
         closeEditor(x => x);
     });
 
-    const closeEditor = fn(props.closeEditor).before(_ =>
+    const closeEditor = fn(props.closeEditor).effectBefore(_ =>
         document.removeEventListener("click", clickListener.current));
 
     useEffect(() => document.addEventListener("click", clickListener.current), []);

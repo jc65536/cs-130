@@ -5,9 +5,18 @@ import { fn } from "../util";
 export type IncompleteTag = {
     id: number | null,
     name: string,
+    x: number,
+    y: number,
 };
 
 export type Tag = {
+    id: number,
+    name: string,
+    x: number,
+    y: number,
+};
+
+export type TagLabel = {
     id: number,
     name: string,
 };
@@ -31,7 +40,7 @@ export type TagDotProps = TagDotProps_ & {
 export default function TagDot(props: TagDotProps) {
     const complete = useRef(false);
 
-    const [tag, setTag] = useState<IncompleteTag>({ name: "", id: null });
+    const [tag, setTag] = useState<IncompleteTag>({ name: "", id: null, x: props.x, y: props.y });
 
     const rmTag = isComplete(tag)
         ? props.rmTag(tag)
@@ -45,12 +54,12 @@ export default function TagDot(props: TagDotProps) {
             props.openEditor({ ...editorProps, tooltip });
         },
         rmTag,
-        addTag: fn(props.addTag)
-            .before(setTag)
+        addTag: fn((label: TagLabel): Tag => ({ ...label, x: props.x, y: props.y }))
+            .pipe(fn(props.addTag).effectBefore(setTag))
             .pipe(fn(rmTag).pipe)
-            .before(_ => complete.current = true),
+            .effectAfter(_ => complete.current = true),
         closeEditor: fn(props.closeEditor(props.dotKey))
-            .before(_ => complete.current || props.rmDot()),
+            .effectAfter(_ => complete.current || props.rmDot()),
         invalidateTag: () => complete.current = false,
     };
 

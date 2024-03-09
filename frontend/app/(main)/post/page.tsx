@@ -5,6 +5,7 @@ import { backend_url } from "@/app/settings";
 import { Tag, TagDotProps_ } from "@/app/components/tag";
 import TagEditor, { TagEditorProps } from "@/app/components/tag-editor";
 import { ChangeEvent, useState, useEffect, MouseEvent, useRef } from "react";
+import { fn } from "@/app/util";
 
 
 export default function Home() {
@@ -22,10 +23,8 @@ export default function Home() {
         console.log(tags);
     }, [tags]);
 
-    const closeEditor = (dotKey: number) => (f: (tags: Tag[]) => Tag[]) => {
-        setTags(f(tags));
-        setEditorProps(props => props?.dotKey === dotKey ? null : props);
-    };
+    const closeEditor = (dotKey: number) => fn(setTags).effectAfter(_ =>
+        setEditorProps(props => props?.dotKey === dotKey ? null : props));
 
     const tagEditor = editorProps === null
         ? null
