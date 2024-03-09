@@ -32,7 +32,7 @@ export default function NewPostPhoto(props: NewPostPhotoProps) {
 
     return (
         <div className="new-post-photo">
-            <img src={props.imgSrc} onClick={handleClick} />
+            <img src={props.imgSrc} onClick={handleClick} draggable={false} />
             {...dots}
         </div>
     );
