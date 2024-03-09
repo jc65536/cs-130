@@ -1,7 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import styles from '../card.module.css';
+import styles from '../style/card.module.css';
 
 export type Post = {
     id: number,
