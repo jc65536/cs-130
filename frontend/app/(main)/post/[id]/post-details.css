@@ -1,0 +1,11 @@
+.slider {
+    width: 100%;
+    height: 48px;
+    background: #bbbbbb;
+
+    .fill {
+        background: #ff91a4;
+        height: 100%;
+        width: 50%;
+    }
+}
