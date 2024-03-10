@@ -1,6 +1,8 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { FaHeart } from "react-icons/fa";
+import { MdOutlineBookmarkAdd, MdOutlineBookmarkAdded } from "react-icons/md";
 import styles from '../card.module.css';
 
 export type Post = {
@@ -38,8 +40,8 @@ export default function PostItemCard({ id, caption }: Post) {
         <div className={styles.cardbody}>
             <div className={styles.topContain}>
                 <button className={`${styles.likeButton}`}>
-                    <div className={`${styles.heart}`}></div>
-                    <span>Like</span>
+                    <MdOutlineBookmarkAdd className={`${styles.saveIcon}`}/>
+                    <MdOutlineBookmarkAdded className={`${styles.savedIcon}`}/>
                 </button>
                 <p className={styles.username}>Username</p>
             </div>

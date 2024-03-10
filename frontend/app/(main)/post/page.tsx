@@ -5,6 +5,8 @@ import { backend_url } from "@/app/settings";
 import { Tag, TagDotProps_ } from "@/app/components/tag";
 import TagEditor, { TagEditorProps } from "@/app/components/tag-editor";
 import { ChangeEvent, useState, useEffect, MouseEvent, useRef } from "react";
+import { FaUpload } from "react-icons/fa";
+import { MdOutlineAddAPhoto, MdOutlineClose } from "react-icons/md";
 import { fn } from "@/app/util";
 import "@/app/new-post.css";
 
@@ -18,6 +20,11 @@ export default function Home() {
     const [image, setImage] = useState<File>();
     const [imagePreview, setImagePreview] = useState<string>();
     // const [imageRes, setImageRes] = useState<string>();
+
+    const onUploadClick = () => {
+        // `current` points to the mounted file input element
+        if (photoRef.current) photoRef.current.click();
+    };
 
     const closeEditor = (dotKey: number) => fn(setTags).effectAfter(_ =>
         setEditorProps(props => props?.dotKey === dotKey ? null : props));
@@ -42,6 +49,10 @@ export default function Home() {
 
         const objectUrl = URL.createObjectURL(image);
         setImagePreview(objectUrl);
+        const file_upload = document.getElementById('file-upload-wrapper');
+        const file_change = document.getElementById('photo-editor');
+        if (file_upload) file_upload.style.display = 'none';
+        if (file_change) file_change.style.display = 'flex';
 
         // free memory when ever this component is unmounted
         return () => URL.revokeObjectURL(objectUrl)
@@ -129,27 +140,50 @@ export default function Home() {
     return (
         <main>
             <form className="post-form" onSubmit={handleSubmit}>
-                <p>
-                    <label>
-                        Blur my face
-                        <input type="checkbox" className="blur" ref={blurRef} />
-                    </label>
-                </p>
-
-                <input type="file" onChange={handleFileChange} className="photo-select" ref={photoRef} />
-
-                {imagePreview && <NewPostPhoto imgSrc={imagePreview} {...dotProps} />}
-
-                {tagEditor}
-
-                <p>
-                    <label>Caption: <input className="caption" ref={capRef}></input></label>
-                </p>
-
-                <div className="button-container">
-                    <button type="button" className="cancel">Cancel</button>
-                    <button type="submit" onClick={post}>Post Outfit</button>
+                <div className="cancel-header">
+                    <button type="button" className="cancel"><MdOutlineClose className="cancel-x"/></button>
                 </div>
+                <div id="file-upload-wrapper">
+                    <div className="upload-box" onClick={onUploadClick}>
+                        <FaUpload />
+                        <h4 className="upload-box-header">Choose Image to Upload</h4>
+                        <input type="file" onChange={handleFileChange} className="photo-select" ref={photoRef} hidden/>
+                    </div>
+                    <small>Files Supported: JPG, PNG</small>
+                </div>
+
+                <div id="photo-editor">
+                    <div className="image-tags">
+                        {imagePreview && <NewPostPhoto imgSrc={imagePreview} {...dotProps} />}
+                        {tagEditor}
+                    </div>
+                    <div className="settings">
+                        <div className="settings-top">
+                            <div id="file-change-wrapper">
+                                <div className="upload-box" onClick={onUploadClick}>
+                                    <FaUpload />
+                                    <input type="file" onChange={handleFileChange} className="photo-select" ref={photoRef} hidden/>
+                                </div>
+                                <small>Change Image</small>
+                            </div>
+                            <div className="blur-contain">
+                                <input type="checkbox" className="blur" ref={blurRef} />
+                                <label className="blur-label">Blur my face</label>
+                            </div>
+                            
+                        </div>
+                        <div className="settings-bottom">
+                            <label>Caption: <input className="caption" ref={capRef}></input></label>
+                        </div>
+                        <div className="add-post-contain">
+                                <button type="submit" onClick={post}>
+                                    <MdOutlineAddAPhoto className="add-post-icon"/>
+                                    <h4 className="add-post-header">Add Post</h4>
+                                </button>
+                        </div>
+                    </div>
+                </div>
+                
             </form>
         </main>
     );
