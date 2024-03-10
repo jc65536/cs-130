@@ -4,9 +4,16 @@
   align-items: center;
   width: 90%;
 
+  .new-post-header {
+    padding: 0;
+    margin: 3px;
+  }
+
   .cancel-header {
     width: 100%;
     height: 30px;
+    /* display: flex;
+    flex-direction: row; */
     button {
       display: flex;
       float: right;
@@ -248,5 +255,12 @@
         overflow-y: hidden;
       }
     }
+  }
+  .caption {
+    width: 460px;
+    color: #6e6e6e;
+    margin: 5px;
+    font-family: Verdana, sans-serif;
+    font-size: 13px;
   }
 }

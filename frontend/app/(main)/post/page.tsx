@@ -13,7 +13,7 @@ import "@/app/new-post.css";
 export default function Home() {
     const blurRef = useRef<HTMLInputElement>(null);
     const photoRef = useRef<HTMLInputElement>(null);
-    const capRef = useRef<HTMLInputElement>(null);
+    const capRef = useRef<HTMLTextAreaElement>(null);
 
     const [editorProps, setEditorProps] = useState<TagEditorProps | null>(null);
     const [tags, setTags] = useState<Tag[]>([]);
@@ -143,6 +143,7 @@ export default function Home() {
                 <div className="cancel-header">
                     <button type="button" className="cancel"><MdOutlineClose className="cancel-x"/></button>
                 </div>
+                <h4 className="new-post-header">New Post</h4>
                 <div id="file-upload-wrapper">
                     <div className="upload-box" onClick={onUploadClick}>
                         <FaUpload />
@@ -173,7 +174,7 @@ export default function Home() {
                             
                         </div>
                         <div className="settings-bottom">
-                            <label>Caption: <input className="caption" ref={capRef}></input></label>
+                            <textarea className="caption" ref={capRef} placeholder="Start typing your caption."></textarea>
                         </div>
                         <div className="add-post-contain">
                                 <button type="submit" onClick={post}>
