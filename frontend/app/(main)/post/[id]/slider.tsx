@@ -1,9 +1,19 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
-export default ({ frac, setFrac }: { frac: number, setFrac: (_: number) => void }) => {
+export type SliderProps = {
+    id: string
+};
+
+export default (props: SliderProps) => {
     const sliderRef = useRef<HTMLDivElement>(null);
+    const [frac, setFrac] = useState(0.5);
 
-    const startDrag = (e0: React.MouseEvent<HTMLDivElement>) => {
+    const commitFrac = (x: number) => {
+        // Also send to server
+        setFrac(x);
+    };
+
+    const startDrag = (e0: React.MouseEvent) => {
         if (sliderRef.current === null)
             return;
 
@@ -16,7 +26,7 @@ export default ({ frac, setFrac }: { frac: number, setFrac: (_: number) => void 
         const handleDrag = (e: MouseEvent) => setFrac(calcFrac(e.x));
 
         const endDrag = (e: MouseEvent) => {
-            setFrac(calcFrac(e.x));
+            commitFrac(calcFrac(e.x));
             document.removeEventListener("mousemove", handleDrag);
         };
 
