@@ -27,6 +27,23 @@ export default ({ frac, setFrac }: { frac: number, setFrac: (_: number) => void 
     return (
         <div className="slider" onMouseDown={startDrag} ref={sliderRef}>
             <div className="fill" style={{ width: `${frac * 100}%` }}></div>
+            <div className="heart-container">
+                <div className="heart-border">
+                    <div className="heart"></div>
+                </div>
+                <div className="heart-border">
+                    <div className="heart"></div>
+                </div>
+                <div className="heart-border">
+                    <div className="heart"></div>
+                </div>
+                <div className="heart-border">
+                    <div className="heart"></div>
+                </div>
+                <div className="heart-border">
+                    <div className="heart"></div>
+                </div>
+            </div>
         </div>
     )
 };
