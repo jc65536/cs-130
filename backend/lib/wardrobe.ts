@@ -68,6 +68,11 @@ export class Wardrobe extends DbItem {
         return this.posts;
     }
     
+    public async clear() {
+        this.clothes = [];
+        this.posts = [];
+        await this.writeToDatabase(); // TODO: need to update DB?
+    }
 
     /**
        * Converts the object into a form for the database
