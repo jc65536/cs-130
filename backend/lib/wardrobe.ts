@@ -56,7 +56,7 @@ export class Wardrobe extends DbItem {
         return newWardrobe;
     }
 
-    public async getClothes(): Promise<ObjectId[] | null> {
+    public getClothes(): ObjectId[] {
         return this.clothes;
     }
 
