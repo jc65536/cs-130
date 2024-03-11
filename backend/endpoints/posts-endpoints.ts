@@ -57,7 +57,8 @@ posts_router.post("/upload-image/:postId", upload.single('image'), async (req: R
 // returns a postId that can be used to upload an image to that post object
 posts_router.post("/new", async (req: Request, res: Response) => {
     // const user = await User.fromId(new ObjectId(req.session.userObjectId));
-    const wardrobe = await Wardrobe.fromId(new ObjectId(req.session.userObjectId));
+    const userObjId = new ObjectId(req.session.userObjectId);
+    const wardrobe = await Wardrobe.fromId(userObjId);
     // TODO: change this to create a new Posts object and add the post id to User
     console.log(req.body);
     const caption = req.body.caption;
@@ -68,7 +69,7 @@ posts_router.post("/new", async (req: Request, res: Response) => {
         async (tag: { id: ObjectId | number, name: string, x: number, y: number }) => {
             let objId;
             if (!('id' in tag) || tag.id == null || tag.id == -1) {
-                const clothingItem = await Clothing.create(tag.name, 0, 0, 0, 0, false);
+                const clothingItem = await Clothing.create(userObjId, tag.name, 0, 0, 0, 0, false);
                 objId = clothingItem?.id;
             }
             wardrobe.addClothes(new ObjectId(objId));
