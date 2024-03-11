@@ -1,6 +1,6 @@
 import { ChangeEvent, useEffect, useRef } from "react";
 import { Tag, TagLabel } from "./tag";
-import { fn } from "../util";
+import { fn } from "@/app/util";
 
 export type TagEditorProps = {
     dotKey: number,

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { TagEditorProps } from "./tag-editor";
-import { fn } from "../util";
+import { fn } from "@/app/util";
 
 export type IncompleteTag = {
     id: number | null,

@@ -10,8 +10,42 @@ main {
   text-align: center;
 }
 
+/* NavBar.module.css */
+
 nav {
-  display: flex;
-  margin-top: 24px;
-  justify-content: space-evenly;
+    width: 100%;
+    height: 10vh;
+    display: flex;
+    justify-content: space-evenly;
+    padding: 10px 0;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    background-color: white;
+    box-sizing: border-box;
+}
+
+main {
+    margin-bottom: 15vh;
+}
+
+nav a {
+  display: contents;
+}
+
+nav button {
+    background: none;
+    border: none;
+    border-radius: 44.44%;
+    padding: 0;
+    height: 100%;
+}
+
+nav button img {
+    margin: 0;
+    height: 100%;
+}
+
+nav button:focus {
+    background-color: #aaaaaa;
 }

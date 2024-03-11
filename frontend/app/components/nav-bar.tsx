@@ -1,9 +1,8 @@
 import Link from "next/link";
-import styles from '../nav.module.css';
 
 export default function NavBar() {
     return (
-        <div className={styles.nav}>
+        <nav>
             <Link href="/">
                 <button className="home">
                     <img src="/home-nav-icon.svg" />
@@ -24,6 +23,6 @@ export default function NavBar() {
                     <img src="/user-nav-icon.svg" />
                 </button>
             </Link>
-        </div>
+        </nav>
     );
 }
