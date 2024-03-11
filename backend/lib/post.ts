@@ -8,7 +8,8 @@ import { User } from "./user";
 export type Tag = {
     x: number,
     y: number,
-    clothingObjectId: ObjectId
+    name: string,
+    id: ObjectId
 };
 
 export type PostDatabaseEntry = {
@@ -90,6 +91,21 @@ export class Post extends DbItem {
         await user?.writeToDatabase();
         await newPost.writeToDatabase();
         return newPost;
+    }
+
+    /**
+     * @returns an array of all the Post objects that exist in the database
+     */
+    public static async all(): Promise<Post[]> {
+        const dbClient = getClient();
+        const docs = await dbClient.getCollectionItems(COLLECTION.POSTS);
+
+        const posts = [];
+        for (const doc of docs) {
+            const post = await Post.fromId(doc.id);
+            posts.push(post);
+        } 
+        return posts;
     }
 
     /**
