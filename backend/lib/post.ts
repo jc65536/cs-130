@@ -48,12 +48,9 @@ export class Post extends DbItem {
         this.caption = '';
         this.rating = 0;
         this.ratingCount = 0;
-<<<<<<< HEAD
         this.blur = false;
         this.taggedClothes = [];
-=======
         this.date = new Date();
->>>>>>> Streaks backend
     }
 
     public static async fromId(postObjectId: ObjectId) {
