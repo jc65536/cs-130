@@ -21,6 +21,7 @@ export type PostDatabaseEntry = {
     ratingCount: number,
     userObjectId: ObjectId,
     blur: boolean,
+    date: Date,
 };
 
 export class Post extends DbItem {
@@ -28,6 +29,7 @@ export class Post extends DbItem {
     caption: String;
     rating: number;
     ratingCount: number;
+    date: Date;
     userObjectId: ObjectId | null;
     blur: boolean;
     taggedClothes: Tag[];
@@ -49,6 +51,7 @@ export class Post extends DbItem {
         this.ratingCount = 0;
         this.blur = false;
         this.taggedClothes = [];
+        this.date = new Date();
     }
 
     public static async fromId(postObjectId: ObjectId) {
@@ -60,6 +63,7 @@ export class Post extends DbItem {
         post.caption = document.caption;
         post.rating = document.rating;
         post.ratingCount = document.ratingCount;
+        post.date = document.date;
         post.userObjectId = new ObjectId(document.userObjectId);
         post.blur = document.blur;
         return post;
@@ -124,6 +128,9 @@ export class Post extends DbItem {
     public async getRatingCount(): Promise<number | null> {
         return this.ratingCount;
     }
+    public async getDate(): Promise<Date> {
+        return this.date;
+    }
 
     public async addTaggedClothes(clothingTag: Tag[]): Promise<void> {
         this.taggedClothes.concat(clothingTag);
@@ -153,7 +160,8 @@ export class Post extends DbItem {
             imageFilename: this.imageFilename,
             caption: this.caption,
             rating: this.rating,
-            ratingCount: this.ratingCount
+            ratingCount: this.ratingCount,
+            date: this.date
         };
     }
 }

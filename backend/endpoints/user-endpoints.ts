@@ -24,6 +24,18 @@ user_router.get("/posts",async (req: Request, res: Response) => {
     res.status(200).json(posts);
 });
 
+// for getting best streak from a user
+user_router.get("/:userId/bestStreak",async (req: Request, res: Response) => {
+    const user = await User.fromId(new ObjectId(req.session.userObjectId));
+    res.status(200).json(user?.getBestStreak());
+});
+
+// for getting current streak from a user
+user_router.get("/:userId/currStreak",async (req: Request, res: Response) => {
+    const user = await User.fromId(new ObjectId(req.session.userObjectId));
+    res.status(200).json(user?.getCurrStreak());
+});
+
 user_router.post("/name/:newName", async (req: Request, res: Response) => {
     const user = await User.fromId(new ObjectId(req.session.userObjectId));
     user?.setName(req.params.newName);

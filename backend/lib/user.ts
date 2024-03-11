@@ -4,6 +4,7 @@ import { DbItem } from "./db-lib/db-item";
 import { COLLECTION } from "./enums";
 import { ObjectId, WithId } from "mongodb";
 import { Wardrobe } from "./wardrobe";
+import { Post } from "./post";
 
 type UserDatabaseEntry = {
     _id: ObjectId,
@@ -12,6 +13,7 @@ type UserDatabaseEntry = {
     name: string,
     followers: number,
     streaks: number,
+    bestStreak: number
 };
 
 export class User extends DbItem {
@@ -20,6 +22,7 @@ export class User extends DbItem {
     name: string;
     followers: number;
     streaks: number;
+    bestStreak: number;
     // private dbClient = getClient();
 
     constructor(id: ObjectId) {
@@ -29,6 +32,7 @@ export class User extends DbItem {
         this.name = '';
         this.followers = 0;
         this.streaks = 0;
+        this.bestStreak = 0;
     }
 
     public static async fromId(userObjectId: ObjectId) {
@@ -70,6 +74,26 @@ export class User extends DbItem {
         return this.posts;
     }
 
+    public async getCurrStreak(): Promise<number> {
+        var streak = 1;
+        for (var i = this.posts.length - 1; i > 0; i--) {
+            // note: assume posts are sorted by time
+            const curr_post = await Post.fromId(this.posts[i]);
+            const prev_post = await Post.fromId(this.posts[i - 1]);
+            const curr_date = await curr_post.getDate();
+            const prev_date = await prev_post.getDate();
+            // 1 day
+            if (curr_date.getTime() - prev_date.getTime() < 1000 * 60 * 60 * 24) {
+                streak++;
+            }
+        }
+        return streak;
+    }
+
+    public async getBestStreak(): Promise<number> {
+        return this.bestStreak;
+    }
+
     /**
      * 
      * @param postUID the new postUID to add to the post String of User
@@ -77,6 +101,10 @@ export class User extends DbItem {
      */
     public async addPost(postUID: ObjectId): Promise<void> {
         this.posts.push(postUID);
+        const streak = await this.getCurrStreak();
+        if (this.bestStreak < streak) {
+            this.bestStreak = streak;
+        }
     }
 
     public setName(newName: string) {
@@ -92,7 +120,8 @@ export class User extends DbItem {
         return {
             ...entry,
             posts: this.posts,
-            wardrobe: this.wardrobe
+            wardrobe: this.wardrobe,
+            bestStreak: this.bestStreak,
         };
     }
 }

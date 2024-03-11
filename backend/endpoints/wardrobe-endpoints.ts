@@ -7,11 +7,18 @@ export const wardrobe_router = Router();
 // for getting all clothes from a wardrobe
 wardrobe_router.get("/clothes",async (req: Request, res: Response) => {
     const wardrobe = await Wardrobe.fromId(new ObjectId(req.session.userObjectId));
-    res.status(200).json(wardrobe.clothes);
+    res.status(200).json(wardrobe.getClothes());
 });
 
 // for getting all posts from a wardrobe
 wardrobe_router.get("/posts",async (req: Request, res: Response) => {
     const wardrobe = await Wardrobe.fromId(new ObjectId(req.session.userObjectId));
-    res.status(200).json(wardrobe.posts);
+    res.status(200).json(wardrobe.getPosts());
+});
+
+// for clearing a wardrobe
+wardrobe_router.post("/clear", async (req: Request, res: Response) => {
+    const wardrobe = await Wardrobe.fromId(new ObjectId(req.session.userObjectId));
+    wardrobe.clear();
+    res.status(200).json();
 });
