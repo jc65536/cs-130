@@ -88,6 +88,7 @@ export class Clothing extends DbItem {
     public async getRatingCount(): Promise<Number | null> {
         return this.ratingCount;
     }
+
     public async toggleOnSale(): Promise<void> {
         this.onSale = !this.onSale;
     }
