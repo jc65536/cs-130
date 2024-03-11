@@ -1,28 +1,29 @@
 import Link from "next/link";
+import styles from '../nav.module.css';
 
 export default function NavBar() {
     return (
-        <nav>
+        <div className={styles.nav}>
             <Link href="/">
                 <button className="home">
-                    <img src="home-nav-icon.svg" />
+                    <img src="/home-nav-icon.svg" />
                 </button>
             </Link>
-            <Link href="/post">
+            <Link href="/post/new">
                 <button className="post">
-                    <img src="post-nav-icon.svg" />
+                    <img src="/post-nav-icon.svg" />
                 </button>
             </Link>
             <Link href="/wardrobe">
                 <button className="wardrobe">
-                    <img src="wardrobe-nav-icon.svg" />
+                    <img src="/wardrobe-nav-icon.svg" />
                 </button>
             </Link>
             <Link href="profile">
                 <button className="user">
-                    <img src="user-nav-icon.svg" />
+                    <img src="/user-nav-icon.svg" />
                 </button>
             </Link>
-        </nav>
+        </div>
     );
 }
