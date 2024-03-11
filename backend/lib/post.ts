@@ -5,23 +5,31 @@ import { ObjectId } from "mongodb";
 import { getClient } from "./db-lib/db-client";
 import { User } from "./user";
 
+export type Tag = {
+    x: number,
+    y: number,
+    clothingObjectId: ObjectId
+};
+
 export type PostDatabaseEntry = {
     _id: ObjectId,
-    clothes: ObjectId[],
+    taggedClothes: Tag[],
     imageFilename: String,
     caption: String,
     rating: number,
     ratingCount: number,
-    userObjectId: ObjectId
+    userObjectId: ObjectId,
+    blur: boolean,
 };
 
 export class Post extends DbItem {
-    clothes: ObjectId[];
     imageFilename: String;
     caption: String;
     rating: number;
     ratingCount: number;
     userObjectId: ObjectId | null;
+    blur: boolean;
+    taggedClothes: Tag[];
 
     /**
      * 
@@ -36,21 +44,23 @@ export class Post extends DbItem {
         this.userObjectId = null;
         this.imageFilename = '';
         this.caption = '';
-        this.clothes = [];
         this.rating = 0;
         this.ratingCount = 0;
+        this.blur = false;
+        this.taggedClothes = [];
     }
 
     public static async fromId(postObjectId: ObjectId) {
         const dbClient = getClient();
         const document: PostDatabaseEntry = await dbClient.findDbItem(COLLECTION.POSTS, postObjectId);
         const post = new Post(postObjectId);
-        post.clothes = document.clothes;
+        post.taggedClothes = document.taggedClothes;
         post.imageFilename = document.imageFilename;
         post.caption = document.caption;
         post.rating = document.rating;
         post.ratingCount = document.ratingCount;
         post.userObjectId = new ObjectId(document.userObjectId);
+        post.blur = document.blur;
         return post;
     }
 
@@ -61,18 +71,19 @@ export class Post extends DbItem {
      * also adds the post to the user's posts list
      * @returns the new Post object
      */
-    public static async create(userObjectId: ObjectId, image:String, caption:String, clothes:ObjectId[]): Promise<Post | null> {
+    public static async create(userObjectId: ObjectId, image:String, caption:String, taggedClothes:Tag[], blur: boolean): Promise<Post | null> {
         // find the user
         //add the object under the users post string
         const newPost = new Post(new ObjectId());
         newPost.imageFilename = image;
         newPost.caption = caption;
-        newPost.clothes = clothes;
+        newPost.taggedClothes = taggedClothes;
         newPost.userObjectId = userObjectId;
+        newPost.blur = blur;
 
         const user = await User.fromId(userObjectId);
-        await user.addPost(newPost.id);
-        await user.writeToDatabase();
+        await user?.addPost(newPost.id);
+        await user?.writeToDatabase();
         await newPost.writeToDatabase();
         return newPost;
     }
@@ -82,8 +93,8 @@ export class Post extends DbItem {
      * @param postUID the user ID
      * @returns 
      */
-    public async getClothes(): Promise<ObjectId[] | null> {
-        return this.clothes;
+    public async getTaggedClothes(): Promise<Tag[] | null> {
+        return this.taggedClothes;
     }
     public async getImageFilename(): Promise<String | null> {
         return this.imageFilename;
@@ -98,8 +109,8 @@ export class Post extends DbItem {
         return this.ratingCount;
     }
 
-    public async addClothes(clothingUID: ObjectId[]): Promise<void> {
-        this.clothes.concat(clothingUID);
+    public async addTaggedClothes(clothingTag: Tag[]): Promise<void> {
+        this.taggedClothes.concat(clothingTag);
     }
     public async updateImageFilename(newImageFilename: String): Promise<void> {
         this.imageFilename = newImageFilename;
@@ -122,7 +133,7 @@ export class Post extends DbItem {
         return {
             ...entry,
             userObjectId: this.userObjectId,
-            clothes: this.clothes,
+            taggedClothes: this.taggedClothes,
             imageFilename: this.imageFilename,
             caption: this.caption,
             rating: this.rating,

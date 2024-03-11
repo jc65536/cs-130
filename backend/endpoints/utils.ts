@@ -49,6 +49,7 @@ export function convertTo24CharHex(s: String) {
  */
 export async function validateUser(req: Request, res: Response, next: NextFunction) {
     if (req.originalUrl == '/login') { // verify google token and write user id to session
+        console.log("inside validate user logic")
         const authHeader = req.headers.authorization;
         const token = authHeader && authHeader.split(' ')[1];
         console.log("inside the start of validateGoogleOAuthToken");
@@ -106,10 +107,13 @@ export async function validateUser(req: Request, res: Response, next: NextFuncti
         const userObjId = new ObjectId(userIdHash);
 
         // if user doesn't exist in database, add the user to the database
-        const dbClient: DbClient = await getClient();
+        const dbClient: DbClient = getClient();
         const document = await dbClient.findDbItem(COLLECTION.USERS, userObjId);
         if (document == null) {
             const user = await User.create(userObjId);
+            if (!user) {
+                console.log("Failed to create new user in google verification");
+            }
         }
         req.session.userID = userid;
         req.session.userObjectId = userIdHash;

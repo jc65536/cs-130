@@ -3,6 +3,7 @@ import { user_router } from "./endpoints/user-endpoints";
 import cors from "cors";
 import session, { SessionData } from 'express-session';
 import connectMongodbSession from "connect-mongodb-session";
+import bodyParser from 'body-parser';
 import { login_router } from "./endpoints/login-endpoints";
 import { validateUser } from "./endpoints/utils";
 import { uri } from "./lib/db-lib/db-client";
@@ -27,6 +28,8 @@ const store = new MongoDBStore({
 const app = express();
 const port = 8000;
 
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors({ origin: process.env["FRONTEND_HOST"], credentials: true }))
 
 app.use(session({

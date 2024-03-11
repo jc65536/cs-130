@@ -1,20 +1,28 @@
 import { Router, Request, Response } from "express";
 import { ObjectId } from "mongodb";
 import { Clothing } from "../lib/clothing"
+import { getClient } from "../lib/db-lib/db-client";
+import { COLLECTION } from "../lib/enums";
 
 export const clothes_router = Router();
 
-// for getting all tags from a clothing
-clothes_router.get("/:clothingId/tags",async (req: Request, res: Response) => {
-    const clothing = await Clothing.fromId(new ObjectId(req.params["clothingId"]));
-    res.status(200).json(clothing.tags);
-});
-
-// for setting tags to a clothing
-clothes_router.post("/:clothingId/tags",async (req: Request, res: Response) => {
-    const clothing = await Clothing.fromId(new ObjectId(req.params["clothingId"]));
-    clothing.addTags(req.body.tags); //expects array
-    res.status(200).json();
+// search all clothing objects based on query string
+// a clothing is considered a match if the query string is a substring of the clothing's name
+// to get all clothes, use the empty string, aka request from "/clothing/tags/"
+clothes_router.get("/tags/:queryString", async (req: Request, res: Response) => {
+    const queryString = req.params.queryString;
+    const dbClient = getClient();
+    const matchStrings = [];
+    const clothingDocs = await dbClient.getCollectionItems(COLLECTION.CLOTHES);
+    for (const clothingDoc of clothingDocs) {
+        if (clothingDoc.name.includes(queryString)) {
+            matchStrings.push({
+                tagName: clothingDoc.name,
+                tagId: clothingDoc._id,
+            });
+        }
+    }
+    res.status(200).json(matchStrings);
 });
 
 // for getting rating from a clothing

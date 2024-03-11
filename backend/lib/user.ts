@@ -25,9 +25,13 @@ export class User extends DbItem {
     public static async fromId(userObjectId: ObjectId) {
         const dbClient = getClient();
         const document: UserDatabaseEntry = await dbClient.findDbItem(COLLECTION.USERS, userObjectId);
+        if (!document) {
+            console.log("User doesn't exist: "+userObjectId);
+            return null;
+        }
         const user = new User(userObjectId);
-        user.posts = document.posts;
-        user.wardrobe = document.wardrobe;
+        user.posts = document.posts ?? user.posts;
+        user.wardrobe = document.wardrobe ?? user.wardrobe;
         return user;
     }
     /**
