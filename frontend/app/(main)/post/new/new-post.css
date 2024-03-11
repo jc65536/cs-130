@@ -188,6 +188,9 @@
 
         &:hover {
           transition: 0.3s;
+          border-color: var(--border_accents);
+          background-color: var(--main);
+          color: var(--accents);
 
           .add-post-header {
             margin-left: 4px;

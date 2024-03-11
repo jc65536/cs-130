@@ -1,8 +1,18 @@
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap');
+
+:root {
+  --main: #e64669;
+  --main2: #e19eb0;
+  --main3: #ed4ec2;
+  --accents: #e6dae0;
+  --border_accents: #61394c;
+}
+
 main {
   display: flex;
   flex-direction: column;
   align-items: center;
-  font-family: Verdana, sans-serif;
+  font-family: "Quicksand", sans-serif;
   /* max-width:360px; */
 }
 
@@ -40,15 +50,21 @@ nav button {
     border-radius: 44.44%;
     padding: 0;
     height: 100%;
+    color: var(--accents);
 }
 
 nav button img {
     margin: 0;
     height: 100%;
+    
 }
 
 nav button:focus {
-    background-color: #aaaaaa;
+    background-color: var(--main);
+
+    img {
+      filter: invert(100%);
+    }
 }
 
 .moai {
