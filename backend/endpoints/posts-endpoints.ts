@@ -123,6 +123,17 @@ posts_router.get('/image/:filename', (req, res) => {
 
 });
 
+posts_router.get("/", async (req: Request, res: Response) => {
+    const posts = await Post.all();
+    res.status(200).json(posts.map(post => post.toJson()));
+});
+
+//get post object
+posts_router.get("/:postId", async (req: Request, res: Response) => {
+    const post = await Post.fromId(new ObjectId(req.params["postId"]));
+    res.status(200).json(post.toJson());
+});
+
 //get post's rating
 posts_router.get("/:postId/rating", async (req: Request, res: Response) => {
     const post = await Post.fromId(new ObjectId(req.params["postId"]));

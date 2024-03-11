@@ -8,18 +8,27 @@ import { Wardrobe } from "./wardrobe";
 type UserDatabaseEntry = {
     _id: ObjectId,
     posts: ObjectId[], // the ids of the Post objects
-    wardrobe: ObjectId
+    wardrobe: ObjectId,
+    name: string,
+    followers: number,
+    streaks: number,
 };
 
 export class User extends DbItem {
     posts: ObjectId[];
     wardrobe: ObjectId | null;
+    name: string;
+    followers: number;
+    streaks: number;
     // private dbClient = getClient();
 
     constructor(id: ObjectId) {
         super(id, COLLECTION.USERS)
         this.posts = [];
         this.wardrobe = null;
+        this.name = '';
+        this.followers = 0;
+        this.streaks = 0;
     }
 
     public static async fromId(userObjectId: ObjectId) {
@@ -32,6 +41,9 @@ export class User extends DbItem {
         const user = new User(userObjectId);
         user.posts = document.posts ?? user.posts;
         user.wardrobe = document.wardrobe ?? user.wardrobe;
+        user.name = document.name ?? user.name;
+        user.followers = document.followers ?? user.followers;
+        user.streaks = document.streaks ?? user.streaks;
         return user;
     }
     /**
@@ -65,6 +77,10 @@ export class User extends DbItem {
      */
     public async addPost(postUID: ObjectId): Promise<void> {
         this.posts.push(postUID);
+    }
+
+    public setName(newName: string) {
+        this.name = newName;
     }
 
     /**
