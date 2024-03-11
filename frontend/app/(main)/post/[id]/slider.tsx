@@ -8,12 +8,11 @@ export default (props: SliderProps) => {
     const sliderRef = useRef<HTMLDivElement>(null);
     const [frac, setFrac] = useState(0.5);
 
-    const commitFrac = (x: number) => {
-        // Also send to server
-        setFrac(x);
+    const commitFrac = () => {
+        // Send to server
     };
 
-    const startDrag = (e0: React.MouseEvent) => {
+    const startDrag = (e0: React.MouseEvent | React.Touch) => {
         if (sliderRef.current === null)
             return;
 
@@ -23,19 +22,29 @@ export default (props: SliderProps) => {
 
         setFrac(calcFrac(e0.clientX));
 
-        const handleDrag = (e: MouseEvent) => setFrac(calcFrac(e.x));
+        const handleDrag = (e: MouseEvent | Touch) => setFrac(calcFrac(e.clientX));
 
-        const endDrag = (e: MouseEvent) => {
-            commitFrac(calcFrac(e.x));
+        const handleTouchDrag = (e: TouchEvent) => handleDrag(e.touches[0]);
+
+        const endDrag = () => {
+            commitFrac();
             document.removeEventListener("mousemove", handleDrag);
+            document.removeEventListener("touchmove", handleTouchDrag);
         };
 
+        const endTouchDrag = () => endDrag();
+
         document.addEventListener("mousemove", handleDrag);
+        document.addEventListener("touchmove", handleTouchDrag);
         document.addEventListener("mouseup", endDrag, { once: true });
+        document.addEventListener("touchend", endTouchDrag, { once: true });
     };
 
     return (
-        <div className="slider" onMouseDown={startDrag} ref={sliderRef}>
+        <div className="slider"
+            onMouseDown={startDrag}
+            onTouchStart={e => startDrag(e.touches[0])}
+            ref={sliderRef}>
             <div className="fill" style={{ width: `${frac * 100}%` }}></div>
             <div className="heart-container">
                 <div className="heart-border">

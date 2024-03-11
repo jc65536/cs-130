@@ -18,7 +18,7 @@ export default function NavBar() {
                     <img src="/wardrobe-nav-icon.svg" />
                 </button>
             </Link>
-            <Link href="profile">
+            <Link href="/profile">
                 <button className="user">
                     <img src="/user-nav-icon.svg" />
                 </button>

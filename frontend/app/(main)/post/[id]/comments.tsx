@@ -34,10 +34,10 @@ export default (props: CommentProps) => {
     };
 
     return (
-        <div>
-            <ul className="comment-container">{commentItems}</ul>
+        <div className="comment-container">
+            <ul>{commentItems}</ul>
             <form onSubmit={submitComment}>
-                <input className="comment-box" ref={commentRef} />
+                <input className="comment-input" ref={commentRef} />
                 <button>Comment</button>
             </form>
         </div>
