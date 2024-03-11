@@ -13,7 +13,7 @@ export default ({ params: { id } }: { params: { id: string } }) => {
     };
 
     return (
-        <main>
+        <>
             <img src="/tango.jpg" />
             <p>
                 Caption goes here
@@ -21,6 +21,6 @@ export default ({ params: { id } }: { params: { id: string } }) => {
             <Slider id={id} />
             <button type="button" onClick={savePost}>Save post</button>
             <Comments id={id} />
-        </main>
+        </>
     );
 };

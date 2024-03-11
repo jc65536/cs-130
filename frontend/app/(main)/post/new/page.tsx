@@ -1,14 +1,14 @@
 "use client"
 
-import NewPostPhoto from "@/app/components/new-post-photo";
+import NewPostPhoto from "./new-post-photo";
 import { backend_url } from "@/app/settings";
-import { Tag, TagDotProps_ } from "@/app/components/tag";
-import TagEditor, { TagEditorProps } from "@/app/components/tag-editor";
+import { Tag, TagDotProps_ } from "./tag";
+import TagEditor, { TagEditorProps } from "./tag-editor";
 import { ChangeEvent, useState, useEffect, MouseEvent, useRef } from "react";
 import { FaUpload } from "react-icons/fa";
-import { MdOutlineAddAPhoto, MdOutlineClose } from "react-icons/md";
+import { MdOutlineAddAPhoto } from "react-icons/md";
 import { fn } from "@/app/util";
-import "@/app/new-post.css";
+import "./new-post.css";
 
 export default function Home() {
     const blurRef = useRef<HTMLInputElement>(null);
@@ -22,8 +22,7 @@ export default function Home() {
     // const [imageRes, setImageRes] = useState<string>();
 
     const onUploadClick = () => {
-        // `current` points to the mounted file input element
-        if (photoRef.current) photoRef.current.click();
+        photoRef.current?.click();
     };
 
     const closeEditor = (dotKey: number) => fn(setTags).effectAfter(_ =>
@@ -138,54 +137,38 @@ export default function Home() {
     };
 
     return (
-        <main>
-            <form className="post-form" onSubmit={handleSubmit}>
-                <div className="cancel-header">
-                    <button type="button" className="cancel"><MdOutlineClose className="cancel-x"/></button>
+        <form className="post-form" onSubmit={handleSubmit}>
+            <h1 className="new-post-header">New Post</h1>
+            <div id="file-upload-wrapper">
+                <div className="upload-box" onClick={onUploadClick}>
+                    <FaUpload />
+                    <h4 className="upload-box-header">Choose Image to Upload</h4>
+                    <input type="file" onChange={handleFileChange} className="photo-select" ref={photoRef} hidden />
                 </div>
-                <h4 className="new-post-header">New Post</h4>
-                <div id="file-upload-wrapper">
-                    <div className="upload-box" onClick={onUploadClick}>
-                        <FaUpload />
-                        <h4 className="upload-box-header">Choose Image to Upload</h4>
-                        <input type="file" onChange={handleFileChange} className="photo-select" ref={photoRef} hidden/>
-                    </div>
-                    <small>Files Supported: JPG, PNG</small>
-                </div>
+                <small>Files Supported: JPG, PNG</small>
+            </div>
 
-                <div id="photo-editor">
-                    <div className="image-tags">
-                        {imagePreview && <NewPostPhoto imgSrc={imagePreview} {...dotProps} />}
-                        {tagEditor}
-                    </div>
-                    <div className="settings">
-                        <div className="settings-top">
-                            <div id="file-change-wrapper">
-                                <div className="upload-box" onClick={onUploadClick}>
-                                    <FaUpload />
-                                    <input type="file" onChange={handleFileChange} className="photo-select" ref={photoRef} hidden/>
-                                </div>
-                                <small>Change Image</small>
-                            </div>
-                            <div className="blur-contain">
-                                <input type="checkbox" className="blur" ref={blurRef} />
-                                <label className="blur-label">Blur my face</label>
-                            </div>
-                            
-                        </div>
-                        <div className="settings-bottom">
-                            <textarea className="caption" ref={capRef} placeholder="Start typing your caption."></textarea>
-                        </div>
-                        <div className="add-post-contain">
-                                <button type="submit" onClick={post}>
-                                    <MdOutlineAddAPhoto className="add-post-icon"/>
-                                    <h4 className="add-post-header">Add Post</h4>
-                                </button>
-                        </div>
-                    </div>
+            <div id="photo-editor">
+                <div className="image-tags">
+                    {imagePreview && <NewPostPhoto imgSrc={imagePreview} {...dotProps} />}
+                    {tagEditor}
                 </div>
-                
-            </form>
-        </main>
+                <div className="settings">
+                    <div className="file-change-wrapper" onClick={onUploadClick}>
+                        <FaUpload /> Change image
+                    </div>
+                    <div className="blur-contain">
+                        <label htmlFor="blur-switch" className="blur-label">Blur my face</label>
+                        <input type="checkbox" id="blur-switch" className="blur" ref={blurRef} />
+                    </div>
+                    <textarea className="caption" ref={capRef} placeholder="Start typing your caption."></textarea>
+                    <button type="submit" onClick={post}>
+                        <MdOutlineAddAPhoto className="add-post-icon" />
+                        <h4 className="add-post-header">Add Post</h4>
+                    </button>
+                </div>
+            </div>
+
+        </form>
     );
 }

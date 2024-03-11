@@ -1,0 +1,69 @@
+/* PostItemCard.module.css */
+.card {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  padding: 12px 16px;
+  margin: 8px 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.card img {
+  display: block;
+  height: auto;
+  width: 100%;
+  border-radius: 12px;
+}
+
+.like-button {
+  border-radius: 100%;
+  border: 2px solid #2a2933;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .icon {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+.like-button:not(.saved) {
+  .saved.icon {
+    display: none;
+  }
+}
+
+.like-button.saved {
+  .save.icon {
+    display: none;
+  }
+}
+
+.card-body {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+
+  .text-content p {
+    margin: 4px 0;
+  }
+}
+
+.post-list {
+  display: flex;
+  flex-direction: column;
+  /* Enables horizontal scrolling */
+  gap: 16px;
+  /* Adjust the spacing between items */
+  justify-content: flex-start;
+  width: 90%;
+  align-items: center;
+  justify-content: center;
+}
