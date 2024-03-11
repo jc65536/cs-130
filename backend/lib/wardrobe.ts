@@ -60,6 +60,10 @@ export class Wardrobe extends DbItem {
         return this.clothes;
     }
 
+    public addClothes(clothingObjectId: ObjectId) {
+        this.clothes.push(clothingObjectId);
+    }
+
     public async getPosts(): Promise<ObjectId[] | null> {
         return this.posts;
     }

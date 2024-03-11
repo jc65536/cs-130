@@ -7,7 +7,7 @@ import {Post, PostDatabaseEntry} from './post';
 
 type ClothingDatabaseEntry = {
     _id: ObjectId,
-    tags: String[],
+    name: string,
     reusedCount: number,
     rating: number,
     ratingCount: number,
@@ -17,7 +17,7 @@ type ClothingDatabaseEntry = {
 }
 
 export class Clothing extends DbItem {
-    tags: String[];
+    name: string;
     reusedCount: number;
     rating: number;
     ratingCount: number;
@@ -30,9 +30,9 @@ export class Clothing extends DbItem {
      * @returns 
      */
     constructor(id: ObjectId) {
-        super(id, COLLECTION.POSTS)
+        super(id, COLLECTION.CLOTHES)
         this.userObjectId = new ObjectId();
-        this.tags = [];
+        this.name = '';
         this.reusedCount = 0;
         this.rating = 0;
         this.ratingCount = 0;
@@ -44,7 +44,7 @@ export class Clothing extends DbItem {
         const dbClient = getClient();
         const document: ClothingDatabaseEntry = await dbClient.findDbItem(COLLECTION.CLOTHES, clothingObjectId);
         const clothing = new Clothing(clothingObjectId);
-        clothing.tags = document.tags;
+        clothing.name = document.name;
         clothing.reusedCount = document.reusedCount;
         clothing.cost = document.cost;
         clothing.rating = document.rating;
@@ -55,23 +55,21 @@ export class Clothing extends DbItem {
     }
 
     /**
-     * 
+     * Creates a new Clothing object
+     * this method does not add the clothing id to any Post object
      * @param userUID the user's google ID
      * should be retrieved from Google API using the google OAuth token
      * @returns 
      */
-    public static async create(postObjectId: ObjectId, tags:String[], reusedCount:number, rating:number, ratingCount:number, cost:number, onSale:Boolean): Promise<Clothing | null> {
-        // find the user
-        //add the object under the users post string
+    public static async create(name: string, reusedCount:number, rating:number, ratingCount:number, cost:number, onSale:Boolean): Promise<Clothing | null> {
         const newClothing = new Clothing(new ObjectId());
-        newClothing.tags = tags;
+        newClothing.name = name;
         newClothing.reusedCount = reusedCount;
         newClothing.rating = rating;
         newClothing.ratingCount = ratingCount;
         newClothing.cost = cost;
         newClothing.onSale = onSale;
-        const post = await Post.fromId(postObjectId);
-        await post.addClothes([newClothing.id]);
+        await newClothing.writeToDatabase();
         return newClothing;
     }
     public async getReusedCount(): Promise<number | null> {
@@ -83,18 +81,11 @@ export class Clothing extends DbItem {
     public async getOnSale(): Promise<Boolean | null> {
         return this.onSale;
     }
-    public async getTags(): Promise<String[] | null> {
-        return this.tags;
-    }
     public async getRating(): Promise<Number | null> {
         return this.rating;
     }
     public async getRatingCount(): Promise<Number | null> {
         return this.ratingCount;
-    }
-
-    public async addTags(newTags: String[]): Promise<void> {
-        this.tags.concat(newTags);
     }
     public async toggleOnSale(): Promise<void> {
         this.onSale = !this.onSale;
@@ -120,7 +111,6 @@ export class Clothing extends DbItem {
         return {
             ...entry,
             userObjectId: this.userObjectId,
-            tags: this.tags,
             reusedCount: this.reusedCount,
             rating: this.rating,
             cost: this.cost,

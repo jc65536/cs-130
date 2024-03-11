@@ -3,10 +3,12 @@ import { user_router } from "./endpoints/user-endpoints";
 import cors from "cors";
 import session, { SessionData } from 'express-session';
 import connectMongodbSession from "connect-mongodb-session";
+import bodyParser from 'body-parser';
 import { login_router } from "./endpoints/login-endpoints";
 import { validateUser } from "./endpoints/utils";
 import { uri } from "./lib/db-lib/db-client";
 import { posts_router } from "./endpoints/posts-endpoints";
+import { clothes_router } from "./endpoints/clothing-endpoints";
 
 
 declare module "express-session" {
@@ -27,6 +29,8 @@ const store = new MongoDBStore({
 const app = express();
 const port = 8000;
 
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors({ origin: process.env["FRONTEND_HOST"], credentials: true }))
 
 app.use(session({
@@ -53,6 +57,8 @@ app.use("/login", login_router);
 app.use("/user", user_router);
 
 app.use("/posts", posts_router);
+
+app.use("/clothing", clothes_router);
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`);

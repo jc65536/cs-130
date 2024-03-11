@@ -74,20 +74,48 @@ export default function Home() {
             return;
         }
 
+        const blur = blurRef.current?.checked;
+        const caption = capRef.current?.value;
+        console.log("new post payload: ");
+        console.log({
+            'tags': tags,
+            'blur': blur,
+            'caption': caption
+        });
+        const postMetadataRes = await fetch(backend_url('/posts/new'), {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                'tags': tags,
+                'blur': blur,
+                'caption': caption
+            })
+        }).then(res => {
+            if (!res.ok) {
+                throw new Error(`HTTP error when creating new post! Error status: ${res.status}`);
+            }
+            return res.json();
+        });
+        const postId = postMetadataRes.postId;
+
+        console.log("postId received from server: " + postId);
         // // Create FormData object to send the image
-        const formData = new FormData();
-        formData.append('image', image);
+        const imageData = new FormData();
+        imageData.append('image', image);
 
         try {
-            uploadPhoto(formData);
+            uploadPhoto(imageData, postId);
         } catch (err) {
             console.error("The error is: " + err);
         }
     };
 
-    const uploadPhoto = async (formData: FormData) => {
+    const uploadPhoto = async (formData: FormData, postId: string) => {
         try {
-            const response = await fetch(backend_url('/posts/upload'), {
+            const response = await fetch(backend_url('/posts/upload-image/' + postId), {
                 method: 'POST',
                 credentials: 'include',
                 body: formData,
@@ -119,23 +147,6 @@ export default function Home() {
         }
     }
 
-    const post = async (e: MouseEvent<HTMLButtonElement>) => {
-        const blur = blurRef.current?.checked;
-        const caption = capRef.current?.value;
-
-        console.log({
-            blur,
-            caption,
-            tags,
-        });
-
-        if (image !== undefined) {
-            const imageData = new FormData();
-            imageData.append("image", image);
-            console.log(imageData);
-        }
-    };
-
     return (
         <form className="post-form" onSubmit={handleSubmit}>
             <h1 className="new-post-header">New Post</h1>
@@ -162,13 +173,12 @@ export default function Home() {
                         <input type="checkbox" id="blur-switch" className="blur" ref={blurRef} />
                     </div>
                     <textarea className="caption" ref={capRef} placeholder="Start typing your caption."></textarea>
-                    <button type="submit" onClick={post}>
+                    <button type="submit">
                         <MdOutlineAddAPhoto className="add-post-icon" />
                         <h4 className="add-post-header">Add Post</h4>
                     </button>
                 </div>
             </div>
-
         </form>
     );
 }
