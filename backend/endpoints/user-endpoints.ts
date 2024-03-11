@@ -13,11 +13,11 @@ user_router.get("/:userId/posts",async (req: Request, res: Response) => {
 // for getting best streak from a user
 user_router.get("/:userId/bestStreak",async (req: Request, res: Response) => {
     const user = await User.fromId(new ObjectId(req.session.userObjectId));
-    res.status(200).json(user.getBestStreak());
+    res.status(200).json(user?.getBestStreak());
 });
 
 // for getting current streak from a user
 user_router.get("/:userId/currStreak",async (req: Request, res: Response) => {
     const user = await User.fromId(new ObjectId(req.session.userObjectId));
-    res.status(200).json(user.getCurrStreak());
+    res.status(200).json(user?.getCurrStreak());
 });
