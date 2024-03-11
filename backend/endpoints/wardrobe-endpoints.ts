@@ -13,12 +13,12 @@ wardrobe_router.get("/clothes",async (req: Request, res: Response) => {
 // for getting all posts from a wardrobe
 wardrobe_router.get("/posts",async (req: Request, res: Response) => {
     const wardrobe = await Wardrobe.fromId(new ObjectId(req.session.userObjectId));
-    res.status(200).json(wardrobe.getPosts());
+    res.status(200).json(await wardrobe.getPosts());
 });
 
 // for clearing a wardrobe
 wardrobe_router.post("/clear", async (req: Request, res: Response) => {
     const wardrobe = await Wardrobe.fromId(new ObjectId(req.session.userObjectId));
-    wardrobe.clear();
+    await wardrobe.clear();
     res.status(200).json();
 });
