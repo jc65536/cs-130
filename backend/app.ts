@@ -8,6 +8,7 @@ import { login_router } from "./endpoints/login-endpoints";
 import { validateUser } from "./endpoints/utils";
 import { uri } from "./lib/db-lib/db-client";
 import { posts_router } from "./endpoints/posts-endpoints";
+import { clothes_router } from "./endpoints/clothing-endpoints";
 
 
 declare module "express-session" {
@@ -56,6 +57,8 @@ app.use("/login", login_router);
 app.use("/user", user_router);
 
 app.use("/posts", posts_router);
+
+app.use("/clothing", clothes_router);
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`);
