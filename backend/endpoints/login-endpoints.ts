@@ -8,7 +8,7 @@ login_router.post("/", async (req: Request, res: Response) => {
     // const user = new User(new ObjectId(req.session.userObjectId));
     const user = await User.fromId(new ObjectId(req.session.userObjectId));
     if (!user) {
-        return res.status(400).send("Bug where reading user after it was just written can't find the user");
+        return res.status(400).send("User doesn't exist in database");
     }
     res.status(200).json(user.toJson());
 });

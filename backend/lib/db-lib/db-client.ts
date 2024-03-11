@@ -114,13 +114,13 @@ export class DbClient {
      * @param items the items to insert into the database
      */
     public async writeDbItems(...items: DbItem[]): Promise<void> {
-        items.forEach(async item => {
+        await Promise.all(items.map(async item => {
             console.log("inside write DB items");
             console.log(item);
             const collection = await this.openCollection(item.collectionName);
             // void collection.doc(item.id).set(item.toJson());
-            void collection.replaceOne({"_id": new ObjectId(item.id)}, item.toJson(), {upsert: true});
-        });
+            await collection.replaceOne({"_id": new ObjectId(item.id)}, item.toJson(), {upsert: true});
+        }));
     }
 
     /**
