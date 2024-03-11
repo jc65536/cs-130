@@ -1,0 +1,37 @@
+.slider {
+    width: min-content;
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+
+    .heart-container {
+        display: flex;
+        border-left: 4px solid #cccccc;
+        border-right: 4px solid #cccccc;
+        position: relative;
+        z-index: 1;
+
+        .heart-border {
+            border: 4px solid #cccccc;
+        }
+
+        .heart {
+            height: 48px;
+            width: 48px;
+            background: #cccccc;
+            mask: linear-gradient(#000000 0 0) center/cover,
+                url("/heart.svg") 50% 60%/contain;
+            mask-repeat: no-repeat;
+            mask-composite: exclude;
+        }
+    }
+
+    .fill {
+        background: #ff91a4;
+        height: 100%;
+        width: 50%;
+        position: absolute;
+        left: 0;
+        z-index: 0;
+    }
+}
