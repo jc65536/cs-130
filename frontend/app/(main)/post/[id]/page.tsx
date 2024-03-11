@@ -6,21 +6,23 @@ import "./post-details.css";
 import Comments from "./comments";
 
 export default ({ params: { id } }: { params: { id: string } }) => {
-    const [frac, setFrac] = useState(0.5);
-
     const savePost = () => {
         // Save post logic here
     };
 
     return (
-        <>
+        <div className="post-container">
             <img src="/tango.jpg" />
-            <p>
-                Caption goes here
-            </p>
+            <div className="metadata-row">
+                <div className="post-text-content">
+                    <p>Username</p>
+                    <p>Caption goes here</p>
+                </div>
+                <div className="rating">45</div>
+                <button type="button" onClick={savePost}>Save post</button>
+            </div>
             <Slider id={id} />
-            <button type="button" onClick={savePost}>Save post</button>
             <Comments id={id} />
-        </>
+        </div>
     );
 };
