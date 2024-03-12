@@ -85,7 +85,7 @@ posts_router.post("/new", async (req: Request, res: Response) => {
 
             await clothingItem?.incrementReusedCount();
             await clothingItem?.addPost(post.id);
-            await wardrobe.addClothes(new ObjectId(objId));
+            clothingItem && await wardrobe.addClothes(clothingItem.id);
             return {
                 id: objId,
                 name: tag.name,
