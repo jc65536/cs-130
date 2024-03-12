@@ -28,13 +28,35 @@
             flex-grow: 1;
         }
     }
+
+    .post-footer {
+        display: flex;
+        justify-content: space-between;
+        flex-direction: row;
+        margin: 12px 0 6px 0;
+        align-items: center;
+    }
+
+    .rate-text {
+        display: flex;
+        justify-content: space-between;
+        font-weight: bold;
+        align-items: baseline;
+        margin: 6px 0;
+
+        .rating {
+            text-align: right;
+            font-size: 1.5rem;
+        }
+    }
 }
 
 .slider {
     position: relative;
-    border-radius: 12px;
+    border-radius: 8px;
     overflow: hidden;
-    margin: 5px;
+    margin: 6px 0;
+    touch-action: none;
 
     .heart-container {
         display: flex;
@@ -70,19 +92,10 @@
     }
 }
 
-.post-footer {
-    display: flex;
-    justify-content: space-between;
-    flex-direction: row;
-    width: 95%;
-    margin: 5px;
-    align-items: center;
-}
-
 .comment-section-contain {
     display: flex;
     flex-direction: column;
-    width: 300px;
+    margin-top: 12px;
 }
 
 .add-comment-form {
@@ -91,29 +104,31 @@
 }
 
 .submit-comment {
+    border-radius: 100%;
+    border: 2px solid #2a2933;
+    width: 36px;
+    height: 36px;
     display: flex;
-    float: right;
-    width: 25px;
-    height: 25px;
-    align-items: center;
     justify-content: center;
-    border: 1.5px solid var(--border_accents);
-    border-radius: 5px;
+    align-items: center;
+    margin-left: auto;
+
+    .icon {
+        width: 18px;
+        height: 18px;
+    }
 }
 
 .comment-box {
-    border-radius: 2px;
+    border-radius: 8px;
+    padding: 8px;
     border: 1px solid var(--border_accents);
-    height: 60px;
+    height: 40px;
 }
 
 .submit-button-contain {
-    width: 100%;
-}
-
-.rate-text {
-    margin: 2px;
-    padding: 0;
+    display: flex;
+    margin-top: 4px;
 }
 
 .post-caption {
@@ -123,11 +138,27 @@
 
 .img-tag-container {
     display: block;
-    max-width: 85%;
     position: relative;
     align-self: center;
 
     img {
         margin: auto;
+    }
+}
+
+.comment-container {
+    p {
+        font-weight: bold;
+        margin: 6px 0;
+    }
+
+    .comment {
+        margin: 2px 0;
+        padding: 4px 8px;
+        border-radius: 4px;
+
+        &.shaded {
+            background-color: #e2e2e2;
+        }
     }
 }

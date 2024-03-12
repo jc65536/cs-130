@@ -151,7 +151,7 @@ export default function Home() {
     }
 
     return (
-        <form className="post-form" onSubmit={handleSubmit}>
+        <form className="post-form page-new" onSubmit={handleSubmit}>
             <h1 className="new-post-header">New Post</h1>
             <div id="file-upload-wrapper">
                 <div className="upload-box" onClick={onUploadClick}>

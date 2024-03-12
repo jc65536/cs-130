@@ -19,8 +19,8 @@ export default function RootLayout({
         <AuthCheck>
           <main>
             {children}
+            <NavBar />
           </main>
-          <NavBar />
         </AuthCheck>
       </body>
     </html>

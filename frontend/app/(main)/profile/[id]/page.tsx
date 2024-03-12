@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import styles from './UserProfile.module.css';
+import styles from '../UserProfile.module.css';
 import { backend_url } from "@/app/settings";
 import { FaFire } from "react-icons/fa6";
 import { getUser, getUserPosts } from '../UserService';
@@ -28,14 +28,17 @@ export default ({ params: { id } }: { params: { id: string } }) => {
     const [currentStreak, setCurrentStreak] = useState(0);
 
     useEffect(() => {
-        fetch(backend_url(`/users/${id}`), { credentials: "include" })
+        fetch(backend_url(`/user/${id}`), { credentials: "include" })
             .then(async res => {
                 const res_json = await res.json();
                 console.log(res_json);
                 setUser(res_json);
-                user.posts.forEach((post_id)=> {
-                    console.log(post_id);
-                });
+            });
+        fetch(backend_url(`/user/posts/${id}`), { credentials: "include" })
+            .then(async res => {
+                const res_json = await res.json();
+                console.log(res_json);
+                setPosts(res_json);
             });
       }, []);
 

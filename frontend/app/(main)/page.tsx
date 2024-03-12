@@ -3,7 +3,7 @@ import './theme.css';
 
 export default function Home() {
     return (
-        <>
+        <div className="page-home" style={{display: "contents"}}>
             <div className="ootd-header">
                 <h2>OOTD</h2>
             </div>
@@ -41,6 +41,6 @@ export default function Home() {
                 </div>
             </div>
             <PostItemCardList></PostItemCardList>
-        </>
+        </div>
     );
 }
