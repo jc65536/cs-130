@@ -40,7 +40,7 @@ initializefaceDetector();
 /**
  * Detect faces in still images on click
  */
-export async function detectFace(target: HTMLImageElement, cb: (_: Blob) => void) {
+export async function detectFace(target: HTMLImageElement, cb: (_: Blob) => void, errCb: () => void) {
     if (!faceDetector) {
         console.log("Wait for objectDetector to load before clicking");
         return;
@@ -49,10 +49,10 @@ export async function detectFace(target: HTMLImageElement, cb: (_: Blob) => void
     // faceDetector.detect returns a promise which, when resolved, is an array of Detection faces
     const detections = faceDetector.detect(target).detections;
 
-    displayImageDetections(detections, target, cb);
+    displayImageDetections(detections, target, cb, errCb);
 }
 
-async function displayImageDetections(detections: Detection[], target: HTMLImageElement, cb: (_: Blob) => void) {
+async function displayImageDetections(detections: Detection[], target: HTMLImageElement, cb: (_: Blob) => void, errCb: () => void) {
     const ratio = target.height / target.naturalHeight;
     console.log(ratio);
 
@@ -72,5 +72,9 @@ async function displayImageDetections(detections: Detection[], target: HTMLImage
             .getBuffer(Jimp.MIME_JPEG, (_, buf) => {
                 cb(new Blob([buf]));
             });
+        
+        return;
     }
+
+    errCb();
 }

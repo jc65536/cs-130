@@ -40,7 +40,9 @@ export default forwardRef(function NewPostPhoto(props: NewPostPhotoProps, ref: F
 
         if (props.blur) {
             if (cache.current === null || !cache.current[1]) {
-                detectFace(imgRef.current, props.setImage);
+                detectFace(imgRef.current, props.setImage, () => {
+                    // Called if for loop doesn't run
+                });
             } else {
                 props.setImage(cache.current[0]);
             }
