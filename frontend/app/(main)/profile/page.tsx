@@ -16,14 +16,13 @@ const testUser = {
     followers: 237,
     streaks: 10,
     posts: [
-      { id: 1, title: "Post 1", likes: 100 },
-      { id: 2, title: "Post 2", likes: 68 },
+      { id: 1, caption: "Post 1", likes: 100 },
+      { id: 2, caption: "Post 2", likes: 68 },
     ],
   };
 
 export default function Home() {
     const [user, setUser] = useState(testUser);
-    const [userID, setUserID] = useState(null);
     const [posts, setPosts] = useState([]);
     const [bestStreak, setBestStreak] = useState(0);
     const [currentStreak, setCurrentStreak] = useState(0);
@@ -33,7 +32,7 @@ export default function Home() {
           const userData = await getUser();
           if (userData) {
             if (!userData.avatar || userData.avatar === null) {
-                userData.avatar = "https://api.dicebear.com/7.x/big-smile/svg?randomizeIds=false";
+                userData.avatar = "https://api.dicebear.com/7.x/big-smile/svg";
             } 
             if ((!userData.name || userData.name === "")) {
                 userData.name = "New User";
@@ -66,16 +65,18 @@ export default function Home() {
         
         <h2>Posts</h2>
         <div className={styles.postsContainer}>
-        {user.posts.map((post) => (
-            <div key={post.id} className={styles.postCard}>
-                <div>
-                    <img src="/tango.jpg" alt="Post" className={styles.postImage} />
+        {posts.map((post: any) => (
+            <Link href={`/post/${post.id}`}>
+                <div key={post.id} className={styles.postCard}>
+                    <div>
+                        <img src={backend_url(`/posts/image/${post.imageFilename}`)} alt="Post" className={styles.postImage} />
+                    </div>
+                    <div className={styles.postContent}>
+                        <h3>{post.caption}</h3>
+                        <p>{new Date(post.date).toLocaleDateString()}</p>
+                    </div>
                 </div>
-                <div className={styles.postContent}>
-                    <h3>{post.title}</h3>
-                    <p>{post.likes} likes</p>
-                </div>
-            </div>
+            </Link>
             ))}
         </div>
         </div>
