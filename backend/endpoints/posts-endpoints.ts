@@ -141,11 +141,7 @@ posts_router.get("/", async (req: Request, res: Response) => {
 //get trending posts
 posts_router.get("/trending", async (req: Request, res: Response) => {
     const trending = await TrendingPosts.getTrendingPosts();
-
-    // if trending was last updated more than 24 hours ago, update it
-    if (trending.dateLastUpdated.getDay() < new Date(Date.now() - 1000 * 60 * 60 * 24).getDay()) {
-        await trending.updateTrendingPosts();
-    }
+    await trending.updateTrendingPosts();
     // get all posts from list of post ids
     const posts = await Promise.all(trending.posts.map(async (id) => {
         return await Post.fromId(id);
