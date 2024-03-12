@@ -67,22 +67,6 @@ nav button:focus {
   }
 }
 
-.moai {
-  animation: spin 0.75s infinite ease-out;
-  display: inline-block;
-  margin: 0 0.5rem;
-}
-
-@keyframes spin {
-  from {
-    transform: rotateZ(0turn);
-  }
-
-  to {
-    transform: rotateZ(1turn);
-  }
-}
-
 .toggle {
   position: relative;
   padding: 2px;
