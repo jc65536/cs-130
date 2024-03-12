@@ -28,7 +28,7 @@ export default function PostItemCard({ id, caption }: Post) {
             <Link href={detailPagePath}>
                 <Image
                     // src={`https://picsum.photos/seed/${id}/120/160`}
-                    src={`https://picsum.photos/id/${id}/120/160`}
+                    src={`https://picsum.photos/id/${id}/480/640`}
                     alt={caption}
                     width={120}
                     height={160}

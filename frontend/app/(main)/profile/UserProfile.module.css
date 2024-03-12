@@ -1,0 +1,85 @@
+/* UserProfile.module.css */
+.avatar {
+    border-radius: 50%;
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+  }
+  
+  .userName {
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+
+  .followers {
+    font-size: 14px;
+    color: #666;
+    margin-top: 5px;
+  }
+
+  .followersContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    margin-top: 5px;
+    max-width: 700px;
+    width: 100%;
+  }
+  
+  .followButton {
+    padding: 8px 16px;
+    border: 1px solid #ccc;
+    background-color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  
+  .followButton:hover {
+    background-color: #aaaaaa;
+  }
+
+  .streaksBox {
+    margin: 20px auto;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    text-align: center;
+  }
+  
+  .postsContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 10px;
+    margin: auto;
+    align-items: center;
+    max-width: 700px;
+  }
+  
+  .postCard {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    max-width: 700px;
+    min-width: 400px;
+    width: 100%;
+  }
+  
+  .postImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+  
+  .postContent {
+    flex: 1; /* Allows the content to fill the remaining space */
+    display: flex;
+    justify-content: space-between; /* Aligns children (title and likes) on opposite ends */
+    align-items: center;
+  }
+  
