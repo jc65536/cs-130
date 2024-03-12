@@ -148,7 +148,8 @@ posts_router.post("/:postId/rating", async (req: Request, res: Response) => {
     let postId = new ObjectId(req.params["postId"]);
 
     if (user != null) {
-        if (user.ratedPosts.has(postId)) {
+        const ratedPosts = await user.getRatedPosts();
+        if (ratedPosts.has(postId)) {
             await post.updateRatingAfterRated(
                 await user.getRatingForPost(postId),
                 +req.body.rating

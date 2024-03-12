@@ -130,6 +130,10 @@ export class User extends DbItem {
         this.ratedPosts.set(postId, rating);
     }
 
+    public async getRatedPosts(): Promise<Map<ObjectId, number>> {
+        return this.ratedPosts;
+    }
+
     /**
      * Converts the object into a form for the database
      * @returns a database entry
