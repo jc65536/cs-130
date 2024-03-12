@@ -4,12 +4,13 @@ import NewPostPhoto from "./new-post-photo";
 import { backend_url } from "@/app/settings";
 import { Tag, TagDotProps_ } from "./tag";
 import TagEditor, { TagEditorProps } from "./tag-editor";
-import { ChangeEvent, useState, useEffect, MouseEvent, useRef } from "react";
+import { ChangeEvent, useState, useEffect, useRef } from "react";
 import { FaUpload } from "react-icons/fa";
 import { MdOutlineAddAPhoto } from "react-icons/md";
 import { fn } from "@/app/util";
 import "./new-post.css";
 import { useRouter } from "next/navigation";
+import { resize } from "@/app/img-lib";
 
 export default function Home() {
     const router = useRouter();
@@ -21,9 +22,10 @@ export default function Home() {
 
     const [editorProps, setEditorProps] = useState<TagEditorProps | null>(null);
     const [tags, setTags] = useState<Tag[]>([]);
-    const [image, setImage] = useState<File>();
-    const [imagePreview, setImagePreview] = useState<string>();
-    // const [imageRes, setImageRes] = useState<string>();
+    const [image, setImage] = useState<File | null>(null);
+    const [blur, setBlur] = useState(false);
+
+    const cachedImage = useRef<[Blob, boolean] | null>(null);
 
     const onUploadClick = () => {
         photoRef.current?.click();
@@ -45,20 +47,13 @@ export default function Home() {
 
     // create a preview as a side effect, whenever selected file is changed
     useEffect(() => {
-        if (!image) {
-            setImagePreview(undefined);
+        if (!image)
             return;
-        }
 
-        const objectUrl = URL.createObjectURL(image);
-        setImagePreview(objectUrl);
         const file_upload = document.getElementById('file-upload-wrapper');
         const file_change = document.getElementById('photo-editor');
         if (file_upload) file_upload.style.display = 'none';
         if (file_change) file_change.style.display = 'flex';
-
-        // free memory when ever this component is unmounted
-        return () => URL.revokeObjectURL(objectUrl)
     }, [image])
 
     // Function to handle file selection
@@ -66,8 +61,10 @@ export default function Home() {
         setEditorProps(null);
         setTags([]);
         e.preventDefault();
-        const file = e.target.files?.[0];
+        const file = e.target.files?.[0] ?? null;
         setImage(file);
+        setBlur(false);
+        cachedImage.current = null;
     };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -114,15 +111,17 @@ export default function Home() {
         });
         const postId = postMetadataRes.postId;
 
-        // // Create FormData object to send the image
-        const imageData = new FormData();
-        imageData.append('image', image);
+        resize(image.name, image, f => {
+            // // Create FormData object to send the image
+            const imageData = new FormData();
+            imageData.append('image', f);
 
-        try {
-            uploadPhoto(imageData, postId);
-        } catch (err) {
-            console.error("The error is: " + err);
-        }
+            try {
+                uploadPhoto(imageData, postId);
+            } catch (err) {
+                console.error("The error is: " + err);
+            }
+        });
     };
 
     const uploadPhoto = async (formData: FormData, postId: string) => {
@@ -158,7 +157,12 @@ export default function Home() {
 
             <div id="photo-editor">
                 <div className="image-tags">
-                    {imagePreview && <NewPostPhoto imgSrc={imagePreview} {...dotProps} ref={imgRef} />}
+                    {image && <NewPostPhoto image={image}
+                        cachedImage={cachedImage}
+                        {...dotProps}
+                        ref={imgRef}
+                        blur={blur}
+                        setImage={b => setImage(new File([b], image.name))} />}
                     {tagEditor}
                 </div>
                 <div className="settings">
@@ -167,7 +171,7 @@ export default function Home() {
                     </div>
                     <div className="blur-contain">
                         <label htmlFor="blur-switch" className="blur-label">Blur my face</label>
-                        <input type="checkbox" id="blur-switch" className="toggle" ref={blurRef} />
+                        <input type="checkbox" id="blur-switch" className="toggle" ref={blurRef} checked={blur} onChange={e => setBlur(e.target.checked)} />
                     </div>
                     <textarea className="caption" ref={capRef} placeholder="Start typing your caption."></textarea>
                     <button type="submit">

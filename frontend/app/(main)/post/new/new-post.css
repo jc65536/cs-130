@@ -178,3 +178,8 @@
   transform: translateY(-110%);
   font: 0.8rem sans-serif;
 }
+
+.blur {
+  background: #00000080;
+  position: absolute;
+}
