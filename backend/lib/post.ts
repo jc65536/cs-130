@@ -24,7 +24,6 @@ export type PostDatabaseEntry = {
     date: Date,
     ratingBuckets: {date: Date, numRatings: number}[]
     comments: String[],
-    ratingBuckets: {date: Date, numRatings: number}[]
 };
 
 export class Post extends DbItem {
@@ -38,7 +37,6 @@ export class Post extends DbItem {
     taggedClothes: Tag[];
     ratingBuckets: {date: Date, numRatings: number}[];
     comments: String[];
-    ratingBuckets: {date: Date, numRatings: number}[];
 
     /**
      * 

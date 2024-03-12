@@ -65,19 +65,10 @@ export default function PostItemCard(post: Post) {
                     <MdOutlineBookmarkAdd className="save icon" />
                     <MdOutlineBookmarkAdded className="saved icon" />
                 </button>
-                {// adding a button here just to test the endpoint
-                }
                 <button className="rate-button" onClick={handleRatePost}>
                     Rate
                 </button>
                 <SaveButton id={post.id} saved={post.saved} />
-                <button className="like-button" onClick={toggleSaved}>
-                    <MdOutlineBookmarkAdd className="save icon" />
-                    <MdOutlineBookmarkAdded className="saved icon" />
-                </button>
-                <button className="rate-button" onClick={handleRatePost}>
-                    Rate
-                </button>
             </div>
         </div>
     );
