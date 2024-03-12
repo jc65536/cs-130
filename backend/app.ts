@@ -29,7 +29,7 @@ const store = new MongoDBStore({
 const app = express();
 const port = 8000;
 
-app.use(bodyParser.json({ type: () => true }));
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors({ origin: process.env["FRONTEND_HOST"], credentials: true }))
 

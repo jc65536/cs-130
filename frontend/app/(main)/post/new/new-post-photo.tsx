@@ -1,8 +1,13 @@
-import { ForwardedRef, MouseEventHandler, ReactElement, forwardRef, useEffect, useState } from "react";
+import { ForwardedRef, MouseEventHandler, MutableRefObject, ReactElement, RefObject, forwardRef, useCallback, useEffect, useRef, useState } from "react";
 import TagDot, { TagDotProps_ } from "./tag";
+import { detectFace } from "@/app/img-lib";
 
 export type NewPostPhotoProps = TagDotProps_ & {
-    imgSrc: string,
+    image: Blob,
+    blur: boolean,
+    imgProcessing: boolean,
+    setImage: (_: Blob) => void,
+    cachedImage: MutableRefObject<[Blob, boolean] | null>,
 };
 
 const genKey = (() => {
@@ -10,12 +15,49 @@ const genKey = (() => {
     return () => x++;
 })();
 
-export default forwardRef(function NewPostPhoto(props: NewPostPhotoProps, ref: ForwardedRef<HTMLImageElement>) {
+export default forwardRef(function NewPostPhoto(props: NewPostPhotoProps, ref: ForwardedRef<HTMLDivElement>) {
+    const [imgSrc, setImgSrc] = useState<string | null>(null);
     const [dots, setDots] = useState<ReactElement[]>([]);
+    const imgRef = useRef<HTMLImageElement>(null);
+    const blurRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         setDots([]);
-    }, [props.imgSrc]);
+        if (imgSrc !== null)
+            URL.revokeObjectURL(imgSrc);
+
+        const url = URL.createObjectURL(props.image);
+        setImgSrc(url);
+
+        return () => URL.revokeObjectURL(url);
+    }, [props.image]);
+
+    useEffect(() => {
+        if (imgRef.current === null || imgSrc == null)
+            return;
+
+        const cache = props.cachedImage;
+
+        if (props.blur) {
+            if (cache.current === null || !cache.current[1]) {
+                detectFace(imgRef.current, props.setImage, () => {
+                    // Called if for loop doesn't run
+                });
+            } else {
+                props.setImage(cache.current[0]);
+            }
+
+            cache.current = [props.image, false];
+
+        } else if (cache.current !== null) {
+
+            if (!cache.current[1]) {
+                props.setImage(cache.current[0]);
+            }
+
+            cache.current = [props.image, true];
+        }
+    }, [props.blur])
 
     const handleClick: MouseEventHandler = e => {
         const rect = e.currentTarget.getBoundingClientRect();
@@ -30,9 +72,14 @@ export default forwardRef(function NewPostPhoto(props: NewPostPhotoProps, ref: F
         setDots([...dots, dot]);
     };
 
+    if (imgSrc === null)
+        return null;
+
     return (
         <div className="new-post-photo" ref={ref}>
-            <img src={props.imgSrc} onClick={handleClick} draggable={false} />
+            {props.imgProcessing && <img className="loading-gif" src="/loading.gif" />}
+            <img src={imgSrc} onClick={handleClick} draggable={false} ref={imgRef} />
+            <div className="blur" ref={blurRef}></div>
             {...dots}
         </div>
     );
