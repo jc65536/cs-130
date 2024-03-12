@@ -160,6 +160,7 @@ posts_router.post("/:postId/rating", async (req: Request, res: Response) => {
             await post.updateRating(+req.body.rating);
         }
         user.setRatingForPost(postId, +req.body.rating);
+        await post.updateRatingBuckets();
     } else {
         res.status(500).json("User not found");
         return;

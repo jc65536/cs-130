@@ -160,6 +160,22 @@ export class Post extends DbItem {
         this.writeToDatabase();
     }
 
+    public async updateRatingBuckets(): Promise<void> {
+        // get the current date
+        const currentDate = new Date();
+        // remove all the rating buckets that are older than 7 days
+        // convert to seconds, * 60 for minutes, * 60 for hours, * 24 for days, * 7 for week
+        this.ratingBuckets = this.ratingBuckets.filter((bucket) => currentDate.getTime() - bucket.date.getTime() < 1000 * 60 * 60 * 24 * 7);
+        // check if there is a bucket for today
+        const todayBucket = this.ratingBuckets.find((bucket) => bucket.date.getDate() === currentDate.getDate());
+        if (todayBucket) {
+            todayBucket.numRatings++;
+        } else {
+            this.ratingBuckets.push({date: currentDate, numRatings: 1});
+        }
+        await this.writeToDatabase();
+    }
+
     /**
        * Converts the object into a form for the database
        * @returns a database entry
