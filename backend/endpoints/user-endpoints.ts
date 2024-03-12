@@ -61,3 +61,9 @@ user_router.post("/name/:newName", async (req: Request, res: Response) => {
     await user?.setName(req.params.newName);
     res.status(200).send("Successfully updated name to: "+req.params.newName);
 });
+
+// for getting user's rating of a post
+user_router.get("/rating/:postId",async (req: Request, res: Response) => {
+    const user = await User.fromId(new ObjectId(req.session.userObjectId));
+    res.status(200).json(await user?.getRatingForPost(new ObjectId(req.params.postId)));
+});

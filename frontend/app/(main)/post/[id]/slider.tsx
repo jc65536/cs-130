@@ -1,15 +1,37 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
+import { backend_url } from "@/app/settings";
 
 export type SliderProps = {
     id: string
+    rating: number
 };
 
 export default (props: SliderProps) => {
     const sliderRef = useRef<HTMLDivElement>(null);
-    const [frac, setFrac] = useState(0.5);
+    const [frac, setFrac] = useState(props.rating / 5);
 
-    const commitFrac = () => {
-        // Send to server
+
+    useEffect(() => {
+        setFrac(props.rating / 5);
+    });
+    const commitFrac = async (x: number) => {
+        try {
+            const response = await fetch(
+                backend_url(`/posts/${props.id}/rating`),
+                {
+                    method: "POST",
+                    credentials: "include",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        rating: x * 5,
+                    }),
+                }
+            );
+        } catch (err) {
+            console.error("The error is: " + err);
+        }
     };
 
     const startDrag = (e0: React.MouseEvent | React.Touch) => {
@@ -26,13 +48,13 @@ export default (props: SliderProps) => {
 
         const handleTouchDrag = (e: TouchEvent) => handleDrag(e.touches[0]);
 
-        const endDrag = () => {
-            commitFrac();
+        const endDrag = (e: MouseEvent | Touch) => {
+            commitFrac(calcFrac(e.clientX));
             document.removeEventListener("mousemove", handleDrag);
             document.removeEventListener("touchmove", handleTouchDrag);
         };
 
-        const endTouchDrag = () => endDrag();
+        const endTouchDrag = (e: TouchEvent) => endDrag(e.touches[0]);
 
         document.addEventListener("mousemove", handleDrag);
         document.addEventListener("touchmove", handleTouchDrag);
