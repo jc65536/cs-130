@@ -1,19 +1,17 @@
+import { backend_url } from "@/app/settings";
 import { FormEvent, useReducer, useRef } from "react";
 import { FiSend } from "react-icons/fi";
 
 export type CommentProps = {
     id: string,
+    comments: string[];
 };
 
 export default (props: CommentProps) => {
     const commentRef = useRef<HTMLTextAreaElement>(null);
     const [comments, addComment] = useReducer(
         (a: string[], c: string) => [...a, c],
-        [],
-        _ => {
-            // Get comments from server here
-            return ["Serena: ootd", "Darren: this is my fashion", "Jason: shut up"];
-        });
+        props.comments);
 
     const commentItems = comments.map((str, i) => <div key={i}>{str}</div>);
 
@@ -30,6 +28,14 @@ export default (props: CommentProps) => {
 
         addComment(trimmed);
         // post to server here
+
+        console.log(JSON.stringify(trimmed));
+
+        fetch(backend_url(`/posts/${props.id}/addComment`), {
+            method: "POST",
+            credentials: "include",
+            body: JSON.stringify({ comment: trimmed }),
+        });
 
         e.preventDefault();
     };

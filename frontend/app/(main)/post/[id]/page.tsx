@@ -12,7 +12,6 @@ import SaveButton from "@/app/components/save-button";
 import TagDisplay from "./tag";
 
 import "@/app/(main)/post/new/new-post.css";
-import { render } from "react-dom";
 
 export default ({ params: { id } }: { params: { id: string } }) => {
     const [bbox, setBbox] = useState<DOMRect | null>(null);
@@ -57,7 +56,7 @@ export default ({ params: { id } }: { params: { id: string } }) => {
             <h4 className="rate-text">Rate this Post.</h4>
             <Slider id={id} />
             <h2 className="rate-text">{rating}</h2>
-            <Comments id={id} />
+            <Comments id={id} comments={post.comments} />
         </div>
     );
 };

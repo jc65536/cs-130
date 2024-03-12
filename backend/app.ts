@@ -29,7 +29,7 @@ const store = new MongoDBStore({
 const app = express();
 const port = 8000;
 
-app.use(bodyParser.json());
+app.use(bodyParser.json({ type: () => true }));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors({ origin: process.env["FRONTEND_HOST"], credentials: true }))
 
@@ -42,7 +42,7 @@ app.use(session({
         httpOnly: true,
         secure: false,
         sameSite: true,
-        maxAge: 24*60*60*1000 // Time is in miliseconds
+        maxAge: 24 * 60 * 60 * 1000 // Time is in miliseconds
     },
 }));
 

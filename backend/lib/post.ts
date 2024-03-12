@@ -22,6 +22,7 @@ export type PostDatabaseEntry = {
     userObjectId: ObjectId,
     blur: boolean,
     date: Date,
+    comments: String[],
 };
 
 export class Post extends DbItem {
@@ -33,6 +34,7 @@ export class Post extends DbItem {
     userObjectId: ObjectId | null;
     blur: boolean;
     taggedClothes: Tag[];
+    comments: String[];
 
     /**
      * 
@@ -52,6 +54,7 @@ export class Post extends DbItem {
         this.blur = false;
         this.taggedClothes = [];
         this.date = new Date();
+        this.comments = [];
     }
 
     public static async fromId(postObjectId: ObjectId) {
@@ -66,6 +69,7 @@ export class Post extends DbItem {
         post.date = document.date;
         post.userObjectId = new ObjectId(document.userObjectId);
         post.blur = document.blur;
+        post.comments = document.comments;
         return post;
     }
 
@@ -167,5 +171,10 @@ export class Post extends DbItem {
             ratingCount: this.ratingCount,
             date: this.date
         };
+    }
+
+    public async addComment(c: String) {
+        this.comments.push(c);
+        await this.writeToDatabase();
     }
 }
