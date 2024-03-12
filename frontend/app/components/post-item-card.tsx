@@ -4,17 +4,23 @@ import React, { MouseEvent } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { MdOutlineBookmarkAdd, MdOutlineBookmarkAdded } from "react-icons/md";
+import { Tag } from '../(main)/post/new/tag';
+import { backend_url } from '../settings';
 
 export type Post = {
-    id: number,
+    id: string,
+    imageFilename: string,
     caption: string,
-}
+    rating: number,
+    ratingCount: number,
+    taggedClothes: Tag[];
+};
+
 
 // export default function PostItemCard = ({ id, caption }) => {
-export default function PostItemCard({ id, caption }: Post) {
+export default function PostItemCard(post: Post) {
     // Assume the detail page route is '/posts/[id]', where [id] is a dynamic segment
     // const detailPagePath = `/posts/${id}`;
-    const detailPagePath = `/post/${id}`;
 
     const toggleSaved = (e: MouseEvent) => {
         if (!(e.currentTarget instanceof HTMLElement))
@@ -25,20 +31,15 @@ export default function PostItemCard({ id, caption }: Post) {
 
     return (
         <div className="card">
-            <Link href={detailPagePath}>
-                <Image
-                    // src={`https://picsum.photos/seed/${id}/120/160`}
-                    src={`https://picsum.photos/id/${id}/480/640`}
-                    alt={caption}
+            <Link href={`/post/${post.id}`}>
+                <img src={backend_url(`/posts/image/${post.imageFilename}`)}
+                    alt={post.caption}
                     width={120}
                     height={160}
-                />
+                    loading="lazy" />
             </Link>
             <div className="card-body">
-                <div className="text-content">
-                    <p className="username">Username</p>
-                    <p className="caption">{caption}</p>
-                </div>
+                <p className="caption">{post.caption}</p>
                 <button className="like-button" onClick={toggleSaved}>
                     <MdOutlineBookmarkAdd className="save icon" />
                     <MdOutlineBookmarkAdded className="saved icon" />

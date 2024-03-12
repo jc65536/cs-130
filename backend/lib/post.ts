@@ -85,11 +85,11 @@ export class Post extends DbItem {
         newPost.taggedClothes = taggedClothes;
         newPost.userObjectId = userObjectId;
         newPost.blur = blur;
+        await newPost.writeToDatabase();
 
         const user = await User.fromId(userObjectId);
         await user?.addPost(newPost.id);
         await user?.writeToDatabase();
-        await newPost.writeToDatabase();
         return newPost;
     }
 
