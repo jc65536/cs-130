@@ -35,6 +35,7 @@ nav {
   background-color: #ffffff;
   box-sizing: border-box;
   z-index: 99;
+  box-shadow: 0 0 16px #00000080;
 }
 
 main {
