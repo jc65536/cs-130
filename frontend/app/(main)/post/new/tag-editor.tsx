@@ -39,7 +39,7 @@ const autocomplete = async (frag: string) => {
         const refined = autocompleteCache[key].filter(({ name }) => name.startsWith(frag));
         autocompleteCache[frag] = refined;
         return refined;
-    } else if (frag.length >= 2) {
+    } else if (frag.length >= 1) {
         const fetched = await fetchAutocomplete(frag);
         autocompleteCache[frag] = fetched;
         return fetched;
