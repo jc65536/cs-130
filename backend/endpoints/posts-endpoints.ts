@@ -147,21 +147,20 @@ posts_router.post("/:postId/rating", async (req: Request, res: Response) => {
     const user = await User.fromId(userId);
     let postId = new ObjectId(req.params["postId"]);
 
-    if(!user) {
+    if (user != null) {
+        if (user.ratedPosts.has(postId)) {
+            await post.updateRatingAfterRated(
+                await user.getRatingForPost(postId),
+                +req.body.rating
+            );
+        } else {
+            await post.updateRating(+req.body.rating);
+        }
+        user.setRatingForPost(postId, +req.body.rating);
+    } else {
         res.status(500).json("User not found");
         return;
     }
-    res.status(200).json(user.ratedPosts);
-    return;
-    if (user.ratedPosts.has(postId)) {
-        await post.updateRatingAfterRated(
-            await user.getRatingForPost(postId),
-            +req.body.rating
-        );
-    } else {
-        await post.updateRating(+req.body.rating);
-    }
-    user.setRatingForPost(postId, +req.body.rating);
     user.writeToDatabase();
 
     res.status(200).json();
