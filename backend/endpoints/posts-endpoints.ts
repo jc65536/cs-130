@@ -74,18 +74,19 @@ posts_router.post("/new", async (req: Request, res: Response) => {
             let objId;
             let clothingItem;
             // const notExistingClothing = !('id' in tag) || tag.id == null || tag.id == -1;
-            const clothingItemExists = 'id' in tag && tag.id != null && tag.id !=  -1;
-            if (clothingItemExists) {
+            let clothingItemAlreadyExists = 'id' in tag && tag.id != null && tag.id !=  -1;
+            if (clothingItemAlreadyExists) {
                 clothingItem = await Clothing.fromId(new ObjectId(tag.id));
             }
-            if (!clothingItemExists || clothingItem == null) {
+            if (!clothingItemAlreadyExists || clothingItem == null) {
+                clothingItemAlreadyExists = false;
                 clothingItem = await Clothing.create(userObjId, tag.name, 0, 0, 0, 0, false);
                 objId = clothingItem?.id;
             }
 
             await clothingItem?.incrementReusedCount();
             await clothingItem?.addPost(post.id);
-            clothingItem && await wardrobe.addClothes(clothingItem.id);
+            clothingItem && !clothingItemAlreadyExists && await wardrobe.addClothes(clothingItem.id);
             return {
                 id: objId,
                 name: tag.name,

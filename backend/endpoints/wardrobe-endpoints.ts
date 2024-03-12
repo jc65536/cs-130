@@ -15,7 +15,8 @@ wardrobe_router.get("/clothes",async (req: Request, res: Response) => {
             return clothing.toJson();
         }
     }));
-    res.status(200).json(clothingObjects.filter(clothing => clothing != null ));
+    const filtered = clothingObjects.filter(clothing => clothing != null );
+    res.status(200).json(filtered);
 });
 
 // for getting all posts from a wardrobe
