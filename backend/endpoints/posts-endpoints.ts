@@ -151,6 +151,8 @@ posts_router.post("/:postId/rating", async (req: Request, res: Response) => {
         res.status(500).json("User not found");
         return;
     }
+    res.status(200).json(user.ratedPosts);
+    return;
     if (user.ratedPosts.has(postId)) {
         await post.updateRatingAfterRated(
             await user.getRatingForPost(postId),
