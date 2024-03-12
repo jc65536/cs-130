@@ -25,7 +25,6 @@ export type Post = {
 export default function PostItemCard(post: Post) {
     // Assume the detail page route is '/posts/[id]', where [id] is a dynamic segment
     // const detailPagePath = `/posts/${id}`;
-    console.log("walugi", post);
 
     return (
         <div className="card">

@@ -1,11 +1,15 @@
 .themed-post {
     font-size: 12px;
     margin: 20px;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
     img {
         width: 60px;
         height: 60px;
         border-radius: 60px;
         overflow: hidden;
+        object-fit: cover;
     }
 }
 .themed-posts-contain {
