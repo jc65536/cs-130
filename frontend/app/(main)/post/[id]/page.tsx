@@ -21,13 +21,6 @@ export default ({ params: { id } }: { params: { id: string } }) => {
             .then(setPost);
     }, []);
 
-    const toggleSaved = (e: MouseEvent) => {
-        if (!(e.currentTarget instanceof HTMLElement))
-            return;
-
-        e.currentTarget.classList.toggle("saved");
-    };
-
     if (post === null)
         return <h1><Moai /> Loading post… <Moai /></h1>;
 
@@ -41,7 +34,7 @@ export default ({ params: { id } }: { params: { id: string } }) => {
                 <p className="post-caption">
                     {post.caption}
                 </p>
-                <SaveButton />
+                <SaveButton id={id} saved={post.saved} />
             </div>
             <h4 className="rate-text">Rate this Post.</h4>
             <Slider id={id} />

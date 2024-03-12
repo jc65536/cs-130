@@ -14,9 +14,9 @@ export type Post = {
     caption: string,
     rating: number,
     ratingCount: number,
-    taggedClothes: Tag[];
+    taggedClothes: Tag[],
+    saved: boolean,
 };
-
 
 // export default function PostItemCard = ({ id, caption }) => {
 export default function PostItemCard(post: Post) {
@@ -34,7 +34,7 @@ export default function PostItemCard(post: Post) {
             </Link>
             <div className="card-body">
                 <p className="caption">{post.caption}</p>
-                <SaveButton />
+                <SaveButton id={post.id} saved={post.saved} />
             </div>
         </div>
     );
