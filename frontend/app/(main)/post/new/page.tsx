@@ -157,7 +157,7 @@ export default function Home() {
                 <div className="upload-box" onClick={onUploadClick}>
                     <FaUpload />
                     <h4 className="upload-box-header">Choose Image to Upload</h4>
-                    <input type="file" onChange={handleFileChange} className="photo-select" ref={photoRef} hidden />
+                    <input type="file" onChange={handleFileChange} className="photo-select" ref={photoRef} hidden accept=".png,.jpg"/>
                 </div>
                 <small>Files Supported: JPG, PNG</small>
             </div>
