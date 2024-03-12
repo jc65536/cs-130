@@ -42,7 +42,7 @@ export default ({ params: { id } }: { params: { id: string } }) => {
         .map((tag, i) => <TagDisplay name={tag.name} x={tag.x * bbox.width} y={tag.y * bbox.height} />);
 
     return (
-        <div className="post-container">
+        <div className="post-container page-home">
             <div className="img-tag-container" ref={imgContainerRef}>
                 <img src={backend_url(`/posts/image/${post.imageFilename}`)} />
                 {...tags}
