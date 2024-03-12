@@ -7,6 +7,7 @@ dotenv.config();
 import { getClient, uri } from '../lib/db-lib/db-client';
 import { User } from '../lib/user';
 import { Post } from "../lib/post"
+import { TrendingPosts } from "../lib/trending_posts";
 import { Clothing } from "../lib/clothing";
 import { Wardrobe } from "../lib/wardrobe";
 import { GridFsStorage } from "multer-gridfs-storage";
@@ -137,6 +138,23 @@ posts_router.get("/", async (req: Request, res: Response) => {
     );
 });
 
+//get trending posts
+posts_router.get("/trending", async (req: Request, res: Response) => {
+    const trending = await TrendingPosts.getTrendingPosts();
+    await trending.updateTrendingPosts();
+    // get all posts from list of post ids
+    const posts = await Promise.all(trending.posts.map(async (id) => {
+        return await Post.fromId(id);
+    }));
+    res.status(200).json(posts);
+});
+
+posts_router.get("/trending/update", async (req: Request, res: Response) => {
+    const trending = await TrendingPosts.getTrendingPosts();
+    await trending.updateTrendingPosts();
+    res.status(200).json();
+});
+
 //get post object
 
 /**
@@ -159,9 +177,33 @@ posts_router.get("/:postId/rating", async (req: Request, res: Response) => {
 //update post's rating with single new rating
 posts_router.post("/:postId/rating", async (req: Request, res: Response) => {
     const post = await Post.fromId(new ObjectId(req.params["postId"]));
-    await post.updateRating(+req.body.rating);
+
+    const userId = new ObjectId(req.session.userObjectId);
+    const user = await User.fromId(userId);
+    let postId = new ObjectId(req.params["postId"]);
+    if (user != null) {
+        const ratedPosts = await user.getRatedPosts();
+        console.log(ratedPosts);
+        // check if user already rated post
+        if(ratedPosts.some((ratedPost) => ratedPost.postId.equals(postId))) {
+            await post.updateRatingAfterRated(
+                await user.getRatingForPost(postId),
+                +req.body.rating
+            );
+        } else {
+            await post.updateRating(+req.body.rating);
+            await post.updateRatingBuckets();
+        }
+        user.setRatingForPost(postId, +req.body.rating);
+    } else {
+        res.status(500).json("User not found");
+        return;
+    }
+    user.writeToDatabase();
+
     res.status(200).json();
 });
+
 
 //gets clothes from post
 posts_router.get("/:postId/tagged-clothes", async (req: Request, res: Response) => {
