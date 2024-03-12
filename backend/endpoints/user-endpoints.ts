@@ -38,7 +38,6 @@ user_router.get("/currStreak",async (req: Request, res: Response) => {
 
 user_router.post("/name/:newName", async (req: Request, res: Response) => {
     const user = await User.fromId(new ObjectId(req.session.userObjectId));
-    user?.setName(req.params.newName);
-    await user?.writeToDatabase();
+    await user?.setName(req.params.newName);
     res.status(200).send("Successfully updated name to: "+req.params.newName);
 });

@@ -13,7 +13,7 @@ clothes_router.get("/tags/:queryString", async (req: Request, res: Response) => 
     const matchStrings = [];
 
     const wardrobe = await Wardrobe.fromId(new ObjectId(req.session.userObjectId));
-    const clothes = wardrobe.getClothes();
+    const clothes = await wardrobe.getClothes();
 
     for (const clothingId of clothes) {
         const clothing = await Clothing.fromId(clothingId);
@@ -36,7 +36,7 @@ clothes_router.get("/:clothingId/rating",async (req: Request, res: Response) => 
 // for updating rating with a new single rating for a clothing
 clothes_router.post("/:clothingId/rating",async (req: Request, res: Response) => {
     const clothing = await Clothing.fromId(new ObjectId(req.params["clothingId"]));
-    clothing.updateRating(+req.body.rating);
+    await clothing.updateRating(+req.body.rating);
     res.status(200).json();
 });
 
@@ -49,7 +49,7 @@ clothes_router.get("/:clothingId/onSale",async (req: Request, res: Response) => 
 // for toggling onSale on and off of a clothing
 clothes_router.post("/:clothingId/onSale",async (req: Request, res: Response) => {
     const clothing = await Clothing.fromId(new ObjectId(req.params["clothingId"]));
-    clothing.toggleOnSale();
+    await clothing.toggleOnSale();
     res.status(200).json();
 });
 
@@ -62,6 +62,6 @@ clothes_router.get("/:clothingId/cost",async (req: Request, res: Response) => {
 // for updating cost for a clothing
 clothes_router.post("/:clothingId/cost",async (req: Request, res: Response) => {
     const clothing = await Clothing.fromId(new ObjectId(req.params["clothingId"]));
-    clothing.updateCost(+req.body.cost);
+    await clothing.updateCost(+req.body.cost);
     res.status(200).json();
 });
