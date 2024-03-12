@@ -33,6 +33,17 @@ user_router.get("/posts",async (req: Request, res: Response) => {
     res.status(200).json(posts);
 });
 
+// for getting all posts from any user
+user_router.get("/posts/:userId",async (req: Request, res: Response) => {
+    const user = await User.fromId(new ObjectId(req.params.userId));
+    const postIds = await user?.getPosts();
+    const posts = postIds ? await Promise.all(postIds.map(async (postObjectId: ObjectId) => {
+        const post = await Post.fromId(postObjectId);
+        return post.toJson();
+    })) : [];
+    res.status(200).json(posts);
+});
+
 // for getting best streak from a user
 user_router.get("/bestStreak",async (req: Request, res: Response) => {
     const user = await User.fromId(new ObjectId(req.session.userObjectId));
