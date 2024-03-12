@@ -3,6 +3,7 @@
 import { PropsWithChildren, useContext, useEffect, useState } from "react";
 import { backend_url } from "../settings";
 import { useRouter } from "next/navigation";
+import Moai from "./moai";
 
 export default (props: PropsWithChildren) => {
     const [auth, setAuth] = useState(false);
@@ -25,9 +26,9 @@ export default (props: PropsWithChildren) => {
     } else {
         return (
             <h1 style={{ textAlign: "center" }}>
-                <span className="moai">🗿</span>
+                <Moai />
                 Checking authentication
-                <span className="moai">🗿</span>
+                <Moai />
             </h1>
         );
     }

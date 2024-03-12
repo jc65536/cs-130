@@ -1,14 +1,24 @@
 "use client";
 
-import { MouseEvent, useState } from "react";
+import { useEffect, useState, MouseEvent } from "react";
 import Slider from "./slider";
 import "./post-details.css";
 import "../../../card.css"
 import Comments from "./comments";
 import { MdOutlineBookmarkAdd, MdOutlineBookmarkAdded } from "react-icons/md";
+import { Post } from "@/app/components/post-item-card";
+import { backend_url } from "@/app/settings";
+import { fn } from "@/app/util";
+import Moai from "@/app/components/moai";
 
 export default ({ params: { id } }: { params: { id: string } }) => {
-    const [frac, setFrac] = useState(0.5);
+    const [post, setPost] = useState<Post | null>(null);
+
+    useEffect(() => {
+        fetch(backend_url(`/posts/${id}`), { credentials: "include" })
+            .then(res => res.json())
+            .then(fn(setPost).then(console.log));
+    }, []);
 
     const toggleSaved = (e: MouseEvent) => {
         if (!(e.currentTarget instanceof HTMLElement))
@@ -17,12 +27,18 @@ export default ({ params: { id } }: { params: { id: string } }) => {
         e.currentTarget.classList.toggle("saved");
     };
 
+    if (post === null)
+        return <h1><Moai /> Loading post… <Moai /></h1>;
+
+    const rating = post.ratingCount === 0 ? "No ratings yet."
+        : post.rating / post.ratingCount;
+
     return (
         <div className="post-container">
-            <img src="/tango.jpg" />
+            <img src={backend_url(`/posts/image/${post.imageFilename}`)} />
             <div className="post-footer">
                 <p className="post-caption">
-                    Caption goes here
+                    {post.caption}
                 </p>
                 <button className="like-button" onClick={toggleSaved}>
                     <MdOutlineBookmarkAdd className="save icon" />
@@ -31,8 +47,8 @@ export default ({ params: { id } }: { params: { id: string } }) => {
             </div>
             <h4 className="rate-text">Rate this Post.</h4>
             <Slider id={id} />
-            <h2 className="rate-text">5.0</h2>
-            
+            <h2 className="rate-text">{rating}</h2>
+
             <Comments id={id} />
         </div>
     );

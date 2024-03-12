@@ -1,20 +1,24 @@
-import React from 'react';
+"use client";
+
+import React, { useEffect, useState } from 'react';
 import PostItemCard, { Post } from './post-item-card';
 import '@/app/card.css';
-
-// Dummy data for demonstration
-var posts: Post[] = [];
-for (let id = 1; id <= 20; id++) {
-  posts.push({ id, caption: `Caption ${id}` });
-}
-
+import { backend_url } from '../settings';
 
 export default function PostItemCardList() {
+  const [posts, setPosts] = useState<Post[]>([]);
+
+  useEffect(() => {
+    fetch(backend_url(`/posts`), { credentials: "include" })
+      .then(res => res.json())
+      .then(setPosts);
+  }, []);
+
   return (
     <div className="post-list">
       {posts.map((post, i) => (
         // Assuming PostItemCard accepts props for id and caption
-        <PostItemCard key={i} id={post.id} caption={post.caption} />
+        <PostItemCard key={i} {...post} />
       ))}
     </div>
   );
