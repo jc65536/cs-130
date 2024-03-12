@@ -22,6 +22,7 @@ export type PostDatabaseEntry = {
     userObjectId: ObjectId,
     blur: boolean,
     date: Date,
+    ratingBuckets: {date: Date, numRatings: number}[]
 };
 
 export class Post extends DbItem {
@@ -33,6 +34,7 @@ export class Post extends DbItem {
     userObjectId: ObjectId | null;
     blur: boolean;
     taggedClothes: Tag[];
+    ratingBuckets: {date: Date, numRatings: number}[];
 
     /**
      * 
@@ -52,6 +54,7 @@ export class Post extends DbItem {
         this.blur = false;
         this.taggedClothes = [];
         this.date = new Date();
+        this.ratingBuckets = [];
     }
 
     public static async fromId(postObjectId: ObjectId) {
@@ -66,6 +69,7 @@ export class Post extends DbItem {
         post.date = document.date;
         post.userObjectId = new ObjectId(document.userObjectId);
         post.blur = document.blur;
+        post.ratingBuckets = document.ratingBuckets;
         return post;
     }
 
@@ -170,7 +174,8 @@ export class Post extends DbItem {
             caption: this.caption,
             rating: this.rating,
             ratingCount: this.ratingCount,
-            date: this.date
+            date: this.date,
+            ratingBuckets: this.ratingBuckets
         };
     }
 }
