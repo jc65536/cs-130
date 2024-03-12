@@ -13,7 +13,7 @@ import { Wardrobe } from "../lib/wardrobe";
 
 
 const storage = new GridFsStorage({
-    url: uri + 'admin',
+    url: uri + 'test',
     file: (req, file) => {
         console.log("File: " + file.mimetype + ", " + file.originalname);
         //If it is an image, save to photos bucket
@@ -44,8 +44,7 @@ posts_router.post("/upload-image/:postId", upload.single('image'), async (req: R
         // user.posts.push(req.file?.filename);
         console.log("req.params.postId: "+req.params.postId);
         const post = await Post.fromId(new ObjectId(req.params.postId));
-        post.updateImageFilename(req.file.filename);
-        await post.writeToDatabase();
+        await post.updateImageFilename(req.file.filename);
         console.log("added image: " + req.file.filename + " to  post: " + post?.id);
         // await user.writeToDatabase();
     }
@@ -72,7 +71,7 @@ posts_router.post("/new", async (req: Request, res: Response) => {
                 const clothingItem = await Clothing.create(userObjId, tag.name, 0, 0, 0, 0, false);
                 objId = clothingItem?.id;
             }
-            wardrobe.addClothes(new ObjectId(objId));
+            await wardrobe.addClothes(new ObjectId(objId));
             return {
                 id: objId,
                 name: tag.name,
@@ -80,7 +79,6 @@ posts_router.post("/new", async (req: Request, res: Response) => {
                 y: tag.y
             }
         }));
-    await wardrobe.writeToDatabase();
     const post = await Post.create(new ObjectId(req.session.userObjectId), '', caption, tags, blur);
     if (!post) {
         return res.status(500).json("Unable to create new user");
@@ -143,7 +141,7 @@ posts_router.get("/:postId/rating", async (req: Request, res: Response) => {
 //update post's rating with single new rating
 posts_router.post("/:postId/rating", async (req: Request, res: Response) => {
     const post = await Post.fromId(new ObjectId(req.params["postId"]));
-    post.updateRating(+req.body.rating);
+    await post.updateRating(+req.body.rating);
     res.status(200).json();
 });
 
@@ -156,6 +154,6 @@ posts_router.get("/:postId/tagged-clothes", async (req: Request, res: Response) 
 //add clothes to post
 posts_router.post("/:postId/tagged-clothes", async (req: Request, res: Response) => {
     const post = await Post.fromId(new ObjectId(req.params["postId"]));
-    post.addTaggedClothes(req.body.clothes); //expects array
+    await post.addTaggedClothes(req.body.clothes); //expects array
     res.status(200).json();
 });

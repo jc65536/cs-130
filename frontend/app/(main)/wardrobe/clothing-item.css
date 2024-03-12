@@ -1,0 +1,30 @@
+.clothing-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-items: center;
+}
+.clothing-card {
+    width: 140px;
+    height: 200px;
+    display: flex;
+    margin: 5px;
+
+    .clothing-text-content {
+        position: absolute;
+        font-size: 12px;
+        width: 140px;
+        height: 200px;
+        background-color: rgba(0, 0, 0, 0.414);
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        color: white;
+        z-index: 1;
+    }
+    .clothing-image {
+        position: absolute;
+        align-items: center;
+        justify-content: center;
+    }
+}

@@ -56,12 +56,13 @@ export class Wardrobe extends DbItem {
         return newWardrobe;
     }
 
-    public getClothes(): ObjectId[] {
+    public async getClothes(): Promise<ObjectId[]> {
         return this.clothes;
     }
 
-    public addClothes(clothingObjectId: ObjectId) {
+    public async addClothes(clothingObjectId: ObjectId) {
         this.clothes.push(clothingObjectId);
+        await this.writeToDatabase();
     }
 
     public async getPosts(): Promise<ObjectId[] | null> {
@@ -71,7 +72,7 @@ export class Wardrobe extends DbItem {
     public async clear() {
         this.clothes = [];
         this.posts = [];
-        await this.writeToDatabase(); // TODO: need to update DB?
+        await this.writeToDatabase();
     }
 
     /**

@@ -1,0 +1,47 @@
+.clothing-onsale {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    color: #4b4955;
+    grid-area: blur;
+}
+.detail-text-content {
+    width: 95%;
+}
+
+.clothing-cost:not(.onSale) {
+    display: none;
+}
+
+.clothing-cost.onSale {
+    display: inline;
+}
+
+.save-cost {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 25px;
+    height: 25px;
+    margin: 0 0 0 2px;
+}
+
+.change-cost-contain {
+    display: flex;
+    flex-direction: row;
+}
+
+p {
+    padding: 0;
+    margin: 0;
+}
+
+hr {
+    height: 1px;
+    border-width:0;
+    color:var(--border_accents);
+    background-color:var(--border_accents);
+    margin-top: 5px;
+    margin-bottom: 10px;
+}
