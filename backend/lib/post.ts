@@ -134,17 +134,21 @@ export class Post extends DbItem {
 
     public async addTaggedClothes(clothingTag: Tag[]): Promise<void> {
         this.taggedClothes.concat(clothingTag);
+        await this.writeToDatabase();
     }
     public async updateImageFilename(newImageFilename: String): Promise<void> {
         this.imageFilename = newImageFilename;
+        await this.writeToDatabase();
     }
     public async updateCaption(newCaption: String): Promise<void> {
         this.caption = newCaption;
+        await this.writeToDatabase();
     }
     // TODO: double check this, this might be wrong
     public async updateRating(newRating: number): Promise<void> {
         this.rating = (this.rating * this.ratingCount + newRating) / (this.ratingCount+1);
         this.ratingCount++;
+        await this.writeToDatabase();
     }
 
     /**

@@ -105,10 +105,12 @@ export class User extends DbItem {
         if (this.bestStreak < streak) {
             this.bestStreak = streak;
         }
+        await this.writeToDatabase();
     }
 
-    public setName(newName: string) {
+    public async setName(newName: string) {
         this.name = newName;
+        await this.writeToDatabase();
     }
 
     /**

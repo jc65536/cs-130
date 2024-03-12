@@ -91,17 +91,21 @@ export class Clothing extends DbItem {
 
     public async toggleOnSale(): Promise<void> {
         this.onSale = !this.onSale;
+        await this.writeToDatabase();
     }
     public async updateCost(cost: number): Promise<void> {
         this.cost = cost;
+        await this.writeToDatabase();
     }
     public async updateReusedCount(count: number = -1): Promise<void> {
         if (count == -1) this.reusedCount = +this.reusedCount + 1;
         else this.reusedCount = count;
+        await this.writeToDatabase();
     }
     public async updateRating(newRating: number): Promise<void> {
         this.rating = (this.rating * this.ratingCount + newRating) / (this.ratingCount+1);
         this.ratingCount++;
+        await this.writeToDatabase();
     }
 
     /**
