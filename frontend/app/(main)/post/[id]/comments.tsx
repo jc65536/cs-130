@@ -34,6 +34,7 @@ export default (props: CommentProps) => {
         fetch(backend_url(`/posts/${props.id}/addComment`), {
             method: "POST",
             credentials: "include",
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ comment: trimmed }),
         });
 

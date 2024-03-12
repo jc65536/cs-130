@@ -50,6 +50,14 @@
       border-radius: 24px;
       display: block;
     }
+    
+    .loading-gif {
+      position: absolute;
+      left: 35%;
+      top: 35%;
+      width: 30%;
+      z-index: 1;
+    }
   }
 
   #photo-editor {
@@ -124,7 +132,7 @@
           transition: 0.3s;
         }
 
-        &:hover {
+        &:hover:not([disabled]) {
           transition: 0.3s;
           border-color: var(--border_accents);
           background-color: var(--main);
@@ -136,6 +144,10 @@
             transition: 0.3s;
           }
         }
+      }
+      button:disabled,
+      button[disabled] {
+        background-color: #6e6e6e;
       }
     }
   }
@@ -177,4 +189,9 @@
   border-radius: 6px;
   transform: translateY(-110%);
   font: 0.8rem sans-serif;
+}
+
+.blur {
+  background: #00000080;
+  position: absolute;
 }
