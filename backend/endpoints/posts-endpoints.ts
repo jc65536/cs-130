@@ -142,9 +142,29 @@ posts_router.get("/:postId/rating", async (req: Request, res: Response) => {
 //update post's rating with single new rating
 posts_router.post("/:postId/rating", async (req: Request, res: Response) => {
     const post = await Post.fromId(new ObjectId(req.params["postId"]));
-    await post.updateRating(+req.body.rating);
+
+    const userId = new ObjectId(req.session.userObjectId);
+    const user = await User.fromId(userId);
+    let postId = new ObjectId(req.params["postId"]);
+
+    if(!user) {
+        res.status(500).json("User not found");
+        return;
+    }
+    if (user.ratedPosts.has(postId)) {
+        await post.updateRatingAfterRated(
+            await user.getRatingForPost(postId),
+            +req.body.rating
+        );
+    } else {
+        await post.updateRating(+req.body.rating);
+    }
+    user.setRatingForPost(postId, +req.body.rating);
+    user.writeToDatabase();
+
     res.status(200).json();
 });
+
 
 //gets clothes from post
 posts_router.get("/:postId/tagged-clothes", async (req: Request, res: Response) => {

@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { MdOutlineBookmarkAdd, MdOutlineBookmarkAdded } from "react-icons/md";
 import { Tag } from '../(main)/post/new/tag';
-import { backend_url } from '../settings';
+import { backend_url } from "@/app/settings";
 
 export type Post = {
     id: string,
@@ -25,9 +25,21 @@ export default function PostItemCard(post: Post) {
     const toggleSaved = (e: MouseEvent) => {
         if (!(e.currentTarget instanceof HTMLElement))
             return;
-
         e.currentTarget.classList.toggle("saved");
     };
+
+    const handleRatePost = async () => {
+        try {
+            let id = "65eba0a7c6680cc131c23b25";
+            const response = await fetch(backend_url(`/posts/${id}/rating`), {
+                method: "POST",
+                credentials: "include",
+                body: JSON.stringify({ rating: 5 }),
+            });
+        } catch (err) {
+            console.error("The error is: " + err);
+        }
+    }
 
     return (
         <div className="card">

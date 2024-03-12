@@ -13,7 +13,8 @@ type UserDatabaseEntry = {
     name: string,
     followers: number,
     streaks: number,
-    bestStreak: number
+    bestStreak: number,
+    ratedPosts: Map<ObjectId, number>
 };
 
 export class User extends DbItem {
@@ -24,15 +25,17 @@ export class User extends DbItem {
     streaks: number;
     bestStreak: number;
     // private dbClient = getClient();
+    ratedPosts: Map<ObjectId, number>;
 
     constructor(id: ObjectId) {
-        super(id, COLLECTION.USERS)
+        super(id, COLLECTION.USERS);
         this.posts = [];
         this.wardrobe = null;
         this.name = '';
         this.followers = 0;
         this.streaks = 0;
         this.bestStreak = 0;
+        this.ratedPosts = new Map<ObjectId, number>();
     }
 
     public static async fromId(userObjectId: ObjectId) {
@@ -48,13 +51,14 @@ export class User extends DbItem {
         user.name = document.name ?? user.name;
         user.followers = document.followers ?? user.followers;
         user.streaks = document.streaks ?? user.streaks;
+        user.ratedPosts = document.ratedPosts ?? user.ratedPosts;
         return user;
     }
     /**
-     * 
+     *
      * @param userObjectId the user's google ID
      * should be retrieved from Google API using the google OAuth token
-     * @returns 
+     * @returns
      */
     public static async create(userObjectId: ObjectId): Promise<User | null> {
         //create wardrobe for the user
@@ -67,7 +71,7 @@ export class User extends DbItem {
     }
 
     /**
-     * 
+     *
      * @returns all posts of the user in String format
      */
     public async getPosts(): Promise<ObjectId[] | null> {
@@ -95,7 +99,7 @@ export class User extends DbItem {
     }
 
     /**
-     * 
+     *
      * @param postUID the new postUID to add to the post String of User
      * @returns void
      */
@@ -114,9 +118,22 @@ export class User extends DbItem {
     }
 
     /**
-       * Converts the object into a form for the database
-       * @returns a database entry
-       */
+     * 
+     * @param postId the id of the post
+     * @return the rating the user gave the post
+     */
+    public async getRatingForPost(postId: ObjectId): Promise<number> {
+        return this.ratedPosts.get(postId) ?? 0;
+    }
+
+    public async setRatingForPost(postId: ObjectId, rating: number): Promise<void> {
+        this.ratedPosts.set(postId, rating);
+    }
+
+    /**
+     * Converts the object into a form for the database
+     * @returns a database entry
+     */
     public toJson() {
         const { collectionName: _c, ...entry } = this;
         return {

@@ -151,6 +151,11 @@ export class Post extends DbItem {
         await this.writeToDatabase();
     }
 
+    public async updateRatingAfterRated(oldRating: number, newRating: number): Promise<void> {
+        this.rating = (this.rating * this.ratingCount - oldRating + newRating) / this.ratingCount;
+        this.writeToDatabase();
+    }
+
     /**
        * Converts the object into a form for the database
        * @returns a database entry
