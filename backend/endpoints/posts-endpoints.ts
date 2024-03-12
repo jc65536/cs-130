@@ -13,8 +13,9 @@ import { Wardrobe } from "../lib/wardrobe";
 
 
 const storage = new GridFsStorage({
-    url: uri + 'admin',
+    db: getClient().mongoDB,
     file: (req, file) => {
+
         console.log("File: " + file.mimetype + ", " + file.originalname);
         //If it is an image, save to photos bucket
         if (file.mimetype === "image/jpeg" || file.mimetype === "image/png") {
