@@ -29,9 +29,9 @@ export class Clothing extends DbItem {
      * @param 
      * @returns 
      */
-    constructor(id: ObjectId) {
+    constructor(id: ObjectId, userObjectId: ObjectId) {
         super(id, COLLECTION.CLOTHES)
-        this.userObjectId = new ObjectId();
+        this.userObjectId = userObjectId;
         this.name = '';
         this.reusedCount = 0;
         this.rating = 0;
@@ -43,7 +43,7 @@ export class Clothing extends DbItem {
     public static async fromId(clothingObjectId: ObjectId) {
         const dbClient = getClient();
         const document: ClothingDatabaseEntry = await dbClient.findDbItem(COLLECTION.CLOTHES, clothingObjectId);
-        const clothing = new Clothing(clothingObjectId);
+        const clothing = new Clothing(clothingObjectId, document.userObjectId);
         clothing.name = document.name;
         clothing.reusedCount = document.reusedCount;
         clothing.cost = document.cost;
@@ -61,8 +61,9 @@ export class Clothing extends DbItem {
      * should be retrieved from Google API using the google OAuth token
      * @returns 
      */
-    public static async create(name: string, reusedCount:number, rating:number, ratingCount:number, cost:number, onSale:Boolean): Promise<Clothing | null> {
-        const newClothing = new Clothing(new ObjectId());
+    public static async create(userObjectId: ObjectId, name: string, reusedCount:number, rating:number, ratingCount:number, cost:number, onSale:Boolean): Promise<Clothing | null> {
+        const newClothing = new Clothing(new ObjectId(), userObjectId);
+        newClothing.userObjectId = userObjectId;
         newClothing.name = name;
         newClothing.reusedCount = reusedCount;
         newClothing.rating = rating;
@@ -87,6 +88,7 @@ export class Clothing extends DbItem {
     public async getRatingCount(): Promise<Number | null> {
         return this.ratingCount;
     }
+
     public async toggleOnSale(): Promise<void> {
         this.onSale = !this.onSale;
     }

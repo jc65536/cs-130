@@ -25,7 +25,7 @@ export abstract class DbItem {
    * Writes this database item to the database
    */
   public async writeToDatabase(): Promise<void> {
-    const client = await getClient();
+    const client = getClient();
     return client.writeDbItems(this);
   }
 
@@ -33,7 +33,7 @@ export abstract class DbItem {
    * Remove this database item from the database
    */
   public async removeFromDatabase(): Promise<any> {
-    const client = await getClient();
+    const client = getClient();
     return client.deleteDbItem(this);
   }
 

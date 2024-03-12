@@ -8,7 +8,8 @@ import { User } from "./user";
 export type Tag = {
     x: number,
     y: number,
-    clothingObjectId: ObjectId
+    name: string,
+    id: ObjectId
 };
 
 export type PostDatabaseEntry = {
@@ -20,6 +21,7 @@ export type PostDatabaseEntry = {
     ratingCount: number,
     userObjectId: ObjectId,
     blur: boolean,
+    date: Date,
 };
 
 export class Post extends DbItem {
@@ -27,6 +29,7 @@ export class Post extends DbItem {
     caption: String;
     rating: number;
     ratingCount: number;
+    date: Date;
     userObjectId: ObjectId | null;
     blur: boolean;
     taggedClothes: Tag[];
@@ -48,6 +51,7 @@ export class Post extends DbItem {
         this.ratingCount = 0;
         this.blur = false;
         this.taggedClothes = [];
+        this.date = new Date();
     }
 
     public static async fromId(postObjectId: ObjectId) {
@@ -59,6 +63,7 @@ export class Post extends DbItem {
         post.caption = document.caption;
         post.rating = document.rating;
         post.ratingCount = document.ratingCount;
+        post.date = document.date;
         post.userObjectId = new ObjectId(document.userObjectId);
         post.blur = document.blur;
         return post;
@@ -89,6 +94,21 @@ export class Post extends DbItem {
     }
 
     /**
+     * @returns an array of all the Post objects that exist in the database
+     */
+    public static async all(): Promise<Post[]> {
+        const dbClient = getClient();
+        const docs = await dbClient.getCollectionItems(COLLECTION.POSTS);
+
+        const posts = [];
+        for (const doc of docs) {
+            const post = await Post.fromId(doc.id);
+            posts.push(post);
+        } 
+        return posts;
+    }
+
+    /**
      * 
      * @param postUID the user ID
      * @returns 
@@ -107,6 +127,9 @@ export class Post extends DbItem {
     }
     public async getRatingCount(): Promise<number | null> {
         return this.ratingCount;
+    }
+    public async getDate(): Promise<Date> {
+        return this.date;
     }
 
     public async addTaggedClothes(clothingTag: Tag[]): Promise<void> {
@@ -137,7 +160,8 @@ export class Post extends DbItem {
             imageFilename: this.imageFilename,
             caption: this.caption,
             rating: this.rating,
-            ratingCount: this.ratingCount
+            ratingCount: this.ratingCount,
+            date: this.date
         };
     }
 }
