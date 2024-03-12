@@ -64,7 +64,7 @@ export default function Home() {
         
         <h2>Posts</h2>
         <div className={styles.postsContainer}>
-        {posts.map((post) => (
+        {posts.map((post: any) => (
             <Link href={`/post/${post.id}`}>
                 <div key={post.id} className={styles.postCard}>
                     <div>
