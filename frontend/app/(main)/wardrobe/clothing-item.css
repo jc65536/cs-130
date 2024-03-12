@@ -5,26 +5,33 @@
     align-items: center;
 }
 .clothing-card {
-    width: 140px;
-    height: 200px;
+    width: 220px;
+    height: 300px;
     display: flex;
     margin: 5px;
+    position: relative;
 
     .clothing-text-content {
         position: absolute;
+        bottom: 0;
         font-size: 12px;
-        width: 140px;
-        height: 200px;
-        background-color: rgba(0, 0, 0, 0.414);
+        /* background-color: rgba(0, 0, 0, 0.414); */
         justify-content: center;
         align-items: center;
         text-align: center;
-        color: white;
+        /* color: white; */
         z-index: 1;
     }
-    .clothing-image {
-        position: absolute;
-        align-items: center;
-        justify-content: center;
+    .clothing-image-grid {
+       display: flex;
+       flex-direction: row;
+       flex-wrap: wrap;
+       justify-content: flex-start;
+       align-items: flex-start;
+       align-content: flex-start;
+       gap: 1%;
     }
+    .clothing-image-grid img {
+        width: 50%;
+   }
 }
