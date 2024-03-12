@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import styles from './UserProfile.module.css';
 import { backend_url } from "@/app/settings";
+import { FaFire } from "react-icons/fa6";
 import { getUser, getUserPosts } from './UserService';
 import { MdOutlineSettings } from "react-icons/md";
 import Link from "next/link";
@@ -60,7 +61,7 @@ export default function Home() {
             <div className={styles.followers}>{user.followers} followers</div>
             <button className={styles.followButton}>Follow</button>
         </div>
-        <div className={styles.streaksBox}>Streaks: {user.streaks} days</div>
+        <div className={styles.streaksBox}><FaFire /> {user.streaks} days</div>
         
         <h2>Posts</h2>
         <div className={styles.postsContainer}>
