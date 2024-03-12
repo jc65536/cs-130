@@ -7,6 +7,7 @@ import { MdOutlineBookmarkAdd, MdOutlineBookmarkAdded } from "react-icons/md";
 import { Tag } from '../(main)/post/new/tag';
 import { backend_url } from '../settings';
 import SaveButton from './save-button';
+import Username from './username';
 
 export type Post = {
     id: string,
@@ -17,6 +18,7 @@ export type Post = {
     taggedClothes: Tag[],
     saved: boolean,
     comments: string[],
+    userObjectId: string
 };
 
 // export default function PostItemCard = ({ id, caption }) => {
@@ -27,10 +29,7 @@ export default function PostItemCard(post: Post) {
 
     return (
         <div className="card">
-            <div className='card-header'>
-                <img src='/tango.jpg' alt='user'></img>
-                <h4 className='card-username'>Username</h4>
-            </div>
+            <Username id={post.id} userObjectId={post.userObjectId} />
             <Link href={`/post/${post.id}`}>
                 <img src={backend_url(`/posts/image/${post.imageFilename}`)}
                     alt={post.caption}

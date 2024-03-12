@@ -53,12 +53,18 @@
   height: 30px;
   display: flex;
   flex-direction: row;
+
+  a {
+    color: inherit;
+  }
+
   .card-username {
     margin: 2px 0 2px 0;
     padding: 0;
     float: left;
   }
-  img {
+
+  .default-user-profile {
     height: 25px;
     width: 25px;
     border-radius: 25px;

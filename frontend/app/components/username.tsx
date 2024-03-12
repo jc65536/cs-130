@@ -1,6 +1,8 @@
 
 import "./components.css";
 import { backend_url } from "../settings";
+import Link from 'next/link';
+import { PropsWithChildren, useContext, useEffect, useState } from "react";
 
 export type UsernameProps = {
     id: string,
@@ -8,23 +10,21 @@ export type UsernameProps = {
 };
 
 export default (props: UsernameProps) => {
-    console.log(props)
-    const toggleRedirect = async (e: React.MouseEvent) => {
-        if (!(e.currentTarget instanceof HTMLElement))
-            return;
+    const [username, setUsername] = useState('');
 
-        // const target = e.currentTarget;
-
-        await fetch(backend_url(`/posts/${props.id}/toggleSave`), {
-            method: "POST",
-            credentials: "include"
-        });
-    };
+    useEffect(() => {
+        fetch(backend_url(`/user/${props.userObjectId}`), { credentials: "include" })
+            .then(async res => {
+                const res_json = await res.json();
+                console.log(res_json);
+                setUsername(res_json.name);
+            });
+    }, []);
 
     return (
         <div className='username-contain'>
-            <img src='/tango.jpg' alt='user' onClick={toggleRedirect}></img>
-            <h4 className='card-username' onClick={toggleRedirect}>Username</h4>
+            <Link href={`/profile/${props.userObjectId}`}><img src='/tango.jpg' alt='user' className='default-user-profile'></img></Link>
+            <Link href={`/profile/${props.userObjectId}`}><h4 className='card-username'>{username}</h4></Link>
         </div>
     );
 }
