@@ -13,13 +13,17 @@ user_router.get("/", async (req: Request, res: Response) => {
     res.status(200).json(user?.toJson());
 });
 
-// for getting info about users different from the signed in user
-user_router.get("/:userId", async (req: Request, res: Response) => {
-    const user = await User.fromId(new ObjectId(req.params.userId));
-    if (!user) {
-        res.status(404).send("User: "+req.params.userId+" does not exist in the database");
-    }
-    res.status(200).json(user?.toJson());
+// for getting average rating of a user's posts
+user_router.get("/average",async (req: Request, res: Response) => {
+    const user = await User.fromId(new ObjectId(req.session.userObjectId));
+    const postIds = await user?.getPosts();
+    console.log(postIds);
+    const ratings = postIds ? await Promise.all(postIds.map(async (postObjectId: ObjectId) => {
+        const post = await Post.fromId(postObjectId);
+        return post.rating;
+    })) : [];
+    const avgRating = ratings.reduce((a, b) => a + b, 0) / ratings.length;
+    res.status(200).json(avgRating);
 });
 
 // for getting all posts from a user
@@ -66,4 +70,13 @@ user_router.post("/name/:newName", async (req: Request, res: Response) => {
 user_router.get("/rating/:postId",async (req: Request, res: Response) => {
     const user = await User.fromId(new ObjectId(req.session.userObjectId));
     res.status(200).json(await user?.getRatingForPost(new ObjectId(req.params.postId)));
+});
+
+// for getting info about users different from the signed in user
+user_router.get("/:userId", async (req: Request, res: Response) => {
+    const user = await User.fromId(new ObjectId(req.params.userId));
+    if (!user) {
+        res.status(404).send("User: "+req.params.userId+" does not exist in the database");
+    }
+    res.status(200).json(user?.toJson());
 });
