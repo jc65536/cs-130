@@ -10,6 +10,7 @@ import { Post } from "@/app/components/post-item-card";
 import { backend_url } from "@/app/settings";
 import { fn } from "@/app/util";
 import Moai from "@/app/components/moai";
+import SaveButton from "@/app/components/save-button";
 
 export default ({ params: { id } }: { params: { id: string } }) => {
     const [post, setPost] = useState<Post | null>(null);
@@ -17,7 +18,7 @@ export default ({ params: { id } }: { params: { id: string } }) => {
     useEffect(() => {
         fetch(backend_url(`/posts/${id}`), { credentials: "include" })
             .then(res => res.json())
-            .then(fn(setPost).then(console.log));
+            .then(setPost);
     }, []);
 
     const toggleSaved = (e: MouseEvent) => {
@@ -40,10 +41,7 @@ export default ({ params: { id } }: { params: { id: string } }) => {
                 <p className="post-caption">
                     {post.caption}
                 </p>
-                <button className="like-button" onClick={toggleSaved}>
-                    <MdOutlineBookmarkAdd className="save icon" />
-                    <MdOutlineBookmarkAdded className="saved icon" />
-                </button>
+                <SaveButton />
             </div>
             <h4 className="rate-text">Rate this Post.</h4>
             <Slider id={id} />

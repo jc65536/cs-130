@@ -18,36 +18,6 @@
   border-radius: 12px;
 }
 
-.like-button {
-  border-radius: 100%;
-  border: 2px solid #2a2933;
-  width: 36px;
-  height: 36px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  .icon {
-    width: 18px;
-    height: 18px;
-  }
-}
-
-.like-button:not(.saved) {
-  .saved.icon {
-    display: none;
-  }
-}
-
-.like-button.saved {
-  background-color: var(--main);
-  color: var(--accents);
-  border-color: var(--border_accents);
-  .save.icon {
-    display: none;
-  }
-}
-
 .card-body {
   display: flex;
   flex-direction: row;
