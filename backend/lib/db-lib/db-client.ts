@@ -48,7 +48,7 @@ export class DbClient {
             }
         });
         mongoClient.connect();
-        this._mongoDB = mongoClient.db("test");
+        this._mongoDB = mongoClient.db("admin");
         this.mongoDB.command({ ping: 1 });
         console.log("successfulyl connected to mongodb")
         this.collections = {};
