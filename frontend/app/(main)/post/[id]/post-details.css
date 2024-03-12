@@ -120,3 +120,14 @@
     margin: 0;
     padding: 0;
 }
+
+.img-tag-container {
+    display: block;
+    max-width: 85%;
+    position: relative;
+    align-self: center;
+
+    img {
+        margin: auto;
+    }
+}

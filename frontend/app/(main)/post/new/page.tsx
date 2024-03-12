@@ -17,6 +17,7 @@ export default function Home() {
     const blurRef = useRef<HTMLInputElement>(null);
     const photoRef = useRef<HTMLInputElement>(null);
     const capRef = useRef<HTMLTextAreaElement>(null);
+    const imgRef = useRef<HTMLImageElement>(null);
 
     const [editorProps, setEditorProps] = useState<TagEditorProps | null>(null);
     const [tags, setTags] = useState<Tag[]>([]);
@@ -80,6 +81,20 @@ export default function Home() {
         const blur = blurRef.current?.checked;
         const caption = capRef.current?.value;
 
+        const bbox = imgRef.current?.getBoundingClientRect();
+
+        if (bbox === undefined)
+            return;
+
+        const normalizedTags = tags.map(t => {
+            t.x /= bbox.width;
+            t.y /= bbox.height;
+            return t;
+        });
+
+        console.log(bbox);
+        console.log(normalizedTags);
+
         const postMetadataRes = await fetch(backend_url('/posts/new'), {
             method: 'POST',
             credentials: 'include',
@@ -87,7 +102,7 @@ export default function Home() {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                'tags': tags,
+                'tags': normalizedTags,
                 'blur': blur,
                 'caption': caption
             })
@@ -98,8 +113,6 @@ export default function Home() {
             return res.json();
         });
         const postId = postMetadataRes.postId;
-
-        router.push(`/post/${postId}`)
 
         // // Create FormData object to send the image
         const imageData = new FormData();
@@ -122,22 +135,7 @@ export default function Home() {
 
             if (response.ok) {
                 console.log('Image uploaded successfully');
-
-                // code to test that I can download the image back from the server
-                // const jsonRes = await response.json();
-                // console.log(jsonRes);
-                // const imageRes = await fetch(backend_url('/posts/image/'+jsonRes.filename), {
-                //     method: 'GET',
-                //     credentials: 'include'
-                // })
-                // console.log("Downloaded image");
-                // console.log(imageRes);
-
-                // const imgBlob = await imageRes.blob();
-                // const url = URL.createObjectURL(imgBlob);
-                // console.log(url);
-                // setImageRes(url);
-
+                router.push(`/post/${postId}`)
             } else {
                 console.error('Failed to upload image');
             }
@@ -160,7 +158,7 @@ export default function Home() {
 
             <div id="photo-editor">
                 <div className="image-tags">
-                    {imagePreview && <NewPostPhoto imgSrc={imagePreview} {...dotProps} />}
+                    {imagePreview && <NewPostPhoto imgSrc={imagePreview} {...dotProps} ref={imgRef} />}
                     {tagEditor}
                 </div>
                 <div className="settings">
