@@ -39,10 +39,7 @@ export default function PostItemCard(post: Post) {
                     loading="lazy" />
             </Link>
             <div className="card-body">
-                <div className="text-content">
-                    <p className="username">Username</p>
-                    <p className="caption">{post.caption}</p>
-                </div>
+                <p className="caption">{post.caption}</p>
                 <button className="like-button" onClick={toggleSaved}>
                     <MdOutlineBookmarkAdd className="save icon" />
                     <MdOutlineBookmarkAdded className="saved icon" />
