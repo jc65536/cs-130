@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "@/app/globals.css";
 import NavBar from "@/app/components/nav-bar";
+import AuthCheck from "../components/auth-check";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -13,13 +14,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-      <html lang="en">
-        <body>
+    <html lang="en">
+      <body>
+        <AuthCheck>
           <main>
             {children}
           </main>
           <NavBar />
-        </body>
-      </html>
+        </AuthCheck>
+      </body>
+    </html>
   );
 }

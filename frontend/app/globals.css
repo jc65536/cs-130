@@ -50,3 +50,19 @@ nav button img {
 nav button:focus {
     background-color: #aaaaaa;
 }
+
+.moai {
+  animation: spin 0.75s infinite ease-out;
+  display: inline-block;
+  margin: 0 0.5rem;
+}
+
+@keyframes spin {
+  from {
+    transform: rotateZ(0turn);
+  }
+
+  to {
+    transform: rotateZ(1turn);
+  }
+}
