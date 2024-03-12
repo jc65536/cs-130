@@ -13,7 +13,7 @@ export default (props: SliderProps) => {
 
     useEffect(() => {
         setFrac(props.rating / 5);
-    });
+    }, []);
     const commitFrac = async (x: number) => {
         try {
             const response = await fetch(

@@ -18,6 +18,28 @@ export default ({ params: { id } }: { params: { id: string } }) => {
 
     const [post, setPost] = useState<Post | null>(null);
 
+
+    const [userRating, setUserRating] = useState<number>(0);
+
+    useEffect(() => {
+        const fetchUserRating = async () => {
+            try {
+                const response = await fetch(
+                    backend_url(`/user/rating/${id}`),
+                    { credentials: "include" }
+                );
+                if (response.ok) {
+                    const rating = await response.json();
+                    setUserRating(rating);
+                } else {
+                    console.error("Failed to fetch user rating");
+                }
+            } catch (err) {
+                console.error("The error is: " + err);
+            }
+        };
+        fetchUserRating();
+    }, []);
     const imgContainerRef = useCallback((node: HTMLDivElement) => {
         if (node === null)
             return;
@@ -31,6 +53,8 @@ export default ({ params: { id } }: { params: { id: string } }) => {
             .then(res => res.json())
             .then(setPost);
     }, []);
+
+
 
     if (post === null)
         return <h1><Moai /> Loading post… <Moai /></h1>;
@@ -57,7 +81,7 @@ export default ({ params: { id } }: { params: { id: string } }) => {
                 <span>Rate this post:</span>
                 <span className="rating">{rating}</span>
             </p>
-            <Slider id={id} />
+            <Slider id={id} rating={userRating}/>
             <Comments id={id} comments={post.comments} />
         </div>
     );
