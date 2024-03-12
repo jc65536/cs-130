@@ -22,7 +22,7 @@ const SESSION_SECRET_KEY = process.env["SESSION_SECRET_KEY"] ?? "";
 
 const MongoDBStore = connectMongodbSession(session);
 const store = new MongoDBStore({
-    uri: uri + "test",
+    uri: uri + "admin",
     collection: 'sessions'
 });
 

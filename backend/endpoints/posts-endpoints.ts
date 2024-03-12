@@ -13,7 +13,7 @@ import { Wardrobe } from "../lib/wardrobe";
 
 
 const storage = new GridFsStorage({
-    url: uri + 'test',
+    url: uri + 'admin',
     file: (req, file) => {
         console.log("File: " + file.mimetype + ", " + file.originalname);
         //If it is an image, save to photos bucket
