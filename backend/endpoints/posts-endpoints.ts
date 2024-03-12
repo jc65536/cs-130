@@ -10,27 +10,10 @@ import { User } from '../lib/user';
 import { Post } from "../lib/post"
 import { Clothing } from "../lib/clothing";
 import { Wardrobe } from "../lib/wardrobe";
+import { ImageStorage } from "./img-store";
 
 
-const storage = new GridFsStorage({
-    db: getClient().mongoDB,
-    file: (req, file) => {
-
-        console.log("File: " + file.mimetype + ", " + file.originalname);
-        //If it is an image, save to photos bucket
-        if (file.mimetype === "image/jpeg" || file.mimetype === "image/png") {
-            return {
-                bucketName: "photos",
-                filename: `${Date.now()}_${file.originalname}`,
-            }
-        } else {
-            //Otherwise save to default bucket
-            return `${Date.now()}_${file.originalname}`
-        }
-    },
-})
-
-const upload = multer({ storage })
+const upload = multer({ storage: new (ImageStorage as any)() });
 
 
 export const posts_router = Router();

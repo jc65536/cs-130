@@ -1,4 +1,4 @@
-import { MouseEventHandler, ReactElement, useEffect, useState } from "react";
+import { ForwardedRef, MouseEventHandler, ReactElement, forwardRef, useEffect, useState } from "react";
 import TagDot, { TagDotProps_ } from "./tag";
 
 export type NewPostPhotoProps = TagDotProps_ & {
@@ -10,7 +10,7 @@ const genKey = (() => {
     return () => x++;
 })();
 
-export default function NewPostPhoto(props: NewPostPhotoProps) {
+export default forwardRef(function NewPostPhoto(props: NewPostPhotoProps, ref: ForwardedRef<HTMLImageElement>) {
     const [dots, setDots] = useState<ReactElement[]>([]);
 
     useEffect(() => {
@@ -31,9 +31,9 @@ export default function NewPostPhoto(props: NewPostPhotoProps) {
     };
 
     return (
-        <div className="new-post-photo">
+        <div className="new-post-photo" ref={ref}>
             <img src={props.imgSrc} onClick={handleClick} draggable={false} />
             {...dots}
         </div>
     );
-}
+});

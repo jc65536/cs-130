@@ -1,19 +1,31 @@
 "use client";
 
-import { useEffect, useState, MouseEvent } from "react";
+import { ReactElement, useCallback, useEffect, useRef, useState } from "react";
 import Slider from "./slider";
 import "./post-details.css";
 import "../../../card.css"
 import Comments from "./comments";
-import { MdOutlineBookmarkAdd, MdOutlineBookmarkAdded } from "react-icons/md";
 import { Post } from "@/app/components/post-item-card";
 import { backend_url } from "@/app/settings";
-import { fn } from "@/app/util";
 import Moai from "@/app/components/moai";
 import SaveButton from "@/app/components/save-button";
+import TagDisplay from "./tag";
+
+import "@/app/(main)/post/new/new-post.css";
+import { render } from "react-dom";
 
 export default ({ params: { id } }: { params: { id: string } }) => {
+    const [bbox, setBbox] = useState<DOMRect | null>(null);
+
     const [post, setPost] = useState<Post | null>(null);
+
+    const imgContainerRef = useCallback((node: HTMLDivElement) => {
+        if (node === null)
+            return;
+
+        new ResizeObserver(() => setBbox(node.getBoundingClientRect()))
+            .observe(node);
+    }, []);
 
     useEffect(() => {
         fetch(backend_url(`/posts/${id}`), { credentials: "include" })
@@ -27,9 +39,15 @@ export default ({ params: { id } }: { params: { id: string } }) => {
     const rating = post.ratingCount === 0 ? "No ratings yet."
         : post.rating / post.ratingCount;
 
+    const tags = bbox === null ? [] : post.taggedClothes
+        .map((tag, i) => <TagDisplay name={tag.name} x={tag.x * bbox.width} y={tag.y * bbox.height} />);
+
     return (
         <div className="post-container">
-            <img src={backend_url(`/posts/image/${post.imageFilename}`)} />
+            <div className="img-tag-container" ref={imgContainerRef}>
+                <img src={backend_url(`/posts/image/${post.imageFilename}`)} />
+                {...tags}
+            </div>
             <div className="post-footer">
                 <p className="post-caption">
                     {post.caption}
