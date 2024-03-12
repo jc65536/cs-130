@@ -10,10 +10,10 @@ export default (props: SliderProps) => {
     const sliderRef = useRef<HTMLDivElement>(null);
     const [frac, setFrac] = useState(props.rating / 5);
 
-
     useEffect(() => {
         setFrac(props.rating / 5);
-    }, []);
+    }, [props.rating]);
+
     const commitFrac = async (x: number) => {
         try {
             const response = await fetch(
