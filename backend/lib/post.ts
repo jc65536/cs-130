@@ -56,11 +56,8 @@ export class Post extends DbItem {
         this.blur = false;
         this.taggedClothes = [];
         this.date = new Date();
-<<<<<<< HEAD
         this.ratingBuckets = [];
-=======
         this.comments = [];
->>>>>>> f2aa114 (Persistent comments (#65))
     }
 
     public static async fromId(postObjectId: ObjectId) {
