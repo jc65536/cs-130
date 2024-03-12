@@ -30,11 +30,19 @@ export default function PostItemCard(post: Post) {
 
     const handleRatePost = async () => {
         try {
-            const response = await fetch(backend_url(`/posts/${post.id}/rating`), {
-                method: "POST",
-                credentials: "include",
-                body: JSON.stringify({ rating: 5 }),
-            });
+            const response = await fetch(
+                backend_url(`/posts/${post.id}/rating`),
+                {
+                    method: "POST",
+                    credentials: "include",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        rating: 5,
+                    }),
+                }
+            );
         } catch (err) {
             console.error("The error is: " + err);
         }

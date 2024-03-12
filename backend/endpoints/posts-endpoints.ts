@@ -146,10 +146,12 @@ posts_router.post("/:postId/rating", async (req: Request, res: Response) => {
     const userId = new ObjectId(req.session.userObjectId);
     const user = await User.fromId(userId);
     let postId = new ObjectId(req.params["postId"]);
-
+    console.log("PRINTING SAJDHIAOSJDLKASJDLKSAJLKDJ: " + req.body.rating);
     if (user != null) {
         const ratedPosts = await user.getRatedPosts();
-        if (ratedPosts.has(postId)) {
+        console.log(ratedPosts);
+        // check if user already rated post
+        if(ratedPosts.some((ratedPost) => ratedPost.postId.equals(postId))) {
             await post.updateRatingAfterRated(
                 await user.getRatingForPost(postId),
                 +req.body.rating

@@ -7,14 +7,14 @@ import { Wardrobe } from "./wardrobe";
 import { Post } from "./post";
 
 type UserDatabaseEntry = {
-    _id: ObjectId,
-    posts: ObjectId[], // the ids of the Post objects
-    wardrobe: ObjectId,
-    name: string,
-    followers: number,
-    streaks: number,
-    bestStreak: number,
-    ratedPosts: Map<ObjectId, number>
+    _id: ObjectId;
+    posts: ObjectId[]; // the ids of the Post objects
+    wardrobe: ObjectId;
+    name: string;
+    followers: number;
+    streaks: number;
+    bestStreak: number;
+    ratedPosts: { postId: ObjectId; rating: number }[];
 };
 
 export class User extends DbItem {
@@ -25,7 +25,7 @@ export class User extends DbItem {
     streaks: number;
     bestStreak: number;
     // private dbClient = getClient();
-    ratedPosts: Map<ObjectId, number>;
+    ratedPosts: {postId: ObjectId, rating: number}[];
 
     constructor(id: ObjectId) {
         super(id, COLLECTION.USERS);
@@ -35,7 +35,7 @@ export class User extends DbItem {
         this.followers = 0;
         this.streaks = 0;
         this.bestStreak = 0;
-        this.ratedPosts = new Map<ObjectId, number>();
+        this.ratedPosts = [];
     }
 
     public static async fromId(userObjectId: ObjectId) {
@@ -123,14 +123,26 @@ export class User extends DbItem {
      * @return the rating the user gave the post
      */
     public async getRatingForPost(postId: ObjectId): Promise<number> {
-        return this.ratedPosts.get(postId) ?? 0;
+        // find the post in the ratedPosts
+        const post = this.ratedPosts.find((entry) => entry.postId.equals(postId));
+        if (post) {
+            return post.rating;
+        }
+        return 0;
     }
 
     public async setRatingForPost(postId: ObjectId, rating: number): Promise<void> {
-        this.ratedPosts.set(postId, rating);
+        // check if the post is already rated
+        const index = this.ratedPosts.findIndex((entry) => entry.postId.equals(postId));
+        if (index === -1) {
+            this.ratedPosts.push({postId, rating});
+        } else {
+            this.ratedPosts[index].rating = rating;
+        }
+        await this.writeToDatabase();
     }
 
-    public async getRatedPosts(): Promise<Map<ObjectId, number>> {
+    public async getRatedPosts(): Promise<{postId: ObjectId, rating: number}[]> {
         return this.ratedPosts;
     }
 
@@ -145,6 +157,7 @@ export class User extends DbItem {
             posts: this.posts,
             wardrobe: this.wardrobe,
             bestStreak: this.bestStreak,
+            ratedPosts: Array.from(this.ratedPosts)
         };
     }
 }
