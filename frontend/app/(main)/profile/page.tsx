@@ -15,6 +15,7 @@ const testUser = {
     avatar: "https://via.placeholder.com/150", // Placeholder image URL
     followers: 237,
     streaks: 10,
+    bestStreak: 10,
     posts: [
       { id: 1, caption: "Post 1", likes: 100 },
       { id: 2, caption: "Post 2", likes: 68 },
