@@ -1,7 +1,8 @@
 #title {
   text-align: center;
   font-size: 8rem;
-  width: 60%;
+  width: 80%;
+  max-width: 300px;
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   grid-template-rows: 1fr 1fr;
@@ -26,13 +27,13 @@
   .o2 {
     grid-area: o2;
     text-shadow:
-      -1px 2px 0 var(--main),
-      -2px 4px 0 var(--main),
-      -3px 6px 0 var(--main),
-      -4px 8px 0 var(--main),
-      -5px 10px 0 var(--main),
-      -6px 12px 0 var(--main),
-      -7px 14px 0 var(--main);
+      -0.8px 2px 0 var(--main),
+      -1.6px 4px 0 var(--main),
+      -2.4px 6px 0 var(--main),
+      -3.2px 8px 0 var(--main),
+      -4px 10px 0 var(--main),
+      -4.8px 12px 0 var(--main),
+      -5.6px 14px 0 var(--main);
   }
 
   .t {
@@ -50,12 +51,14 @@
   .d {
     grid-area: d;
     text-shadow:
-      -2px -2px 0 var(--main2),
-      -4px -4px 0 var(--main2),
-      -6px -6px 0 var(--main2),
-      -8px -8px 0 var(--main2),
-      -10px -10px 0 var(--main2),
-      -12px -12px 0 var(--main2),
-      -14px -14px 0 var(--main2);
+      -2.4px -1.8px 0 var(--main2),
+      -4.8px -3.6px 0 var(--main2),
+      -7.2px -5.4px 0 var(--main2),
+      -9.6px -7.2px 0 var(--main2),
+      -12px -9px 0 var(--main2),
+      -14.4px -10.8px 0 var(--main2),
+      -16.8px -12.6px 0 var(--main2);
+    position: relative;
+    right: 4px;
   }
 }
