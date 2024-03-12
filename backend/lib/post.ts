@@ -23,6 +23,7 @@ export type PostDatabaseEntry = {
     blur: boolean,
     date: Date,
     ratingBuckets: {date: Date, numRatings: number}[]
+    comments: String[],
 };
 
 export class Post extends DbItem {
@@ -35,6 +36,7 @@ export class Post extends DbItem {
     blur: boolean;
     taggedClothes: Tag[];
     ratingBuckets: {date: Date, numRatings: number}[];
+    comments: String[];
 
     /**
      * 
@@ -54,7 +56,11 @@ export class Post extends DbItem {
         this.blur = false;
         this.taggedClothes = [];
         this.date = new Date();
+<<<<<<< HEAD
         this.ratingBuckets = [];
+=======
+        this.comments = [];
+>>>>>>> f2aa114 (Persistent comments (#65))
     }
 
     public static async fromId(postObjectId: ObjectId) {
@@ -70,6 +76,7 @@ export class Post extends DbItem {
         post.userObjectId = new ObjectId(document.userObjectId);
         post.blur = document.blur;
         post.ratingBuckets = document.ratingBuckets;
+        post.comments = document.comments;
         return post;
     }
 
@@ -193,5 +200,10 @@ export class Post extends DbItem {
             date: this.date,
             ratingBuckets: this.ratingBuckets
         };
+    }
+
+    public async addComment(c: String) {
+        this.comments.push(c);
+        await this.writeToDatabase();
     }
 }

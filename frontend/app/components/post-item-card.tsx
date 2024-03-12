@@ -16,6 +16,7 @@ export type Post = {
     ratingCount: number,
     taggedClothes: Tag[],
     saved: boolean,
+    comments: string[],
 };
 
 // export default function PostItemCard = ({ id, caption }) => {

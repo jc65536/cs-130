@@ -1,6 +1,5 @@
 import { Router, Request, Response } from "express";
 import multer from "multer";
-import { GridFsStorage } from "multer-gridfs-storage";
 import { ObjectId, GridFSBucket } from "mongodb";
 import * as dotenv from 'dotenv';
 dotenv.config();
@@ -188,4 +187,15 @@ posts_router.post("/:postId/tagged-clothes", async (req: Request, res: Response)
 posts_router.post("/:postId/toggleSave", async (req: Request, res: Response) => {
     const user = await User.fromId(new ObjectId(req.session.userObjectId));
     res.status(200).json(await user?.toggleSavePost(new ObjectId(req.params.postId)));
+});
+
+/**
+ * req: "string"
+ * res: 200
+ */
+
+posts_router.post("/:postId/addComment", async (req: Request, res: Response) => {
+    const post = await Post.fromId(new ObjectId(req.params["postId"]));
+    await post.addComment(req.body["comment"]);
+    res.status(200).end();
 });
