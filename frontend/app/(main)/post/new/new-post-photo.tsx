@@ -5,6 +5,7 @@ import { detectFace } from "@/app/img-lib";
 export type NewPostPhotoProps = TagDotProps_ & {
     image: Blob,
     blur: boolean,
+    imgProcessing: boolean,
     setImage: (_: Blob) => void,
     cachedImage: MutableRefObject<[Blob, boolean] | null>,
 };
@@ -74,6 +75,7 @@ export default forwardRef(function NewPostPhoto(props: NewPostPhotoProps, ref: F
 
     return (
         <div className="new-post-photo" ref={ref}>
+            {props.imgProcessing && <img className="loading-gif" src="/loading.gif" />}
             <img src={imgSrc} onClick={handleClick} draggable={false} ref={imgRef} />
             <div className="blur" ref={blurRef}></div>
             {...dots}

@@ -24,6 +24,7 @@ export default function Home() {
     const [tags, setTags] = useState<Tag[]>([]);
     const [image, setImage] = useState<File | null>(null);
     const [blur, setBlur] = useState(false);
+    const [imgProcessing, setImgProcessing] = useState(false);
 
     const cachedImage = useRef<[Blob, boolean] | null>(null);
 
@@ -54,6 +55,7 @@ export default function Home() {
         const file_change = document.getElementById('photo-editor');
         if (file_upload) file_upload.style.display = 'none';
         if (file_change) file_change.style.display = 'flex';
+        setImgProcessing(false);
     }, [image])
 
     // Function to handle file selection
@@ -66,6 +68,11 @@ export default function Home() {
         setBlur(false);
         cachedImage.current = null;
     };
+
+    const handleBlurChange = (e: ChangeEvent<HTMLInputElement>) => {
+        setBlur(e.target.checked);
+        setImgProcessing(true);
+    }
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -159,10 +166,14 @@ export default function Home() {
                 <div className="image-tags">
                     {image && <NewPostPhoto image={image}
                         cachedImage={cachedImage}
+                        imgProcessing={imgProcessing}
                         {...dotProps}
                         ref={imgRef}
                         blur={blur}
-                        setImage={b => setImage(new File([b], image.name))} />}
+                        setImage={b => {
+                            setImage(new File([b], image.name));
+                            setImgProcessing(false);
+                        }} />}
                     {tagEditor}
                 </div>
                 <div className="settings">
@@ -171,10 +182,10 @@ export default function Home() {
                     </div>
                     <div className="blur-contain">
                         <label htmlFor="blur-switch" className="blur-label">Blur my face</label>
-                        <input type="checkbox" id="blur-switch" className="toggle" ref={blurRef} checked={blur} onChange={e => setBlur(e.target.checked)} />
+                        <input type="checkbox" id="blur-switch" className="toggle" ref={blurRef} checked={blur} onChange={handleBlurChange} />
                     </div>
                     <textarea className="caption" ref={capRef} placeholder="Start typing your caption."></textarea>
-                    <button type="submit">
+                    <button type="submit" disabled={imgProcessing}>
                         <MdOutlineAddAPhoto className="add-post-icon" />
                         <h4 className="add-post-header">Add Post</h4>
                     </button>
