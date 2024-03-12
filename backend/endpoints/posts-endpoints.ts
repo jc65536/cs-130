@@ -2,6 +2,8 @@ import { Router, Request, Response } from "express";
 import multer from "multer";
 import { GridFsStorage } from "multer-gridfs-storage";
 import { ObjectId, GridFSBucket } from "mongodb";
+import { createWriteStream } from 'fs';
+import { cv, imreadAsync, imwriteAsync } from '@u4/opencv4nodejs';
 import * as dotenv from 'dotenv';
 dotenv.config();
 
@@ -10,6 +12,8 @@ import { User } from '../lib/user';
 import { Post } from "../lib/post"
 import { Clothing } from "../lib/clothing";
 import { Wardrobe } from "../lib/wardrobe";
+import { blurFacesInPhoto } from "./utils";
+// import { blurPhoto } from "./utils";
 
 
 const storage = new GridFsStorage({
@@ -44,6 +48,60 @@ posts_router.post("/upload-image/:postId", upload.single('image'), async (req: R
         // user.posts.push(req.file?.filename);
         console.log("req.params.postId: "+req.params.postId);
         const post = await Post.fromId(new ObjectId(req.params.postId));
+        if (post.blur) {
+            // read image from gridfs
+            const imgBuffer: Buffer[] = [];
+            const dbClient = getClient();
+            const imageBucket = new GridFSBucket(dbClient.mongoDB, {
+                bucketName: "photos",
+            });
+            // Create write stream to save the image locally (optional)
+            const writeStream = createWriteStream('output_image.jpg');
+
+            // Open download stream for the specified image by filename
+            const downloadStream = imageBucket.openDownloadStreamByName(req.file.filename);
+
+            // Pipe the download stream to the write stream to save the image data
+            downloadStream.pipe(writeStream);
+            // Handle events (optional)
+            downloadStream.on('error', (err) => {
+                console.error('Error reading image from GridFS:', err);
+            });
+            downloadStream.on('end', async () => {
+                console.log('Image read from GridFS successfully');
+                // buffer to store the downloaded image from gridfs in
+                const buffer = Buffer.concat(imgBuffer);
+                // store the image in temp location in filesystem
+                const tempFileLocation = 'temp_image_location'+req.file?.filename.split('.').pop();
+                const writeStream = createWriteStream(tempFileLocation);
+                writeStream.write(buffer);
+                writeStream.end();
+
+                // create Mat object from temp file location
+                const imgMat = await imreadAsync(tempFileLocation);
+
+                // Blur faces in the image
+                const blurredImgMat = await blurFacesInPhoto(imgMat);
+
+                // Save the modified image back to original file spot in GridFS
+                const uploadStream = imageBucket.openUploadStream(req.file?.filename ?? '');
+
+                // Write image data to GridFS
+                // first convert cv.Mat to Buffer
+                const imageBuffer = cv.imencode('.jpg', blurredImgMat).toString('base64');
+
+                await new Promise<void>((resolve, reject) => {
+                    uploadStream.write(imageBuffer, (error) => {
+                      if (error) {
+                        reject(error);
+                      } else {
+                        resolve();
+                      }
+                    });
+                  });
+            });
+        }
+
         await post.updateImageFilename(req.file.filename);
         console.log("added image: " + req.file.filename + " to  post: " + post?.id);
         // await user.writeToDatabase();

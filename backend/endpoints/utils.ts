@@ -2,6 +2,7 @@ import express, { NextFunction, Request, Response } from "express";
 import { OAuth2Client } from "google-auth-library";
 import crypto from 'crypto';
 import { ObjectId } from "mongodb";
+import { cv, Mat, imreadAsync, imwriteAsync } from '@u4/opencv4nodejs';
 import { User } from "../lib/user";
 import { DbClient, getClient } from "../lib/db-lib/db-client";
 import { COLLECTION } from "../lib/enums";
@@ -137,4 +138,28 @@ export async function validateUser(req: Request, res: Response, next: NextFuncti
 
 export async function createNewPost(req: Request, res: Response, next:NextFunction) {
     const authHeader = req.headers.authorization;
+}
+
+export async function blurFacesInPhoto(imgMat: Mat ): Promise<Mat> {
+    // Convert the image to grayscale for face detection
+    const gray = imgMat.bgrToGray();
+
+    const faceClassifier = new cv.CascadeClassifier(cv.HAAR_FRONTALFACE_DEFAULT);
+
+    // Detect faces in the image
+    const { objects: faces } = await faceClassifier.detectMultiScaleAsync(gray);
+
+    // Blur each detected face
+    for (const { x, y, width, height } of faces) {
+        // Extract the region of interest (ROI) containing the face
+        const faceRect = new cv.Rect(x, y, width, height);
+        const faceMat = imgMat.getRegion(faceRect);
+        // Apply Gaussian blur to the ROI
+        const blurredFaceMat = faceMat.gaussianBlur(new cv.Size(75, 75), 0);
+        // Replace the original face with the blurred face
+        blurredFaceMat.copyTo(imgMat.getRegion(faceRect));
+        // imgMat.getRegion(new cv.Rect(x, y, width, height)).set(blurredFaceMat, x, y);
+    }
+
+    return imgMat;
 }
