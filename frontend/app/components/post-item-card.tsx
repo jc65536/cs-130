@@ -30,8 +30,7 @@ export default function PostItemCard(post: Post) {
 
     const handleRatePost = async () => {
         try {
-            let id = "65eba0a7c6680cc131c23b25";
-            const response = await fetch(backend_url(`/posts/${id}/rating`), {
+            const response = await fetch(backend_url(`/posts/${post.id}/rating`), {
                 method: "POST",
                 credentials: "include",
                 body: JSON.stringify({ rating: 5 }),
