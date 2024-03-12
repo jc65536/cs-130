@@ -88,10 +88,11 @@ export default function Home() {
 
         const normalizedTags = tags.map(t => {
             t.x /= bbox.width;
-            t.y /= bbox.width;
+            t.y /= bbox.height;
             return t;
         });
 
+        console.log(bbox);
         console.log(normalizedTags);
 
         const postMetadataRes = await fetch(backend_url('/posts/new'), {
