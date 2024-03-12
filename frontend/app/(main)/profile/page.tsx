@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import styles from './UserProfile.module.css';
 import { backend_url } from "@/app/settings";
 import { FaFire } from "react-icons/fa6";
-import { getUser, getUserPosts } from './UserService';
+import { getUser, getUserPosts, getBestStreak } from './UserService';
 import { MdOutlineSettings } from "react-icons/md";
 import Link from "next/link";
 
@@ -41,8 +41,10 @@ export default function Home() {
 
             const postsData = await getUserPosts();
             setPosts(postsData);
+            //setBestStreak(await getBestStreak());
             console.log(userData);
             console.log(postsData);
+            console.log(bestStreak);
           }
         };
     
@@ -61,7 +63,7 @@ export default function Home() {
             <div className={styles.followers}>{user.followers} followers</div>
             <button className={styles.followButton}>Follow</button>
         </div>
-        <div className={styles.streaksBox}><FaFire /> {user.streaks} days</div>
+        <div className={styles.streaksBox}><FaFire /> {user.bestStreak} days</div>
         
         <h2>Posts</h2>
         <div className={styles.postsContainer}>
