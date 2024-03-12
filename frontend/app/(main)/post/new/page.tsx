@@ -170,7 +170,7 @@ export default function Home() {
                     </div>
                     <div className="blur-contain">
                         <label htmlFor="blur-switch" className="blur-label">Blur my face</label>
-                        <input type="checkbox" id="blur-switch" className="blur" ref={blurRef} />
+                        <input type="checkbox" id="blur-switch" className="toggle" ref={blurRef} />
                     </div>
                     <textarea className="caption" ref={capRef} placeholder="Start typing your caption."></textarea>
                     <button type="submit">

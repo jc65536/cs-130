@@ -1,8 +1,18 @@
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap');
+
+:root {
+  --main: #e64669;
+  --main2: #e19eb0;
+  --main3: #ed4ec2;
+  --accents: #e6dae0;
+  --border_accents: #61394c;
+}
+
 main {
   display: flex;
   flex-direction: column;
   align-items: center;
-  font-family: Verdana, sans-serif;
+  font-family: "Quicksand", sans-serif;
   /* max-width:360px; */
 }
 
@@ -13,21 +23,21 @@ main {
 /* NavBar.module.css */
 
 nav {
-    width: 100%;
-    height: 10vh;
-    display: flex;
-    justify-content: space-evenly;
-    padding: 10px 0;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    background-color: white;
-    box-sizing: border-box;
-    z-index: 99;
+  width: 100%;
+  height: 10vh;
+  display: flex;
+  justify-content: space-evenly;
+  padding: 10px 0;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  background-color: white;
+  box-sizing: border-box;
+  z-index: 99;
 }
 
 main {
-    margin-bottom: 15vh;
+  margin-bottom: 15vh;
 }
 
 nav a {
@@ -35,20 +45,26 @@ nav a {
 }
 
 nav button {
-    background: none;
-    border: none;
-    border-radius: 44.44%;
-    padding: 0;
-    height: 100%;
+  background: none;
+  border: none;
+  border-radius: 44.44%;
+  padding: 0;
+  height: 100%;
+  color: var(--accents);
 }
 
 nav button img {
-    margin: 0;
-    height: 100%;
+  margin: 0;
+  height: 100%;
+
 }
 
 nav button:focus {
-    background-color: #aaaaaa;
+  background-color: var(--main);
+
+  img {
+    filter: invert(100%);
+  }
 }
 
 .moai {
@@ -65,4 +81,41 @@ nav button:focus {
   to {
     transform: rotateZ(1turn);
   }
+}
+
+.toggle {
+  position: relative;
+  padding: 2px;
+  width: 40px;
+  height: 20px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: #c6c6c6;
+  outline: none;
+  border-radius: 20px;
+  box-shadow: inset 0 0 5px rgba(255, 0, 0, 0.2);
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.toggle:checked {
+  background: var(--main3);
+}
+
+.toggle:before {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border-radius: 10px;
+  top: 0;
+  left: 0;
+  background: #ffffff;
+  transform: scale(1.1);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  transition: 0.2s;
+}
+
+.toggle:checked:before {
+  left: 20px;
 }

@@ -40,6 +40,9 @@
 }
 
 .like-button.saved {
+  background-color: var(--main);
+  color: var(--accents);
+  border-color: var(--border_accents);
   .save.icon {
     display: none;
   }
