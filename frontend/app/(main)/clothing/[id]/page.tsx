@@ -14,7 +14,7 @@ export default ({ params: { id } }: { params: { id: string } }) => {
     };
 
     return (
-        <>
+        <div className="page-wardrobe" style={{display: "contents"}}>
             <img src="/tango.jpg" />
             <div className="detail-text-content">
                 <div className="clothing-name">
@@ -42,6 +42,6 @@ export default ({ params: { id } }: { params: { id: string } }) => {
                     </div>
                 </div>
             </div>
-        </>
+        </div>
     );
 };
