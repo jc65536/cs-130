@@ -1,6 +1,7 @@
-import { ChangeEvent, useEffect, useRef } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { Tag, TagLabel } from "./tag";
 import { fn } from "@/app/util";
+import { backend_url } from "@/app/settings";
 
 export type TagEditorProps = {
     dotKey: number,
@@ -16,28 +17,19 @@ export type TagEditorProps = {
 const autocompleteCache: { [key: string]: TagLabel[] } = {};
 
 // This will fetch from backend
-const fetchAutocomplete = (frag: string): TagLabel[] => {
-    return [
-        "apple",
-        "apricot",
-        "apex predator",
-        "appeals court",
-        "application",
-        "approve",
-        "appreciate",
-        "group",
-        "great",
-        "green",
-        "grant",
-        "grand",
-        "grade",
-        "grass",
-    ]
-        .map((s, i) => ({ name: s, id: i }))
+const fetchAutocomplete = async (frag: string) => {
+    const res = (await fetch(backend_url(`/clothing/tags/${frag}`), {
+        credentials: "include"
+    }));
+
+    const json: { tagName: string, tagId: string }[] = await res.json();
+
+    return json
+        .map((s, i) => ({ name: s.tagName, id: s.tagId }))
         .filter(({ name }) => name.startsWith(frag));
 };
 
-const autocomplete = (frag: string): TagLabel[] => {
+const autocomplete = async (frag: string) => {
     if (frag in autocompleteCache)
         return autocompleteCache[frag];
 
@@ -48,7 +40,7 @@ const autocomplete = (frag: string): TagLabel[] => {
         autocompleteCache[frag] = refined;
         return refined;
     } else if (frag.length >= 2) {
-        const fetched = fetchAutocomplete(frag);
+        const fetched = await fetchAutocomplete(frag);
         autocompleteCache[frag] = fetched;
         return fetched;
     } else {
@@ -58,6 +50,8 @@ const autocomplete = (frag: string): TagLabel[] => {
 // autocompleteCache[frag] ?? (autocompleteCache[frag] =
 
 export default function TagEditor(props: TagEditorProps) {
+    const [completions, setCompletions] = useState<TagLabel[]>([]);
+
     const clickListener = useRef<(e: MouseEvent) => void>(e => {
         if (!(e.target instanceof HTMLElement))
             return;
@@ -77,8 +71,10 @@ export default function TagEditor(props: TagEditorProps) {
 
     const addNewTag = () =>
         closeEditor(props.addTag({ name: props.tooltip, id: -1 }));
-
-    const completions = autocomplete(props.tooltip);
+    
+    useEffect(() => {
+        autocomplete(props.tooltip).then(setCompletions);
+    }, [props.tooltip]);
 
     const suggestions = completions
         .map(tag => (
