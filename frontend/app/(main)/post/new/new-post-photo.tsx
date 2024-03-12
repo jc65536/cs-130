@@ -8,6 +8,7 @@ export type NewPostPhotoProps = TagDotProps_ & {
     imgProcessing: boolean,
     setImage: (_: Blob) => void,
     cachedImage: MutableRefObject<[Blob, boolean] | null>,
+    noFaceCallback: () => void
 };
 
 const genKey = (() => {
@@ -40,9 +41,7 @@ export default forwardRef(function NewPostPhoto(props: NewPostPhotoProps, ref: F
 
         if (props.blur) {
             if (cache.current === null || !cache.current[1]) {
-                detectFace(imgRef.current, props.setImage, () => {
-                    // Called if for loop doesn't run
-                });
+                detectFace(imgRef.current, props.setImage, props.noFaceCallback);
             } else {
                 props.setImage(cache.current[0]);
             }

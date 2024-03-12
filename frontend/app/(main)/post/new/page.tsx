@@ -170,10 +170,9 @@ export default function Home() {
                         {...dotProps}
                         ref={imgRef}
                         blur={blur}
-                        setImage={b => {
-                            setImage(new File([b], image.name));
-                            setImgProcessing(false);
-                        }} />}
+                        setImage={b => setImage(new File([b], image.name))}
+                        noFaceCallback={() => setImgProcessing(false)}
+                    />}
                     {tagEditor}
                 </div>
                 <div className="settings">
