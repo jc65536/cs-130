@@ -35,7 +35,7 @@ export default ({ params: { id } }: { params: { id: string } }) => {
     if (post === null)
         return <h1><Moai /> Loading post… <Moai /></h1>;
 
-    const rating = post.ratingCount === 0 ? "No ratings yet."
+    const rating = post.ratingCount === 0 ? "N/A"
         : post.rating / post.ratingCount;
 
     const tags = bbox === null ? [] : post.taggedClothes
@@ -53,9 +53,11 @@ export default ({ params: { id } }: { params: { id: string } }) => {
                 </p>
                 <SaveButton id={id} saved={post.saved} />
             </div>
-            <h4 className="rate-text">Rate this Post.</h4>
+            <p className="rate-text">
+                <span>Rate this post:</span>
+                <span className="rating">{rating}</span>
+            </p>
             <Slider id={id} />
-            <h2 className="rate-text">{rating}</h2>
             <Comments id={id} comments={post.comments} />
         </div>
     );
