@@ -5,7 +5,7 @@ import { Wardrobe } from "../lib/wardrobe";
 
 export const clothes_router = Router();
 
-// search all of a user's clothing objects based on query string
+// search through a user's wardrobe for clothing objects based on query string
 // a clothing is considered a match if the query string is a substring of the clothing's name
 // to get all clothes, use the empty string, aka request from "/clothing/tags/"
 clothes_router.get("/tags/:queryString", async (req: Request, res: Response) => {

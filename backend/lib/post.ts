@@ -112,11 +112,6 @@ export class Post extends DbItem {
         return posts;
     }
 
-    /**
-     * 
-     * @param postUID the user ID
-     * @returns 
-     */
     public async getTaggedClothes(): Promise<Tag[] | null> {
         return this.taggedClothes;
     }
@@ -134,6 +129,11 @@ export class Post extends DbItem {
     }
     public async getDate(): Promise<Date> {
         return this.date;
+    }
+
+    public async setTaggedClothes(tags: Tag[]) {
+        this.taggedClothes = tags;
+        this.writeToDatabase();
     }
 
     public async addTaggedClothes(clothingTag: Tag[]): Promise<void> {

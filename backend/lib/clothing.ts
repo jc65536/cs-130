@@ -13,7 +13,8 @@ type ClothingDatabaseEntry = {
     ratingCount: number,
     cost: number,
     onSale: Boolean,
-    userObjectId: ObjectId
+    userObjectId: ObjectId,
+    posts: ObjectId[],
 }
 
 export class Clothing extends DbItem {
@@ -24,6 +25,7 @@ export class Clothing extends DbItem {
     cost: number;
     onSale: Boolean;
     userObjectId: ObjectId;
+    posts: ObjectId[];
     /**
      * 
      * @param 
@@ -38,6 +40,7 @@ export class Clothing extends DbItem {
         this.ratingCount = 0;
         this.cost = 0;
         this.onSale = false;
+        this.posts = [];
     }
 
     public static async fromId(clothingObjectId: ObjectId) {
@@ -54,6 +57,7 @@ export class Clothing extends DbItem {
         clothing.ratingCount = document.ratingCount;
         clothing.onSale = document.onSale;
         clothing.userObjectId = document.userObjectId;
+        clothing.posts = document.posts;
         return clothing;
     }
 
@@ -97,6 +101,11 @@ export class Clothing extends DbItem {
         await this.writeToDatabase();
     }
 
+    public async addPost(postId: ObjectId) {
+        this.posts.push(postId);
+        await this.writeToDatabase();
+    }
+
     public async toggleOnSale(): Promise<void> {
         this.onSale = !this.onSale;
         await this.writeToDatabase();
@@ -128,7 +137,8 @@ export class Clothing extends DbItem {
             reusedCount: this.reusedCount,
             rating: this.rating,
             cost: this.cost,
-            onSale: this.onSale
+            onSale: this.onSale,
+            posts: this.posts
         };
     }
 }

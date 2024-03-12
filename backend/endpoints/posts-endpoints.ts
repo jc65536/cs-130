@@ -6,7 +6,7 @@ dotenv.config();
 
 import { getClient, uri } from '../lib/db-lib/db-client';
 import { User } from '../lib/user';
-import { Post } from "../lib/post"
+import { Post, Tag } from "../lib/post"
 import { Clothing } from "../lib/clothing";
 import { Wardrobe } from "../lib/wardrobe";
 import { GridFsStorage } from "multer-gridfs-storage";
@@ -64,7 +64,12 @@ posts_router.post("/new", async (req: Request, res: Response) => {
     const blur = req.body.blur;
     const frontendTags = req.body.tags;
 
-    const tags = await Promise.all(frontendTags.map(
+    const post = await Post.create(new ObjectId(req.session.userObjectId), '', caption, frontendTags, blur);
+    if (!post) {
+        return res.status(500).json("Unable to create new user");
+    }
+
+    const tags: Tag[] = await Promise.all(frontendTags.map(
         async (tag: { id: ObjectId | number, name: string, x: number, y: number }) => {
             let objId;
             let clothingItem;
@@ -79,6 +84,7 @@ posts_router.post("/new", async (req: Request, res: Response) => {
             }
 
             await clothingItem?.incrementReusedCount();
+            await clothingItem?.addPost(post.id);
             await wardrobe.addClothes(new ObjectId(objId));
             return {
                 id: objId,
@@ -87,10 +93,8 @@ posts_router.post("/new", async (req: Request, res: Response) => {
                 y: tag.y
             }
         }));
-    const post = await Post.create(new ObjectId(req.session.userObjectId), '', caption, tags, blur);
-    if (!post) {
-        return res.status(500).json("Unable to create new user");
-    }
+
+    await post.setTaggedClothes(tags);
 
     console.log(post.toJson());
     res.status(200).json({ postId: post?.id });
