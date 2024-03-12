@@ -43,6 +43,13 @@ export default function Home() {
             setPosts(postsData);
             console.log(userData);
             console.log(postsData);
+
+            // fetch(backend_url(`/user/posts/${id}`), { credentials: "include" })
+            //     .then(async res => {
+            //         const res_json = await res.json();
+            //         console.log(res_json);
+            //         setPosts(res_json);
+            //     });
           }
         };
     
@@ -55,30 +62,56 @@ export default function Home() {
             <Link href="/setting" style={{ position: 'absolute', top: '10px', right: '10px', zIndex: 1000, color:'black' }}>
                 <MdOutlineSettings />
             </Link>
-        <img src={user.avatar} alt="User Avatar" className={styles.avatar} />
-        <h1 className={styles.userName}>{user.name}</h1>
-        <div className={styles.followersContainer}>
-            <div className={styles.followers}>{user.followers} followers</div>
-            <button className={styles.followButton}>Follow</button>
-        </div>
-        <div className={styles.streaksBox}><FaFire /> {user.streaks} days</div>
-        
-        <h2>Posts</h2>
-        <div className={styles.postsContainer}>
-        {posts.map((post: any) => (
-            <Link href={`/post/${post.id}`}>
-                <div key={post.id} className={styles.postCard}>
-                    <div>
-                        <img src={backend_url(`/posts/image/${post.imageFilename}`)} alt="Post" className={styles.postImage} />
-                    </div>
-                    <div className={styles.postContent}>
-                        <h3>{post.caption}</h3>
-                        <p>{new Date(post.date).toLocaleDateString()}</p>
+            <img src={user.avatar} alt="User Avatar" className={styles.avatar} />
+            <h1 className={styles.userName}>{user.name}</h1>
+            <div className={styles.followersContainer}>
+                <div className={styles.followers}>{user.followers} followers</div>
+                <button className={styles.followButton}>Follow</button>
+            </div>
+            <div className={styles.streaksBox}><FaFire /> {user.streaks} days</div>
+
+            <div className='post-nav-contain'>
+                <div className='post-nav'>
+                    <h2>Posts</h2>
+                    <h2>Saved Posts</h2>
+                </div>
+                <hr/>
+                <div className='my-posts'>
+                    <div className={styles.postsContainer}>
+                    {posts.map((post: any) => (
+                        <Link href={`/post/${post.id}`}>
+                            <div key={post.id} className={styles.postCard}>
+                                <div>
+                                    <img src={backend_url(`/posts/image/${post.imageFilename}`)} alt="Post" className={styles.postImage} />
+                                </div>
+                                <div className={styles.postContent}>
+                                    <h3>{post.caption}</h3>
+                                    <h2>Rating Placeholder</h2>
+                                    <p>{new Date(post.date).toLocaleDateString()}</p>
+                                </div>
+                            </div>
+                        </Link>
+                        ))}
                     </div>
                 </div>
-            </Link>
-            ))}
-        </div>
+                <div className='my-saved-posts'>
+                    <div className={styles.postsContainer}>
+                    {posts.map((post: any) => (
+                        <Link href={`/post/${post.id}`}>
+                            <div key={post.id} className={styles.postCard}>
+                                <div>
+                                    <img src={backend_url(`/posts/image/${post.imageFilename}`)} alt="Post" className={styles.postImage} />
+                                </div>
+                                <div className={styles.postContent}>
+                                    <h3>{post.caption}</h3>
+                                    <p>{new Date(post.date).toLocaleDateString()}</p>
+                                </div>
+                            </div>
+                        </Link>
+                        ))}
+                    </div>
+                </div>
+            </div>
         </div>
     );
 };

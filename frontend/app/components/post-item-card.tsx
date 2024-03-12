@@ -26,12 +26,6 @@ export default function PostItemCard(post: Post) {
     // Assume the detail page route is '/posts/[id]', where [id] is a dynamic segment
     // const detailPagePath = `/posts/${id}`;
 
-    const toggleSaved = (e: MouseEvent) => {
-        if (!(e.currentTarget instanceof HTMLElement))
-            return;
-        e.currentTarget.classList.toggle("saved");
-    };
-
     const handleRatePost = async () => {
         try {
             const response = await fetch(
@@ -63,10 +57,6 @@ export default function PostItemCard(post: Post) {
             </Link>
             <div className="card-body">
                 <p className="caption">{post.caption}</p>
-                <button className="like-button" onClick={toggleSaved}>
-                    <MdOutlineBookmarkAdd className="save icon" />
-                    <MdOutlineBookmarkAdded className="saved icon" />
-                </button>
                 <button className="rate-button" onClick={handleRatePost}>
                     Rate
                 </button>
