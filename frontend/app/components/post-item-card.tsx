@@ -75,8 +75,6 @@ export default function PostItemCard(post: Post) {
                     <MdOutlineBookmarkAdd className="save icon" />
                     <MdOutlineBookmarkAdded className="saved icon" />
                 </button>
-                {// adding a button here just to test the endpoint
-                }
                 <button className="rate-button" onClick={handleRatePost}>
                     Rate
                 </button>

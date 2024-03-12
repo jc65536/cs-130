@@ -184,6 +184,15 @@ export class Post extends DbItem {
         await this.writeToDatabase();
     }
 
+    public async getRatingBuckets(): Promise<{date: Date, numRatings: number}[]> {
+        return this.ratingBuckets;
+    }
+
+    public async setRatingBuckets(newRatingBuckets: {date: Date, numRatings: number}[]): Promise<void> {
+        this.ratingBuckets = newRatingBuckets;
+        await this.writeToDatabase();
+    }
+
     /**
        * Converts the object into a form for the database
        * @returns a database entry
