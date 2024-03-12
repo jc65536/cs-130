@@ -43,6 +43,9 @@ export class Clothing extends DbItem {
     public static async fromId(clothingObjectId: ObjectId) {
         const dbClient = getClient();
         const document: ClothingDatabaseEntry = await dbClient.findDbItem(COLLECTION.CLOTHES, clothingObjectId);
+        if (!document) {
+            return null;
+        }
         const clothing = new Clothing(clothingObjectId, document.userObjectId);
         clothing.name = document.name;
         clothing.reusedCount = document.reusedCount;
@@ -87,6 +90,11 @@ export class Clothing extends DbItem {
     }
     public async getRatingCount(): Promise<Number | null> {
         return this.ratingCount;
+    }
+
+    public async incrementReusedCount() {
+        this.reusedCount++;
+        await this.writeToDatabase();
     }
 
     public async toggleOnSale(): Promise<void> {

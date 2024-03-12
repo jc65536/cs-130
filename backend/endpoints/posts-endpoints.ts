@@ -67,10 +67,18 @@ posts_router.post("/new", async (req: Request, res: Response) => {
     const tags = await Promise.all(frontendTags.map(
         async (tag: { id: ObjectId | number, name: string, x: number, y: number }) => {
             let objId;
-            if (!('id' in tag) || tag.id == null || tag.id == -1) {
-                const clothingItem = await Clothing.create(userObjId, tag.name, 0, 0, 0, 0, false);
+            let clothingItem;
+            // const notExistingClothing = !('id' in tag) || tag.id == null || tag.id == -1;
+            const clothingItemExists = 'id' in tag && tag.id != null && tag.id !=  -1;
+            if (clothingItemExists) {
+                clothingItem = await Clothing.fromId(new ObjectId(tag.id));
+            }
+            if (!clothingItemExists || clothingItem == null) {
+                clothingItem = await Clothing.create(userObjId, tag.name, 0, 0, 0, 0, false);
                 objId = clothingItem?.id;
             }
+
+            await clothingItem?.incrementReusedCount();
             await wardrobe.addClothes(new ObjectId(objId));
             return {
                 id: objId,

@@ -9,6 +9,7 @@ import { validateUser } from "./endpoints/utils";
 import { uri } from "./lib/db-lib/db-client";
 import { posts_router } from "./endpoints/posts-endpoints";
 import { clothes_router } from "./endpoints/clothing-endpoints";
+import { wardrobe_router } from "./endpoints/wardrobe-endpoints";
 
 
 declare module "express-session" {
@@ -59,6 +60,8 @@ app.use("/user", user_router);
 app.use("/posts", posts_router);
 
 app.use("/clothing", clothes_router);
+
+app.use("/wardrobe", wardrobe_router);
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`);
