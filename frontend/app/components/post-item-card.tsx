@@ -49,7 +49,6 @@ export default function PostItemCard(post: Post) {
             console.error("The error is: " + err);
         }
     }
-
     return (
         <div className="card">
             <Link href={`/post/${post.id}`}>

@@ -73,7 +73,7 @@ export default function Home() {
       }, []);
   
     return (
-      <div className={styles.container}>
+      <div className={`${styles.container} page-profile`}>
         <h1>Settings</h1>
         <form onSubmit={handleSubmit} className={styles.form}>
           <div className={styles.formGroup}>

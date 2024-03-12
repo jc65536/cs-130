@@ -13,7 +13,8 @@ export default (props: CommentProps) => {
         (a: string[], c: string) => [...a, c],
         props.comments);
 
-    const commentItems = comments.map((str, i) => <div key={i}>{str}</div>);
+    const commentItems = comments.map((str, i) =>
+        <div key={i} className={`comment ${i % 2 == 0 ? "shaded" : ""}`}>{str}</div>);
 
     const submitComment = (e: FormEvent) => {
         const c = commentRef.current?.value;
@@ -46,11 +47,11 @@ export default (props: CommentProps) => {
             <form onSubmit={submitComment} className="add-comment-form">
                 <textarea className="comment-box" ref={commentRef} placeholder="Add a comment..." />
                 <div className="submit-button-contain">
-                    <button className="submit-comment"><FiSend /></button>
+                    <button className="submit-comment"><FiSend className="icon" /></button>
                 </div>
             </form>
             <div className="comment-container">
-                <h4>Comments</h4>
+                <p>Comments</p>
                 {commentItems}
             </div>
         </div>

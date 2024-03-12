@@ -50,7 +50,7 @@ export default function Home() {
 
 
     return (
-        <div style={{ textAlign: 'center' }}>
+        <div style={{ textAlign: 'center' }} className="page-profile">
             <Link href="/setting" style={{ position: 'absolute', top: '10px', right: '10px', zIndex: 1000, color:'black' }}>
                 <MdOutlineSettings />
             </Link>
