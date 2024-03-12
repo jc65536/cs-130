@@ -29,8 +29,9 @@ export default ({ params: { id } }: { params: { id: string } }) => {
                     <MdOutlineBookmarkAdded className="saved icon" />
                 </button>
             </div>
-            <h4 className="rate-header">Rate this Post.</h4>
+            <h4 className="rate-text">Rate this Post.</h4>
             <Slider id={id} />
+            <h2 className="rate-text">5.0</h2>
             
             <Comments id={id} />
         </div>
