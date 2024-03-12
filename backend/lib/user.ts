@@ -7,15 +7,15 @@ import { Wardrobe } from "./wardrobe";
 import { Post } from "./post";
 
 type UserDatabaseEntry = {
-    _id: ObjectId;
-    posts: ObjectId[]; // the ids of the Post objects
-    wardrobe: ObjectId;
-    name: string;
-    followers: number;
-    streaks: number;
-    bestStreak: number;
+    _id: ObjectId,
+    posts: ObjectId[], // the ids of the Post objects
+    wardrobe: ObjectId,
+    name: string,
+    followers: number,
+    streaks: number,
+    bestStreak: number,
     savedPosts: ObjectId[],
-    ratedPosts: { postId: ObjectId; rating: number }[];
+    ratedPosts: { postId: ObjectId; rating: number }[]
 };
 
 export class User extends DbItem {
