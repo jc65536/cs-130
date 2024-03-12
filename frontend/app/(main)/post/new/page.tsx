@@ -17,6 +17,7 @@ export default function Home() {
     const blurRef = useRef<HTMLInputElement>(null);
     const photoRef = useRef<HTMLInputElement>(null);
     const capRef = useRef<HTMLTextAreaElement>(null);
+    const imgRef = useRef<HTMLImageElement>(null);
 
     const [editorProps, setEditorProps] = useState<TagEditorProps | null>(null);
     const [tags, setTags] = useState<Tag[]>([]);
@@ -80,6 +81,19 @@ export default function Home() {
         const blur = blurRef.current?.checked;
         const caption = capRef.current?.value;
 
+        const bbox = imgRef.current?.getBoundingClientRect();
+
+        if (bbox === undefined)
+            return;
+
+        const normalizedTags = tags.map(t => {
+            t.x /= bbox.width;
+            t.y /= bbox.width;
+            return t;
+        });
+
+        console.log(normalizedTags);
+
         const postMetadataRes = await fetch(backend_url('/posts/new'), {
             method: 'POST',
             credentials: 'include',
@@ -87,7 +101,7 @@ export default function Home() {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                'tags': tags,
+                'tags': normalizedTags,
                 'blur': blur,
                 'caption': caption
             })
@@ -143,7 +157,7 @@ export default function Home() {
 
             <div id="photo-editor">
                 <div className="image-tags">
-                    {imagePreview && <NewPostPhoto imgSrc={imagePreview} {...dotProps} />}
+                    {imagePreview && <NewPostPhoto imgSrc={imagePreview} {...dotProps} ref={imgRef} />}
                     {tagEditor}
                 </div>
                 <div className="settings">
