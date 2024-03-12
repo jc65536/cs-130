@@ -99,8 +99,6 @@ export default function Home() {
         });
         const postId = postMetadataRes.postId;
 
-        router.push(`/post/${postId}`)
-
         // // Create FormData object to send the image
         const imageData = new FormData();
         imageData.append('image', image);
@@ -122,22 +120,7 @@ export default function Home() {
 
             if (response.ok) {
                 console.log('Image uploaded successfully');
-
-                // code to test that I can download the image back from the server
-                // const jsonRes = await response.json();
-                // console.log(jsonRes);
-                // const imageRes = await fetch(backend_url('/posts/image/'+jsonRes.filename), {
-                //     method: 'GET',
-                //     credentials: 'include'
-                // })
-                // console.log("Downloaded image");
-                // console.log(imageRes);
-
-                // const imgBlob = await imageRes.blob();
-                // const url = URL.createObjectURL(imgBlob);
-                // console.log(url);
-                // setImageRes(url);
-
+                router.push(`/post/${postId}`)
             } else {
                 console.error('Failed to upload image');
             }

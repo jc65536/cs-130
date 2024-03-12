@@ -5,10 +5,8 @@ import Slider from "./slider";
 import "./post-details.css";
 import "../../../card.css"
 import Comments from "./comments";
-import { MdOutlineBookmarkAdd, MdOutlineBookmarkAdded } from "react-icons/md";
 import { Post } from "@/app/components/post-item-card";
 import { backend_url } from "@/app/settings";
-import { fn } from "@/app/util";
 import Moai from "@/app/components/moai";
 import SaveButton from "@/app/components/save-button";
 
