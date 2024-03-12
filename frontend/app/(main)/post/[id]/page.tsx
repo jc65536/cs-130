@@ -48,7 +48,6 @@ export default ({ params: { id } }: { params: { id: string } }) => {
             <h4 className="rate-text">Rate this Post.</h4>
             <Slider id={id} />
             <h2 className="rate-text">{rating}</h2>
-
             <Comments id={id} />
         </div>
     );
