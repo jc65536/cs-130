@@ -9,8 +9,11 @@ import { FaUpload } from "react-icons/fa";
 import { MdOutlineAddAPhoto } from "react-icons/md";
 import { fn } from "@/app/util";
 import "./new-post.css";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
+    const router = useRouter();
+
     const blurRef = useRef<HTMLInputElement>(null);
     const photoRef = useRef<HTMLInputElement>(null);
     const capRef = useRef<HTMLTextAreaElement>(null);
@@ -76,12 +79,7 @@ export default function Home() {
 
         const blur = blurRef.current?.checked;
         const caption = capRef.current?.value;
-        console.log("new post payload: ");
-        console.log({
-            'tags': tags,
-            'blur': blur,
-            'caption': caption
-        });
+
         const postMetadataRes = await fetch(backend_url('/posts/new'), {
             method: 'POST',
             credentials: 'include',
@@ -101,7 +99,8 @@ export default function Home() {
         });
         const postId = postMetadataRes.postId;
 
-        console.log("postId received from server: " + postId);
+        router.push(`/post/${postId}`)
+
         // // Create FormData object to send the image
         const imageData = new FormData();
         imageData.append('image', image);
