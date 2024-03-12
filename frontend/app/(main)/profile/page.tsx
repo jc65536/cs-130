@@ -65,15 +65,17 @@ export default function Home() {
         <h2>Posts</h2>
         <div className={styles.postsContainer}>
         {posts.map((post) => (
-            <div key={post.id} className={styles.postCard}>
-                <div>
-                    <img src={backend_url(`/posts/image/${post.imageFilename}`)} alt="Post" className={styles.postImage} />
+            <Link href={`/post/${post.id}`}>
+                <div key={post.id} className={styles.postCard}>
+                    <div>
+                        <img src={backend_url(`/posts/image/${post.imageFilename}`)} alt="Post" className={styles.postImage} />
+                    </div>
+                    <div className={styles.postContent}>
+                        <h3>{post.caption}</h3>
+                        <p>{new Date(post.date).toLocaleDateString()}</p>
+                    </div>
                 </div>
-                <div className={styles.postContent}>
-                    <h3>{post.caption}</h3>
-                    <p>{new Date(post.date).toLocaleDateString()}</p>
-                </div>
-            </div>
+            </Link>
             ))}
         </div>
         </div>
