@@ -1,0 +1,48 @@
+/******************************************************************************/
+
+.moai {
+  animation: spin 0.75s infinite ease-out;
+  display: inline-block;
+  margin: 0 0.5rem;
+}
+
+@keyframes spin {
+  from {
+    transform: rotateZ(0turn);
+  }
+
+  to {
+    transform: rotateZ(1turn);
+  }
+}
+
+/******************************************************************************/
+
+.save-button {
+  border-radius: 100%;
+  border: 2px solid #2a2933;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .icon {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+.save-button:not(.saved) .unsave {
+  display: none;
+}
+
+.save-button.saved {
+  background-color: var(--main);
+  color: var(--accents);
+  border-color: var(--border_accents);
+
+  .save {
+    display: none;
+  }
+}

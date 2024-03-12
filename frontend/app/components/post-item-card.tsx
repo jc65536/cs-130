@@ -5,7 +5,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { MdOutlineBookmarkAdd, MdOutlineBookmarkAdded } from "react-icons/md";
 import { Tag } from '../(main)/post/new/tag';
-import { backend_url } from "@/app/settings";
+import { backend_url } from '../settings';
+import SaveButton from './save-button';
 
 export type Post = {
     id: string,
@@ -13,9 +14,9 @@ export type Post = {
     caption: string,
     rating: number,
     ratingCount: number,
-    taggedClothes: Tag[];
+    taggedClothes: Tag[],
+    saved: boolean,
 };
-
 
 // export default function PostItemCard = ({ id, caption }) => {
 export default function PostItemCard(post: Post) {
@@ -68,6 +69,7 @@ export default function PostItemCard(post: Post) {
                 <button className="rate-button" onClick={handleRatePost}>
                     Rate
                 </button>
+                <SaveButton id={post.id} saved={post.saved} />
             </div>
         </div>
     );

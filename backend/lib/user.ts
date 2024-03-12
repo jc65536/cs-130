@@ -14,6 +14,7 @@ type UserDatabaseEntry = {
     followers: number;
     streaks: number;
     bestStreak: number;
+    savedPosts: ObjectId[],
     ratedPosts: { postId: ObjectId; rating: number }[];
 };
 
@@ -24,6 +25,7 @@ export class User extends DbItem {
     followers: number;
     streaks: number;
     bestStreak: number;
+    savedPosts: ObjectId[];
     // private dbClient = getClient();
     ratedPosts: {postId: ObjectId, rating: number}[];
 
@@ -36,6 +38,7 @@ export class User extends DbItem {
         this.streaks = 0;
         this.bestStreak = 0;
         this.ratedPosts = [];
+        this.savedPosts = [];
     }
 
     public static async fromId(userObjectId: ObjectId) {
@@ -52,6 +55,7 @@ export class User extends DbItem {
         user.followers = document.followers ?? user.followers;
         user.streaks = document.streaks ?? user.streaks;
         user.ratedPosts = document.ratedPosts ?? user.ratedPosts;
+        user.savedPosts = document.savedPosts ?? user.savedPosts;
         return user;
     }
     /**
@@ -159,5 +163,21 @@ export class User extends DbItem {
             bestStreak: this.bestStreak,
             ratedPosts: Array.from(this.ratedPosts)
         };
+    }
+
+    public async toggleSavePost(postID: ObjectId) {
+        const idx = this.savedPosts.findIndex(id => postID.equals(id));
+        const add = idx === -1;
+        if (add) {
+            this.savedPosts.push(postID);
+        } else {
+            this.savedPosts.splice(idx, 1);
+        }
+        await this.writeToDatabase();
+        return add;
+    }
+
+    public hasSavedPost(postId: ObjectId) {
+        return this.savedPosts.some(id => postId.equals(id));
     }
 }

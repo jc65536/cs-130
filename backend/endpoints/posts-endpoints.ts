@@ -43,7 +43,7 @@ posts_router.post("/upload-image/:postId", upload.single('image'), async (req: R
     // TODO: change this to create a new Posts object and add the post id to User
     if (req.file?.filename && req.session.userID && req.session.userObjectId) {
         // user.posts.push(req.file?.filename);
-        console.log("req.params.postId: "+req.params.postId);
+        console.log("req.params.postId: " + req.params.postId);
         const post = await Post.fromId(new ObjectId(req.params.postId));
         await post.updateImageFilename(req.file.filename);
         console.log("added image: " + req.file.filename + " to  post: " + post?.id);
@@ -86,7 +86,7 @@ posts_router.post("/new", async (req: Request, res: Response) => {
     }
 
     console.log(post.toJson());
-    res.status(200).json({postId: post?.id});
+    res.status(200).json({ postId: post?.id });
 })
 
 // download an existing image
@@ -122,15 +122,33 @@ posts_router.get('/image/:filename', (req, res) => {
 
 });
 
+/**
+ * Response type: post.toJSON() & { saved: boolean }
+ */
+
 posts_router.get("/", async (req: Request, res: Response) => {
     const posts = await Post.all();
-    res.status(200).json(posts.map(post => post.toJson()));
+    const user = await User.fromId(new ObjectId(req.session.userObjectId));
+    res.status(200).json(
+        posts.map(post => post.toJson())
+            .map(post => ({
+                saved: user?.hasSavedPost(post.id),
+                ...post
+            }))
+    );
 });
 
 //get post object
+
+/**
+ * Response type: post.toJSON() & { saved: boolean }
+ */
+
 posts_router.get("/:postId", async (req: Request, res: Response) => {
     const post = await Post.fromId(new ObjectId(req.params["postId"]));
-    res.status(200).json(post.toJson());
+    const user = await User.fromId(new ObjectId(req.session.userObjectId));
+    const json = post.toJson();
+    res.status(200).json({ saved: user?.hasSavedPost(json.id), ...json });
 });
 
 //get post's rating
@@ -182,4 +200,9 @@ posts_router.post("/:postId/tagged-clothes", async (req: Request, res: Response)
     const post = await Post.fromId(new ObjectId(req.params["postId"]));
     await post.addTaggedClothes(req.body.clothes); //expects array
     res.status(200).json();
+});
+
+posts_router.post("/:postId/toggleSave", async (req: Request, res: Response) => {
+    const user = await User.fromId(new ObjectId(req.session.userObjectId));
+    res.status(200).json(await user?.toggleSavePost(new ObjectId(req.params.postId)));
 });
