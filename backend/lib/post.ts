@@ -22,7 +22,7 @@ export type PostDatabaseEntry = {
     userObjectId: ObjectId,
     blur: boolean,
     date: Date,
-    ratingBuckets: {date: Date, numRatings: number}[]
+    ratingBuckets: {date: Date, numRatings: number}[],
     comments: String[],
 };
 
@@ -56,7 +56,6 @@ export class Post extends DbItem {
         this.blur = false;
         this.taggedClothes = [];
         this.date = new Date();
-        this.ratingBuckets = [];
         this.comments = [];
         this.ratingBuckets = [];
     }
@@ -75,7 +74,6 @@ export class Post extends DbItem {
         post.blur = document.blur;
         post.ratingBuckets = document.ratingBuckets;
         post.comments = document.comments;
-        post.ratingBuckets = document.ratingBuckets;
         return post;
     }
 

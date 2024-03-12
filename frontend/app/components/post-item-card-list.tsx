@@ -9,7 +9,7 @@ export default function PostItemCardList() {
   const [posts, setPosts] = useState<Post[]>([]);
 
   useEffect(() => {
-    fetch(backend_url(`/posts`), { credentials: "include" })
+    fetch(backend_url(`/posts/trending`), { credentials: "include" })
       .then(res => res.json())
       .then(setPosts);
   }, []);

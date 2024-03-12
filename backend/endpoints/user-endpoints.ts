@@ -13,9 +13,29 @@ user_router.get("/", async (req: Request, res: Response) => {
     res.status(200).json(user?.toJson());
 });
 
+// for getting info about users different from the signed in user
+user_router.get("/:userId", async (req: Request, res: Response) => {
+    const user = await User.fromId(new ObjectId(req.params.userId));
+    if (!user) {
+        res.status(404).send("User: "+req.params.userId+" does not exist in the database");
+    }
+    res.status(200).json(user?.toJson());
+});
+
 // for getting all posts from a user
 user_router.get("/posts",async (req: Request, res: Response) => {
     const user = await User.fromId(new ObjectId(req.session.userObjectId));
+    const postIds = await user?.getPosts();
+    const posts = postIds ? await Promise.all(postIds.map(async (postObjectId: ObjectId) => {
+        const post = await Post.fromId(postObjectId);
+        return post.toJson();
+    })) : [];
+    res.status(200).json(posts);
+});
+
+// for getting all posts from any user
+user_router.get("/posts/:userId",async (req: Request, res: Response) => {
+    const user = await User.fromId(new ObjectId(req.params.userId));
     const postIds = await user?.getPosts();
     const posts = postIds ? await Promise.all(postIds.map(async (postObjectId: ObjectId) => {
         const post = await Post.fromId(postObjectId);

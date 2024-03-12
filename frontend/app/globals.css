@@ -6,6 +6,11 @@
   --main3: #ed4ec2;
   --accents: #e6dae0;
   --border_accents: #61394c;
+  --dark_text: #282828;
+}
+
+* {
+  color: #282828;
 }
 
 main {
@@ -14,10 +19,6 @@ main {
   align-items: center;
   font-family: "Quicksand", sans-serif;
   /* max-width:360px; */
-}
-
-#title {
-  text-align: center;
 }
 
 /* NavBar.module.css */
@@ -31,9 +32,10 @@ nav {
   position: fixed;
   bottom: 0;
   left: 0;
-  background-color: white;
+  background-color: #ffffff;
   box-sizing: border-box;
   z-index: 99;
+  box-shadow: 0 0 16px #00000080;
 }
 
 main {
@@ -50,20 +52,31 @@ nav button {
   border-radius: 44.44%;
   padding: 0;
   height: 100%;
-  color: var(--accents);
+  box-sizing: border-box;
+  transition: 0.2s;
 }
 
 nav button img {
   margin: 0;
   height: 100%;
-
+  border-radius: 44.44%;
+  filter: invert(0.15);
+  display: block;
+  box-sizing: border-box;
+  transition: 0.2s;
 }
 
-nav button:focus {
+.page-home ~ nav .home,
+.page-new ~ nav .post,
+.page-wardrobe ~ nav .wardrobe,
+.page-profile ~ nav .user {
   background-color: var(--main);
+  border: 2px solid var(--dark_text);
+  transition: 0.2s;
 
   img {
-    filter: invert(100%);
+    filter: invert(1);
+    transition: 0.2s;
   }
 }
 
