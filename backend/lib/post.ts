@@ -24,6 +24,7 @@ export type PostDatabaseEntry = {
     date: Date,
     ratingBuckets: {date: Date, numRatings: number}[]
     comments: String[],
+    ratingBuckets: {date: Date, numRatings: number}[]
 };
 
 export class Post extends DbItem {
@@ -37,6 +38,7 @@ export class Post extends DbItem {
     taggedClothes: Tag[];
     ratingBuckets: {date: Date, numRatings: number}[];
     comments: String[];
+    ratingBuckets: {date: Date, numRatings: number}[];
 
     /**
      * 
@@ -58,6 +60,7 @@ export class Post extends DbItem {
         this.date = new Date();
         this.ratingBuckets = [];
         this.comments = [];
+        this.ratingBuckets = [];
     }
 
     public static async fromId(postObjectId: ObjectId) {
@@ -74,6 +77,7 @@ export class Post extends DbItem {
         post.blur = document.blur;
         post.ratingBuckets = document.ratingBuckets;
         post.comments = document.comments;
+        post.ratingBuckets = document.ratingBuckets;
         return post;
     }
 
