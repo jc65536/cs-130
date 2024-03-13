@@ -49,6 +49,7 @@ export class Wardrobe extends DbItem {
      * this is usually called by User.create()
      * @returns 
      */
+    
     public static async create(userObjectId: ObjectId): Promise<Wardrobe | null> {
         const newWardrobe = new Wardrobe(new ObjectId());
         newWardrobe.userObjectId = userObjectId;

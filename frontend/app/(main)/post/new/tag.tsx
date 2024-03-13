@@ -3,21 +3,21 @@ import { TagEditorProps } from "./tag-editor";
 import { fn } from "@/app/util";
 
 export type IncompleteTag = {
-    id: number | null,
+    id: string | -1 | null,
     name: string,
     x: number,
     y: number,
 };
 
 export type Tag = {
-    id: number,
+    id: string | -1,
     name: string,
     x: number,
     y: number,
 };
 
 export type TagLabel = {
-    id: number,
+    id: string | -1,
     name: string,
 };
 

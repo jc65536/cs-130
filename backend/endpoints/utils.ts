@@ -53,7 +53,7 @@ export async function validateUser(req: Request, res: Response, next: NextFuncti
         const authHeader = req.headers.authorization;
         const token = authHeader && authHeader.split(' ')[1];
         console.log("inside the start of validateGoogleOAuthToken");
-
+        console.log("google oauth token: "+token);
         async function verify() {
             const ticket = await client.verifyIdToken({
                 idToken: token ?? '',
