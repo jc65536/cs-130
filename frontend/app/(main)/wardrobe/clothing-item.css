@@ -38,11 +38,6 @@
 
        a {
         display: contents;
-
-        img {
-            height: 100%;
-            width: auto;
-        }
        }
 
        &[data-size="2"] {
