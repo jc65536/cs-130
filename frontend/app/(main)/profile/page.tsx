@@ -25,6 +25,7 @@ const testUser = {
 export default function Home() {
     const [user, setUser] = useState(testUser);
     const [posts, setPosts] = useState([]);
+    const [averageRating, setAverageRating] = useState(0);
     const [bestStreak, setBestStreak] = useState(0);
     const [currentStreak, setCurrentStreak] = useState(0);
     const [avgRating, setAvgRating] = useState(0);
@@ -52,7 +53,7 @@ export default function Home() {
             console.log(avgRatingData);
           }
         };
-    
+        
         fetchData();
       }, []);
 
@@ -62,31 +63,65 @@ export default function Home() {
             <Link href="/setting" style={{ position: 'absolute', top: '10px', right: '10px', zIndex: 1000, color:'black' }}>
                 <MdOutlineSettings />
             </Link>
-        <img src={user.avatar} alt="User Avatar" className={styles.avatar} />
-        <h1 className={styles.userName}>{user.name}</h1>
-        <div className={styles.followersContainer}>
-            <div className={styles.followers}>{user.followers} followers</div>
-            <button className={styles.followButton}>Follow</button>
-        </div>
-        <div className={styles.streaksBox}><FaFire /> {bestStreak} days</div>
-        <div className={styles.ratingBox}><FaHeart /> {avgRating < 0 ? "unrated" : (avgRating + " average")}</div>
-        
-        <h2>Posts</h2>
-        <div className={styles.postsContainer}>
-        {posts.map((post: any) => (
-            <Link href={`/post/${post.id}`}>
-                <div key={post.id} className={styles.postCard}>
-                    <div>
-                        <img src={backend_url(`/posts/image/${post.imageFilename}`)} alt="Post" className={styles.postImage} />
-                    </div>
-                    <div className={styles.postContent}>
-                        <h3>{post.caption}</h3>
-                        <p>{new Date(post.date).toLocaleDateString()}</p>
+            <img src={user.avatar} alt="User Avatar" className={styles.avatar} />
+            <h1 className={styles.userName}>{user.name}</h1>
+            <div className={styles.followersContainer}>
+                <div className={styles.followers}>{user.followers} followers</div>
+                <button className={styles.followButton}>Follow</button>
+            </div>
+            <div className={styles.streaksBox}><FaFire /> {user.streaks} days</div>
+
+            <div className='post-nav-contain'>
+                <div className='post-nav'>
+                    <h2>Posts</h2>
+                    <h2>Saved Posts</h2>
+                </div>
+                <hr/>
+                <div className='my-posts'>
+                    <div className={styles.postsContainer}>
+                    {posts.map((post: any) => (
+                        <Link href={`/post/${post.id}`}>
+                            <div key={post.id} className={styles.postCard}>
+                                <div>
+                                    <img src={backend_url(`/posts/image/${post.imageFilename}`)} alt="Post" className={styles.postImage} />
+                                </div>
+                                <div className={styles.postContent}>
+                                    <div className={styles.postContentTop}>
+                                        <p>{new Date(post.date).toLocaleDateString()}</p>
+                                        <h2>{Number((post.rating).toFixed(1))}</h2>
+                                    </div>
+                                    <div className={styles.postContentBottom}>
+                                        <p>{post.caption}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </Link>
+                        ))}
                     </div>
                 </div>
-            </Link>
-            ))}
-        </div>
+                <div className='my-saved-posts'>
+                    <div className={styles.postsContainer}>
+                    {posts.map((post: any) => (
+                        <Link href={`/post/${post.id}`}>
+                            <div key={post.id} className={styles.postCard}>
+                                <div>
+                                    <img src={backend_url(`/posts/image/${post.imageFilename}`)} alt="Post" className={styles.postImage} />
+                                </div>
+                                <div className={styles.postContent}>
+                                    <div className={styles.postContentTop}>
+                                        <p>{new Date(post.date).toLocaleDateString()}</p>
+                                        <h2>{Number((post.rating).toFixed(1))}</h2>
+                                    </div>
+                                    <div className={styles.postContentBottom}>
+                                        <p>{post.caption}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </Link>
+                        ))}
+                    </div>
+                </div>
+            </div>
         </div>
     );
 };
