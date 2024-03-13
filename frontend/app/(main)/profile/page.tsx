@@ -24,6 +24,7 @@ const testUser = {
 export default function Home() {
     const [user, setUser] = useState(testUser);
     const [posts, setPosts] = useState([]);
+    const [averageRating, setAverageRating] = useState(0);
     const [bestStreak, setBestStreak] = useState(0);
     const [currentStreak, setCurrentStreak] = useState(0);
 
@@ -52,7 +53,7 @@ export default function Home() {
             //     });
           }
         };
-    
+        
         fetchData();
       }, []);
 
@@ -85,9 +86,13 @@ export default function Home() {
                                     <img src={backend_url(`/posts/image/${post.imageFilename}`)} alt="Post" className={styles.postImage} />
                                 </div>
                                 <div className={styles.postContent}>
-                                    <h3>{post.caption}</h3>
-                                    <h2>Rating Placeholder</h2>
-                                    <p>{new Date(post.date).toLocaleDateString()}</p>
+                                    <div className={styles.postContentTop}>
+                                        <p>{new Date(post.date).toLocaleDateString()}</p>
+                                        <h2>{Number((post.rating).toFixed(1))}</h2>
+                                    </div>
+                                    <div className={styles.postContentBottom}>
+                                        <p>{post.caption}</p>
+                                    </div>
                                 </div>
                             </div>
                         </Link>
@@ -103,8 +108,13 @@ export default function Home() {
                                     <img src={backend_url(`/posts/image/${post.imageFilename}`)} alt="Post" className={styles.postImage} />
                                 </div>
                                 <div className={styles.postContent}>
-                                    <h3>{post.caption}</h3>
-                                    <p>{new Date(post.date).toLocaleDateString()}</p>
+                                    <div className={styles.postContentTop}>
+                                        <p>{new Date(post.date).toLocaleDateString()}</p>
+                                        <h2>{Number((post.rating).toFixed(1))}</h2>
+                                    </div>
+                                    <div className={styles.postContentBottom}>
+                                        <p>{post.caption}</p>
+                                    </div>
                                 </div>
                             </div>
                         </Link>

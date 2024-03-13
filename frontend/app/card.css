@@ -41,3 +41,43 @@
   align-items: center;
   justify-content: center;
 }
+
+.slider {
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    margin: 5px;
+
+    .heart-container {
+        display: flex;
+        border-left: 4px solid var(--accents);
+        border-right: 4px solid var(--accents);
+        position: relative;
+        z-index: 1;
+
+        .heart-border {
+            border: 4px solid var(--accents);
+            box-sizing: border-box;
+            width: 20%;
+        }
+
+        .heart {
+            width: 100%;
+            aspect-ratio: 1;
+            background: var(--accents);
+            mask: linear-gradient(#000000 0 0) center/cover,
+                url("/heart.svg") 50% 60%/contain;
+            mask-repeat: no-repeat;
+            mask-composite: exclude;
+        }
+    }
+
+    .fill {
+        background: linear-gradient(to right, var(--main), var(--main2), var(--main3));
+        height: 100%;
+        width: 50%;
+        position: absolute;
+        left: 0;
+        z-index: 0;
+    }
+}

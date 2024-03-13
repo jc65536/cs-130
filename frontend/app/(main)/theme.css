@@ -1,6 +1,7 @@
 .themed-post {
     font-size: 12px;
     margin: 10px;
+
     justify-content: center;
     align-items: center;
     text-align: center;
@@ -18,7 +19,7 @@
     width: 320px;
     overflow-x: scroll;
     height: 120px;
-    margin-top: 10px;
+    margin-top: 5px;
 }
 .theme-text-contain {
     display: flex;
