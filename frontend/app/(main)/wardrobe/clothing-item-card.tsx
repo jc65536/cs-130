@@ -44,28 +44,22 @@ export default function ClothingItemCard({ id, name, rating, reusedCount, cost, 
 
     return (
         <div className="clothing-card card" >
-            <div className='clothing-image-grid'>
+            <div className='clothing-text-content'>
+                <span className="clothing-name">{name}</span>
+                <span>{`Used in ${reusedCount} outfit(s)`}</span>
+            </div>
+            <div className='clothing-image-grid' data-size={Math.ceil(Math.sqrt(postState.length))}>
                 <Link href={detailPagePath}>
                     {
-                        postState.map(post => 
-                            <img 
+                        postState.map((post, i) =>
+                            <img
                                 src={backend_url(`/posts/image/${post.imageFilename}`)}
                                 alt={post.caption}
-                            />    
+                                key={i}
+                            />
                         )
                     }
-                    {/* <Image
-                        // src={`https://picsum.photos/seed/${id}/120/160`}
-                        src={`https://picsum.photos/id/${id}/120/160`}
-                        alt={name}
-                        width={140}
-                        height={200}
-                    /> */}
                 </Link>
-            </div>
-            <div className='clothing-text-content'>
-                <span>{name}</span>
-                <span>{"Number of outfits used in: " + reusedCount}</span>
             </div>
         </div>
     );

@@ -1,35 +1,59 @@
 .clothing-list {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     justify-content: space-around;
-    align-items: center;
+    gap: 12px;
 }
 .clothing-card {
-    width: 220px;
-    height: 300px;
     display: flex;
-    margin: 5px;
     position: relative;
+    margin: 0;
+    box-sizing: border-box;
 
     .clothing-text-content {
-        position: absolute;
-        bottom: 0;
-        font-size: 12px;
+        display: flex;
+        width: 100%;
         /* background-color: rgba(0, 0, 0, 0.414); */
-        justify-content: center;
+        justify-content: space-between;
         align-items: center;
         text-align: center;
         /* color: white; */
         z-index: 1;
+        margin-bottom: 6px;
+
+        .clothing-name {
+            font-weight: bold;
+            font-size: 1rem;
+        }
+
+        span {
+            font-size: 0.75rem;
+        }
     }
     .clothing-image-grid {
-       display: flex;
-       flex-direction: row;
-       flex-wrap: wrap;
-       justify-content: flex-start;
-       align-items: flex-start;
-       align-content: flex-start;
+       display: grid;
+       align-items: center;
+       justify-items: center;
        gap: 1%;
+
+       a {
+        display: contents;
+
+        img {
+            height: 100%;
+            width: auto;
+        }
+       }
+
+       &[data-size="2"] {
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: repeat(2, 1fr);
+       }
+
+       &[data-size="3"] {
+        grid-template-columns: repeat(3, 1fr);
+        grid-template-rows: repeat(3, 1fr);
+       }
     }
     .clothing-image-grid img {
         width: 50%;
