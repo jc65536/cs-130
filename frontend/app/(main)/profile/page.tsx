@@ -3,8 +3,8 @@
 import React, { useEffect, useState } from 'react';
 import styles from './UserProfile.module.css';
 import { backend_url } from "@/app/settings";
-import { FaFire } from "react-icons/fa6";
-import { getUser, getUserPosts } from './UserService';
+import { FaFire, FaHeart } from "react-icons/fa6";
+import { getUser, getUserPosts, getBestStreak, getAvgRating } from './UserService';
 import { MdOutlineSettings } from "react-icons/md";
 import Link from "next/link";
 
@@ -15,6 +15,7 @@ const testUser = {
     avatar: "https://via.placeholder.com/150", // Placeholder image URL
     followers: 237,
     streaks: 10,
+    bestStreak: 10,
     posts: [
       { id: 1, caption: "Post 1", likes: 100 },
       { id: 2, caption: "Post 2", likes: 68 },
@@ -27,6 +28,7 @@ export default function Home() {
     const [averageRating, setAverageRating] = useState(0);
     const [bestStreak, setBestStreak] = useState(0);
     const [currentStreak, setCurrentStreak] = useState(0);
+    const [avgRating, setAvgRating] = useState(0);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -42,15 +44,13 @@ export default function Home() {
 
             const postsData = await getUserPosts();
             setPosts(postsData);
+            setBestStreak(await getBestStreak());
+            const avgRatingData = await getAvgRating();
+            setAvgRating(avgRatingData);
             console.log(userData);
             console.log(postsData);
-
-            // fetch(backend_url(`/user/posts/${id}`), { credentials: "include" })
-            //     .then(async res => {
-            //         const res_json = await res.json();
-            //         console.log(res_json);
-            //         setPosts(res_json);
-            //     });
+            console.log(bestStreak);
+            console.log(avgRatingData);
           }
         };
         

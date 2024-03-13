@@ -15,6 +15,7 @@ type UserDatabaseEntry = {
     streaks: number,
     bestStreak: number,
     savedPosts: ObjectId[],
+    achievements: string[],
     ratedPosts: { postId: ObjectId; rating: number }[]
 };
 
@@ -26,8 +27,24 @@ export class User extends DbItem {
     streaks: number;
     bestStreak: number;
     savedPosts: ObjectId[];
+    achievements: string[];
     // private dbClient = getClient();
     ratedPosts: {postId: ObjectId, rating: number}[];
+
+    achievementFuncs = {
+        "5 Day Streak": async () => await this.getBestStreak() > 5,
+        "10 Day Streak": async () => await this.getBestStreak() > 10,
+        "30 Day Streak": async () => await this.getBestStreak() > 30,
+        "60 Day Streak": async () => await this.getBestStreak() > 60,
+        "100 Day Streak": async () => await this.getBestStreak() > 100,
+        "365 Day Streak": async () => await this.getBestStreak() > 365,
+        "1000 Day Streak": async () => await this.getBestStreak() > 1000,
+        "2000 Day Streak": async () => await this.getBestStreak() > 2000,
+        "3000 Day Streak": async () => await this.getBestStreak() > 3000,
+        "5000 Day Streak": async () => await this.getBestStreak() > 5000,
+        "6000 Day Streak": async () => await this.getBestStreak() > 6000,
+        "10000 Day Streak": async () => await this.getBestStreak() > 10000,
+    }
 
     constructor(id: ObjectId) {
         super(id, COLLECTION.USERS);
@@ -39,13 +56,14 @@ export class User extends DbItem {
         this.bestStreak = 0;
         this.ratedPosts = [];
         this.savedPosts = [];
+        this.achievements = [];
     }
 
     public static async fromId(userObjectId: ObjectId) {
         const dbClient = getClient();
         const document: UserDatabaseEntry = await dbClient.findDbItem(COLLECTION.USERS, userObjectId);
         if (!document) {
-            console.log("User doesn't exist: "+userObjectId);
+            console.log("User doesn't exist: " + userObjectId);
             return null;
         }
         const user = new User(userObjectId);
@@ -56,6 +74,7 @@ export class User extends DbItem {
         user.streaks = document.streaks ?? user.streaks;
         user.ratedPosts = document.ratedPosts ?? user.ratedPosts;
         user.savedPosts = document.savedPosts ?? user.savedPosts;
+        user.achievements = document.achievements ?? user.achievements;
         return user;
     }
     /**
@@ -113,6 +132,15 @@ export class User extends DbItem {
         if (this.bestStreak < streak) {
             this.bestStreak = streak;
         }
+
+        const newAchievements = [];
+        for (const [achievement, achievementFunc] of Object.entries(this.achievementFuncs)) {
+            if (await achievementFunc()) {
+                newAchievements.push(achievement);
+            }
+        }
+        this.achievements = newAchievements;
+
         await this.writeToDatabase();
     }
 
@@ -155,12 +183,13 @@ export class User extends DbItem {
      * @returns a database entry
      */
     public toJson() {
-        const { collectionName: _c, ...entry } = this;
+        const { collectionName: _c, achievementFuncs: _a, ...entry } = this;
         return {
             ...entry,
             posts: this.posts,
             wardrobe: this.wardrobe,
             bestStreak: this.bestStreak,
+            achievements: this.achievements,
             ratedPosts: Array.from(this.ratedPosts)
         };
     }
