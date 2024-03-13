@@ -14,7 +14,12 @@ export type TagEditorProps = {
     invalidateTag: () => void,
 };
 
-const autocompleteCache: { [key: string]: TagLabel[] } = {};
+const [cache, clearCache] = (() => {
+    let cache: { [key: string]: TagLabel[] } = {};
+    return [() => cache, () => cache = {}];
+})();
+
+export const clearAutocompleteCache = clearCache;
 
 // This will fetch from backend
 const fetchAutocomplete = async (frag: string) => {
@@ -30,18 +35,18 @@ const fetchAutocomplete = async (frag: string) => {
 };
 
 const autocomplete = async (frag: string) => {
-    if (frag in autocompleteCache)
-        return autocompleteCache[frag];
+    if (frag in cache())
+        return cache()[frag];
 
-    const key = Object.keys(autocompleteCache).find(k => frag.startsWith(k));
+    const key = Object.keys(cache()).find(k => frag.startsWith(k));
 
     if (key !== undefined) {
-        const refined = autocompleteCache[key].filter(({ name }) => name.startsWith(frag));
-        autocompleteCache[frag] = refined;
+        const refined = cache()[key].filter(({ name }) => name.startsWith(frag));
+        cache()[frag] = refined;
         return refined;
     } else if (frag.length >= 1) {
         const fetched = await fetchAutocomplete(frag);
-        autocompleteCache[frag] = fetched;
+        cache()[frag] = fetched;
         return fetched;
     } else {
         return [];
