@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import styles from './UserProfile.module.css';
 import { backend_url } from "@/app/settings";
 import { FaFire, FaHeart } from "react-icons/fa6";
-import { getUser, getUserPosts, getBestStreak, getAvgRating, getUserSavedPosts } from './UserService';
+import { getUser, getUserPosts, getBestStreak, getAvgRating, getUserSavedPosts, getUserAchievements } from './UserService';
 import { MdOutlineSettings } from "react-icons/md";
 import Link from "next/link";
 
@@ -29,6 +29,10 @@ export default function Home() {
     const [averageRating, setAverageRating] = useState(0);
     const [bestStreak, setBestStreak] = useState(0);
     const [currentStreak, setCurrentStreak] = useState(0);
+
+    const myPostsRef = useRef<HTMLDivElement>(null);
+    const mySavedPostsRef = useRef<HTMLDivElement>(null);
+    const myAchieveRef = useRef<HTMLDivElement>(null);
 
     // const toggleNavSelected = async (e: React.MouseEvent) => {
     //     if (!(e.currentTarget instanceof HTMLElement))
@@ -64,6 +68,8 @@ export default function Home() {
             console.log(postsData);
             console.log(bestStreak);
             console.log(avgRatingData);
+
+            const achievements = await getUserAchievements();
           }
         };
         
@@ -91,7 +97,7 @@ export default function Home() {
                     <button value={2}><h2>Achievements</h2></button>
                 </div>
                 <hr/>
-                <div className='my-posts'>
+                <div className='my-posts' ref={myPostsRef}>
                     <div className={styles.postsContainer}>
                     {posts.map((post: any) => (
                         <Link href={`/post/${post.id}`}>
@@ -113,7 +119,7 @@ export default function Home() {
                         ))}
                     </div>
                 </div>
-                <div className='my-saved-posts'>
+                <div className='my-saved-posts' ref={mySavedPostsRef}>
                     <div className={styles.postsContainer}>
                     {savedPosts.map((post: any) => (
                         <Link href={`/post/${post.id}`}>
@@ -134,6 +140,12 @@ export default function Home() {
                         </Link>
                         ))}
                     </div>
+                </div>
+                <div className='my-achievements' ref={myAchieveRef}>
+                    {achievements.map((achieve: any) => {
+                        <div></div>
+                    })
+                    }
                 </div>
             </div>
         </div>
