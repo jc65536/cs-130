@@ -7,6 +7,9 @@ import { MdOutlineBookmarkAdd, MdOutlineBookmarkAdded } from "react-icons/md";
 import { Tag } from '../(main)/post/new/tag';
 import { backend_url } from '../settings';
 import SaveButton from './save-button';
+import Username from './username';
+import Slider from "../(main)/post/[id]/slider";
+import { useState, useEffect } from 'react';
 
 export type Post = {
     id: string,
@@ -17,6 +20,7 @@ export type Post = {
     taggedClothes: Tag[],
     saved: boolean,
     comments: string[],
+    userObjectId: string
 };
 
 // export default function PostItemCard = ({ id, caption }) => {
@@ -24,19 +28,53 @@ export default function PostItemCard(post: Post) {
     // Assume the detail page route is '/posts/[id]', where [id] is a dynamic segment
     // const detailPagePath = `/posts/${id}`;
 
+    const toggleSaved = (e: MouseEvent) => {
+        if (!(e.currentTarget instanceof HTMLElement))
+            return;
+        e.currentTarget.classList.toggle("saved");
+    };
+
+    const [userRating, setUserRating] = useState<number>(0);
+
+    useEffect(() => {
+        const fetchUserRating = async () => {
+            try {
+                const response = await fetch(
+                    backend_url(`/user/rating/${post.id}`),
+                    { credentials: "include" }
+                );
+                if (response.ok) {
+                    const rating = await response.json();
+                    setUserRating(rating);
+                } else {
+                    console.error("Failed to fetch user rating");
+                }
+            } catch (err) {
+                console.error("The error is: " + err);
+            }
+        };
+
+        fetchUserRating();
+    }, [post.id]);
+
     return (
         <div className="card">
+            <Username id={post.id} userObjectId={post.userObjectId} />
             <Link href={`/post/${post.id}`}>
-                <img src={backend_url(`/posts/image/${post.imageFilename}`)}
+                <img
+                    src={backend_url(`/posts/image/${post.imageFilename}`)}
                     alt={post.caption}
                     width={120}
                     height={160}
-                    loading="lazy" />
+                    loading="lazy"
+                />
             </Link>
             <div className="card-body">
                 <p className="caption">{post.caption}</p>
+
                 <SaveButton id={post.id} saved={post.saved} />
             </div>
+            <Slider id={post.id} rating={userRating} />
         </div>
     );
 }

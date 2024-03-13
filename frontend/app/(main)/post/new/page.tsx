@@ -156,13 +156,13 @@ export default function Home() {
     }
 
     return (
-        <form className="post-form" onSubmit={handleSubmit}>
+        <form className="post-form page-new" onSubmit={handleSubmit}>
             <h1 className="new-post-header">New Post</h1>
             <div id="file-upload-wrapper">
                 <div className="upload-box" onClick={onUploadClick}>
                     <FaUpload />
                     <h4 className="upload-box-header">Choose Image to Upload</h4>
-                    <input type="file" onChange={handleFileChange} className="photo-select" ref={photoRef} hidden />
+                    <input type="file" onChange={handleFileChange} className="photo-select" ref={photoRef} hidden accept=".png,.jpg"/>
                 </div>
                 <small>Files Supported: JPG, PNG</small>
             </div>

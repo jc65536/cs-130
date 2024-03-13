@@ -22,6 +22,7 @@ export type PostDatabaseEntry = {
     userObjectId: ObjectId,
     blur: boolean,
     date: Date,
+    ratingBuckets: {date: Date, numRatings: number}[],
     comments: String[],
 };
 
@@ -34,6 +35,7 @@ export class Post extends DbItem {
     userObjectId: ObjectId | null;
     blur: boolean;
     taggedClothes: Tag[];
+    ratingBuckets: {date: Date, numRatings: number}[];
     comments: String[];
 
     /**
@@ -55,6 +57,7 @@ export class Post extends DbItem {
         this.taggedClothes = [];
         this.date = new Date();
         this.comments = [];
+        this.ratingBuckets = [];
     }
 
     public static async fromId(postObjectId: ObjectId) {
@@ -69,6 +72,7 @@ export class Post extends DbItem {
         post.date = document.date;
         post.userObjectId = new ObjectId(document.userObjectId);
         post.blur = document.blur;
+        post.ratingBuckets = document.ratingBuckets;
         post.comments = document.comments;
         return post;
     }
@@ -155,6 +159,36 @@ export class Post extends DbItem {
         await this.writeToDatabase();
     }
 
+    public async updateRatingAfterRated(oldRating: number, newRating: number): Promise<void> {
+        this.rating = (this.rating * this.ratingCount - oldRating + newRating) / this.ratingCount;
+        this.writeToDatabase();
+    }
+
+    public async updateRatingBuckets(): Promise<void> {
+        // get the current date
+        const currentDate = new Date();
+        // remove all the rating buckets that are older than 7 days
+        // convert to seconds, * 60 for minutes, * 60 for hours, * 24 for days, * 7 for week
+        this.ratingBuckets = this.ratingBuckets.filter((bucket) => currentDate.getTime() - bucket.date.getTime() < 1000 * 60 * 60 * 24 * 7);
+        // check if there is a bucket for today
+        const todayBucket = this.ratingBuckets.find((bucket) => bucket.date.getDate() === currentDate.getDate());
+        if (todayBucket) {
+            todayBucket.numRatings++;
+        } else {
+            this.ratingBuckets.push({date: currentDate, numRatings: 1});
+        }
+        await this.writeToDatabase();
+    }
+
+    public async getRatingBuckets(): Promise<{date: Date, numRatings: number}[]> {
+        return this.ratingBuckets;
+    }
+
+    public async setRatingBuckets(newRatingBuckets: {date: Date, numRatings: number}[]): Promise<void> {
+        this.ratingBuckets = newRatingBuckets;
+        await this.writeToDatabase();
+    }
+
     /**
        * Converts the object into a form for the database
        * @returns a database entry
@@ -169,7 +203,8 @@ export class Post extends DbItem {
             caption: this.caption,
             rating: this.rating,
             ratingCount: this.ratingCount,
-            date: this.date
+            date: this.date,
+            ratingBuckets: this.ratingBuckets
         };
     }
 

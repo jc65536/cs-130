@@ -15,6 +15,8 @@ type UserDatabaseEntry = {
     streaks: number,
     bestStreak: number,
     savedPosts: ObjectId[],
+    achievements: string[],
+    ratedPosts: { postId: ObjectId; rating: number }[]
 };
 
 export class User extends DbItem {
@@ -25,24 +27,43 @@ export class User extends DbItem {
     streaks: number;
     bestStreak: number;
     savedPosts: ObjectId[];
+    achievements: string[];
     // private dbClient = getClient();
+    ratedPosts: {postId: ObjectId, rating: number}[];
+
+    achievementFuncs = {
+        "5 Day Streak": async () => await this.getBestStreak() > 5,
+        "10 Day Streak": async () => await this.getBestStreak() > 10,
+        "30 Day Streak": async () => await this.getBestStreak() > 30,
+        "60 Day Streak": async () => await this.getBestStreak() > 60,
+        "100 Day Streak": async () => await this.getBestStreak() > 100,
+        "365 Day Streak": async () => await this.getBestStreak() > 365,
+        "1000 Day Streak": async () => await this.getBestStreak() > 1000,
+        "2000 Day Streak": async () => await this.getBestStreak() > 2000,
+        "3000 Day Streak": async () => await this.getBestStreak() > 3000,
+        "5000 Day Streak": async () => await this.getBestStreak() > 5000,
+        "6000 Day Streak": async () => await this.getBestStreak() > 6000,
+        "10000 Day Streak": async () => await this.getBestStreak() > 10000,
+    }
 
     constructor(id: ObjectId) {
-        super(id, COLLECTION.USERS)
+        super(id, COLLECTION.USERS);
         this.posts = [];
         this.wardrobe = null;
         this.name = '';
         this.followers = 0;
         this.streaks = 0;
         this.bestStreak = 0;
+        this.ratedPosts = [];
         this.savedPosts = [];
+        this.achievements = [];
     }
 
     public static async fromId(userObjectId: ObjectId) {
         const dbClient = getClient();
         const document: UserDatabaseEntry = await dbClient.findDbItem(COLLECTION.USERS, userObjectId);
         if (!document) {
-            console.log("User doesn't exist: "+userObjectId);
+            console.log("User doesn't exist: " + userObjectId);
             return null;
         }
         const user = new User(userObjectId);
@@ -51,14 +72,16 @@ export class User extends DbItem {
         user.name = document.name ?? user.name;
         user.followers = document.followers ?? user.followers;
         user.streaks = document.streaks ?? user.streaks;
+        user.ratedPosts = document.ratedPosts ?? user.ratedPosts;
         user.savedPosts = document.savedPosts ?? user.savedPosts;
+        user.achievements = document.achievements ?? user.achievements;
         return user;
     }
     /**
-     * 
+     *
      * @param userObjectId the user's google ID
      * should be retrieved from Google API using the google OAuth token
-     * @returns 
+     * @returns
      */
     public static async create(userObjectId: ObjectId): Promise<User | null> {
         //create wardrobe for the user
@@ -71,7 +94,7 @@ export class User extends DbItem {
     }
 
     /**
-     * 
+     *
      * @returns all posts of the user in String format
      */
     public async getPosts(): Promise<ObjectId[] | null> {
@@ -99,7 +122,7 @@ export class User extends DbItem {
     }
 
     /**
-     * 
+     *
      * @param postUID the new postUID to add to the post String of User
      * @returns void
      */
@@ -109,6 +132,15 @@ export class User extends DbItem {
         if (this.bestStreak < streak) {
             this.bestStreak = streak;
         }
+
+        const newAchievements = [];
+        for (const [achievement, achievementFunc] of Object.entries(this.achievementFuncs)) {
+            if (await achievementFunc()) {
+                newAchievements.push(achievement);
+            }
+        }
+        this.achievements = newAchievements;
+
         await this.writeToDatabase();
     }
 
@@ -118,16 +150,47 @@ export class User extends DbItem {
     }
 
     /**
-       * Converts the object into a form for the database
-       * @returns a database entry
-       */
+     * 
+     * @param postId the id of the post
+     * @return the rating the user gave the post
+     */
+    public async getRatingForPost(postId: ObjectId): Promise<number> {
+        // find the post in the ratedPosts
+        const post = this.ratedPosts.find((entry) => entry.postId.equals(postId));
+        if (post) {
+            return post.rating;
+        }
+        return 0;
+    }
+
+    public async setRatingForPost(postId: ObjectId, rating: number): Promise<void> {
+        // check if the post is already rated
+        const index = this.ratedPosts.findIndex((entry) => entry.postId.equals(postId));
+        if (index === -1) {
+            this.ratedPosts.push({postId, rating});
+        } else {
+            this.ratedPosts[index].rating = rating;
+        }
+        await this.writeToDatabase();
+    }
+
+    public async getRatedPosts(): Promise<{postId: ObjectId, rating: number}[]> {
+        return this.ratedPosts;
+    }
+
+    /**
+     * Converts the object into a form for the database
+     * @returns a database entry
+     */
     public toJson() {
-        const { collectionName: _c, ...entry } = this;
+        const { collectionName: _c, achievementFuncs: _a, ...entry } = this;
         return {
             ...entry,
             posts: this.posts,
             wardrobe: this.wardrobe,
             bestStreak: this.bestStreak,
+            achievements: this.achievements,
+            ratedPosts: Array.from(this.ratedPosts)
         };
     }
 
