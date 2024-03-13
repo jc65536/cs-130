@@ -72,6 +72,21 @@
       text-decoration: none; 
     }
   }
+  .postNav{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    height: 50px;
+
+    h2 {
+      padding: 0;
+      margin: 2px;
+      font-size: 16px;
+    }
+  }
 
   .postContentTop{
     display: flex;
