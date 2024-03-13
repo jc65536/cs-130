@@ -2,6 +2,7 @@ import { Router, Request, Response } from "express";
 import { ObjectId } from "mongodb";
 import { User } from "../lib/user"
 import { Post } from "../lib/post";
+import { upload } from "./posts-endpoints";
 
 export const user_router = Router();
 
@@ -83,4 +84,13 @@ user_router.get("/:userId", async (req: Request, res: Response) => {
         res.status(404).send("User: "+req.params.userId+" does not exist in the database");
     }
     res.status(200).json(user?.toJson());
+});
+
+user_router.post("/avatar", upload.single('image'), async (req: Request, res: Response) => {
+    if (!req.file?.filename) {
+        return res.status(500).send("Error uploading file");
+    }
+    const user = await User.fromId(new ObjectId(req.session.userObjectId));
+    await user?.setAvatarImageFilename(req.file.filename);
+    res.status(200).send("Successfully set avatar image to: "+req.file.filename);
 });

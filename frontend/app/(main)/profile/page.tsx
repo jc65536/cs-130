@@ -12,7 +12,7 @@ import Link from "next/link";
 // Dummy data for demonstration
 const testUser = {
     name: "Joe Bruin",
-    avatar: "https://via.placeholder.com/150", // Placeholder image URL
+    avatarFilename: "https://via.placeholder.com/150", // Placeholder image URL
     followers: 237,
     streaks: 10,
     bestStreak: 10,
@@ -44,9 +44,11 @@ export default function Home() {
         const fetchData = async () => {
           const userData = await getUser();
           if (userData) {
-            if (!userData.avatar || userData.avatar === null) {
-                userData.avatar = "https://api.dicebear.com/7.x/big-smile/svg";
-            } 
+            if (!userData.avatarFilename || userData.avatarFilename === null || userData.avatarFilename == "") {
+                userData.avatarFilename = "https://api.dicebear.com/7.x/big-smile/svg";
+            }  else {
+                userData.avatarFilename = backend_url(`/posts/image/${userData.avatarFilename}`);
+            }
             if ((!userData.name || userData.name === "")) {
                 userData.name = "New User";
             }
@@ -76,7 +78,7 @@ export default function Home() {
             <Link href="/setting" style={{ position: 'absolute', top: '10px', right: '10px', zIndex: 1000, color:'black' }}>
                 <MdOutlineSettings />
             </Link>
-            <img src={user.avatar} alt="User Avatar" className={styles.avatar} />
+            <img src={user.avatarFilename} alt="User Avatar" className={styles.avatar} />
             <h1 className={styles.userName}>{user.name}</h1>
             <div className={styles.followersContainer}>
                 <div className={styles.followers}>{user.followers} followers</div>
@@ -114,6 +116,7 @@ export default function Home() {
                     </div>
                 </div>
                 <div className='my-saved-posts'>
+                    <h2>Saved Posts</h2>
                     <div className={styles.postsContainer}>
                     {savedPosts.map((post: any) => (
                         <Link href={`/post/${post.id}`}>
