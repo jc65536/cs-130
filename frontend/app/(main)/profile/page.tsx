@@ -3,8 +3,8 @@
 import React, { useEffect, useState } from 'react';
 import styles from './UserProfile.module.css';
 import { backend_url } from "@/app/settings";
-import { FaFire } from "react-icons/fa6";
-import { getUser, getUserPosts, getBestStreak } from './UserService';
+import { FaFire, FaHeart } from "react-icons/fa6";
+import { getUser, getUserPosts, getBestStreak, getAvgRating } from './UserService';
 import { MdOutlineSettings } from "react-icons/md";
 import Link from "next/link";
 
@@ -27,6 +27,7 @@ export default function Home() {
     const [posts, setPosts] = useState([]);
     const [bestStreak, setBestStreak] = useState(0);
     const [currentStreak, setCurrentStreak] = useState(0);
+    const [avgRating, setAvgRating] = useState(0);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -42,10 +43,13 @@ export default function Home() {
 
             const postsData = await getUserPosts();
             setPosts(postsData);
-            //setBestStreak(await getBestStreak());
+            setBestStreak(await getBestStreak());
+            const avgRatingData = await getAvgRating();
+            setAvgRating(avgRatingData);
             console.log(userData);
             console.log(postsData);
             console.log(bestStreak);
+            console.log(avgRatingData);
           }
         };
     
@@ -64,7 +68,8 @@ export default function Home() {
             <div className={styles.followers}>{user.followers} followers</div>
             <button className={styles.followButton}>Follow</button>
         </div>
-        <div className={styles.streaksBox}><FaFire /> {user.bestStreak} days</div>
+        <div className={styles.streaksBox}><FaFire /> {bestStreak} days</div>
+        <div className={styles.ratingBox}><FaHeart /> {avgRating < 0 ? "unrated" : (avgRating + " average")}</div>
         
         <h2>Posts</h2>
         <div className={styles.postsContainer}>

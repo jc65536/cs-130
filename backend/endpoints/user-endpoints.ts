@@ -22,8 +22,12 @@ user_router.get("/average",async (req: Request, res: Response) => {
         const post = await Post.fromId(postObjectId);
         return post.rating;
     })) : [];
-    const avgRating = ratings.reduce((a, b) => a + b, 0) / ratings.length;
-    res.status(200).json(avgRating);
+    if (ratings.length == 0) {
+        res.status(200).json(-1);
+    } else {
+        const avgRating = ratings.reduce((a, b) => a + b, 0) / ratings.length;
+        res.status(200).json(avgRating);
+    }
 });
 
 // for getting all posts from a user
