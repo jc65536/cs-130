@@ -28,12 +28,6 @@ export default function PostItemCard(post: Post) {
     // Assume the detail page route is '/posts/[id]', where [id] is a dynamic segment
     // const detailPagePath = `/posts/${id}`;
 
-    const toggleSaved = (e: MouseEvent) => {
-        if (!(e.currentTarget instanceof HTMLElement))
-            return;
-        e.currentTarget.classList.toggle("saved");
-    };
-
     const [userRating, setUserRating] = useState<number>(0);
 
     useEffect(() => {

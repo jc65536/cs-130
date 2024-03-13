@@ -27,6 +27,19 @@ export const getUserPosts = async () => {
   }
 };
 
+export const getUserSavedPosts = async () => {
+  try {
+    const response = await fetch(backend_url("/posts/saved"), { credentials: 'include' });
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Failed to fetch posts:", error);
+    return [];
+  }
+};
+
 export const getBestStreak = async () => {
   try {
     const response = await fetch(backend_url("/user/bestStreak"), { credentials: 'include' });

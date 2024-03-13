@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import styles from './UserProfile.module.css';
 import { backend_url } from "@/app/settings";
 import { FaFire, FaHeart } from "react-icons/fa6";
-import { getUser, getUserPosts, getBestStreak, getAvgRating } from './UserService';
+import { getUser, getUserPosts, getBestStreak, getAvgRating, getUserSavedPosts } from './UserService';
 import { MdOutlineSettings } from "react-icons/md";
 import Link from "next/link";
 
@@ -25,10 +25,20 @@ const testUser = {
 export default function Home() {
     const [user, setUser] = useState(testUser);
     const [posts, setPosts] = useState([]);
+    const [savedPosts, setSavedPosts] = useState([]);
     const [averageRating, setAverageRating] = useState(0);
     const [bestStreak, setBestStreak] = useState(0);
     const [currentStreak, setCurrentStreak] = useState(0);
-    const [avgRating, setAvgRating] = useState(0);
+
+    // const toggleNavSelected = async (e: React.MouseEvent) => {
+    //     if (!(e.currentTarget instanceof HTMLElement))
+    //         return;
+
+    //     const target = e.currentTarget;
+    //     document.getElementByClassname('postContainer')[e.currentTarget.value]
+
+    //     target.classList.toggle("saved");
+    // };
 
     useEffect(() => {
         const fetchData = async () => {
@@ -46,7 +56,10 @@ export default function Home() {
             setPosts(postsData);
             setBestStreak(await getBestStreak());
             const avgRatingData = await getAvgRating();
-            setAvgRating(avgRatingData);
+            setAverageRating(avgRatingData);
+
+            const postsSavedData = await getUserSavedPosts();
+            setSavedPosts(postsSavedData);
             console.log(userData);
             console.log(postsData);
             console.log(bestStreak);
@@ -69,12 +82,13 @@ export default function Home() {
                 <div className={styles.followers}>{user.followers} followers</div>
                 <button className={styles.followButton}>Follow</button>
             </div>
-            <div className={styles.streaksBox}><FaFire /> {user.streaks} days</div>
+            <div className={styles.streaksBox}><FaFire /> {bestStreak} days <div>Average Rating: {averageRating.toFixed(1)}</div></div>
 
             <div className='post-nav-contain'>
-                <div className='post-nav'>
-                    <h2>Posts</h2>
-                    <h2>Saved Posts</h2>
+                <div className={styles.postNav}>
+                    <button value={0}><h2>Posts</h2></button>
+                    <button value={1}><h2>Saved Posts</h2></button>
+                    <button value={2}><h2>Achievements</h2></button>
                 </div>
                 <hr/>
                 <div className='my-posts'>
@@ -88,7 +102,7 @@ export default function Home() {
                                 <div className={styles.postContent}>
                                     <div className={styles.postContentTop}>
                                         <p>{new Date(post.date).toLocaleDateString()}</p>
-                                        <h2>{Number((post.rating).toFixed(1))}</h2>
+                                        <h2>{Number((post.rating)).toFixed(1)}</h2>
                                     </div>
                                     <div className={styles.postContentBottom}>
                                         <p>{post.caption}</p>
@@ -101,7 +115,7 @@ export default function Home() {
                 </div>
                 <div className='my-saved-posts'>
                     <div className={styles.postsContainer}>
-                    {posts.map((post: any) => (
+                    {savedPosts.map((post: any) => (
                         <Link href={`/post/${post.id}`}>
                             <div key={post.id} className={styles.postCard}>
                                 <div>
@@ -110,7 +124,7 @@ export default function Home() {
                                 <div className={styles.postContent}>
                                     <div className={styles.postContentTop}>
                                         <p>{new Date(post.date).toLocaleDateString()}</p>
-                                        <h2>{Number((post.rating).toFixed(1))}</h2>
+                                        <h2>{Number((post.rating)).toFixed(1)}</h2>
                                     </div>
                                     <div className={styles.postContentBottom}>
                                         <p>{post.caption}</p>
