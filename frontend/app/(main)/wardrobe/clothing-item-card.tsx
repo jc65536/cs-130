@@ -1,39 +1,64 @@
 "use client";
 
-import React, { MouseEvent } from 'react';
+import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { backend_url } from '@/app/settings';
+import { Post } from '@/app/components/post-item-card';
 
 export type Clothing = {
     id: number,
     name: string,
-    rating: number
+    rating: number,
+    reusedCount: number,
+    cost: number,
+    onSale: Boolean,
+    posts: string[]
 }
 
-export default function ClothingItemCard({ id, name, rating }: Clothing) {
+export default function ClothingItemCard({ id, name, rating, reusedCount, cost, onSale, posts }: Clothing) {
+    const [postState, setPosts] = useState<Post[]>([]);
     // Assume the detail page route is '/clothing/[id]', where [id] is a dynamic segment
     const detailPagePath = `/clothing/${id}`;
 
-    const toggleDetails = (e: MouseEvent) => {
-        if (! (e.currentTarget instanceof HTMLElement))
-            return;
-        if (e.currentTarget.children) {
-            
-        }
-    };
-            
+    // const toggleDetails = (e: MouseEvent) => {
+    //     if (!(e.currentTarget instanceof HTMLElement))
+    //         return;
+    //     if (e.currentTarget.children) {
+
+    //     }
+    // };
+    useEffect(() => {
+        fetchPostFilenames();
+    }, []);
+
+    const fetchPostFilenames = async () => {
+        const postObjs = await Promise.all(posts.map(async postId => {
+            const res = await fetch(backend_url(`/posts/${postId}`), { credentials: "include" });
+            const json = await res.json();
+            return json;
+        }));
+        setPosts(postObjs);
+    }
+
 
     return (
-        <div className="clothing-card" onClick={toggleDetails}>
-            <div className='clothing-image'>
+        <div className="clothing-card card" >
+            <div className='clothing-text-content'>
+                <span className="clothing-name">{name}</span>
+                <span>{`Used in ${reusedCount} outfit(s)`}</span>
+            </div>
+            <div className='clothing-image-grid' data-size={Math.ceil(Math.sqrt(postState.length))}>
                 <Link href={detailPagePath}>
-                    <Image
-                        // src={`https://picsum.photos/seed/${id}/120/160`}
-                        src={`https://picsum.photos/id/${id}/120/160`}
-                        alt={name}
-                        width={140}
-                        height={200}
-                    />
+                    {
+                        postState.map((post, i) =>
+                            <img
+                                src={backend_url(`/posts/image/${post.imageFilename}`)}
+                                alt={post.caption}
+                                key={i}
+                            />
+                        )
+                    }
                 </Link>
             </div>
         </div>

@@ -3,7 +3,7 @@
 import NewPostPhoto from "./new-post-photo";
 import { backend_url } from "@/app/settings";
 import { Tag, TagDotProps_ } from "./tag";
-import TagEditor, { TagEditorProps } from "./tag-editor";
+import TagEditor, { TagEditorProps, clearAutocompleteCache } from "./tag-editor";
 import { ChangeEvent, useState, useEffect, useRef } from "react";
 import { FaUpload } from "react-icons/fa";
 import { MdOutlineAddAPhoto } from "react-icons/md";
@@ -27,6 +27,11 @@ export default function Home() {
     const [imgProcessing, setImgProcessing] = useState(false);
 
     const cachedImage = useRef<[Blob, boolean] | null>(null);
+
+    useEffect(() => () => {
+        console.log("clear autocomplete");
+        clearAutocompleteCache();
+    }, []);
 
     const onUploadClick = () => {
         photoRef.current?.click();
