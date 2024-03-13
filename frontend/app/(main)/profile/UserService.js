@@ -68,17 +68,17 @@ export const getAvgRating = async () => {
   }
 };
 
-export const getUserAchievements = async () => {
-  try {
-    const response = await fetch(backend_url("/user/bestStreak"), { credentials: 'include' });
-    if (!response.ok) {
-        console.error(response);
-      throw new Error('Network response was not ok');
-    }
-    return await response.json();
-  }
-  catch (error) {
-    console.error("Failed to fetch achievements:", error);
-    return [];
-  }
-};
+// export const getUserAchievements = async () => {
+//   try {
+//     const response = await fetch(backend_url("/user/bestStreak"), { credentials: 'include' });
+//     if (!response.ok) {
+//         console.error(response);
+//       throw new Error('Network response was not ok');
+//     }
+//     return await response.json();
+//   }
+//   catch (error) {
+//     console.error("Failed to fetch achievements:", error);
+//     return [];
+//   }
+// };

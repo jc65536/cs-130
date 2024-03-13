@@ -4,7 +4,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import styles from './UserProfile.module.css';
 import { backend_url } from "@/app/settings";
 import { FaFire, FaHeart } from "react-icons/fa6";
-import { getUser, getUserPosts, getBestStreak, getAvgRating, getUserSavedPosts, getUserAchievements } from './UserService';
+import { getUser, getUserPosts, getBestStreak, getAvgRating, getUserSavedPosts } from './UserService';
 import { MdOutlineSettings } from "react-icons/md";
 import Link from "next/link";
 
@@ -12,7 +12,7 @@ import Link from "next/link";
 // Dummy data for demonstration
 const testUser = {
     name: "Joe Bruin",
-    avatar: "https://via.placeholder.com/150", // Placeholder image URL
+    avatarFilename: "https://via.placeholder.com/150", // Placeholder image URL
     followers: 237,
     streaks: 10,
     bestStreak: 10,
@@ -48,9 +48,11 @@ export default function Home() {
         const fetchData = async () => {
           const userData = await getUser();
           if (userData) {
-            if (!userData.avatar || userData.avatar === null) {
-                userData.avatar = "https://api.dicebear.com/7.x/big-smile/svg";
-            } 
+            if (!userData.avatarFilename || userData.avatarFilename === null || userData.avatarFilename == "") {
+                userData.avatarFilename = "https://api.dicebear.com/7.x/big-smile/svg";
+            }  else {
+                userData.avatarFilename = backend_url(`/posts/image/${userData.avatarFilename}`);
+            }
             if ((!userData.name || userData.name === "")) {
                 userData.name = "New User";
             }
@@ -69,7 +71,6 @@ export default function Home() {
             console.log(bestStreak);
             console.log(avgRatingData);
 
-            const achievements = await getUserAchievements();
           }
         };
         
@@ -82,7 +83,7 @@ export default function Home() {
             <Link href="/setting" style={{ position: 'absolute', top: '10px', right: '10px', zIndex: 1000, color:'black' }}>
                 <MdOutlineSettings />
             </Link>
-            <img src={user.avatar} alt="User Avatar" className={styles.avatar} />
+            <img src={user.avatarFilename} alt="User Avatar" className={styles.avatar} />
             <h1 className={styles.userName}>{user.name}</h1>
             <div className={styles.followersContainer}>
                 <div className={styles.followers}>{user.followers} followers</div>
@@ -91,12 +92,13 @@ export default function Home() {
             <div className={styles.streaksBox}><FaFire /> {bestStreak} days <div>Average Rating: {averageRating.toFixed(1)}</div></div>
 
             <div className='post-nav-contain'>
-                <div className={styles.postNav}>
+                {/* <div className={styles.postNav}>
                     <button value={0}><h2>Posts</h2></button>
                     <button value={1}><h2>Saved Posts</h2></button>
                     <button value={2}><h2>Achievements</h2></button>
-                </div>
+                </div> */}
                 <hr/>
+                <h4>My Posts</h4>
                 <div className='my-posts' ref={myPostsRef}>
                     <div className={styles.postsContainer}>
                     {posts.map((post: any) => (
@@ -119,6 +121,8 @@ export default function Home() {
                         ))}
                     </div>
                 </div>
+                <hr/>
+                <h4>Saved Posts</h4>
                 <div className='my-saved-posts' ref={mySavedPostsRef}>
                     <div className={styles.postsContainer}>
                     {savedPosts.map((post: any) => (
@@ -141,11 +145,10 @@ export default function Home() {
                         ))}
                     </div>
                 </div>
+                <hr/>
+                <h4>Achievements</h4>
                 <div className='my-achievements' ref={myAchieveRef}>
-                    {achievements.map((achieve: any) => {
-                        <div></div>
-                    })
-                    }
+                    <div>My highest streak: 7!</div>
                 </div>
             </div>
         </div>
