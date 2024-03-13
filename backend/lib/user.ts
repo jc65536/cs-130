@@ -16,7 +16,8 @@ type UserDatabaseEntry = {
     bestStreak: number,
     savedPosts: ObjectId[],
     achievements: string[],
-    ratedPosts: { postId: ObjectId; rating: number }[]
+    ratedPosts: { postId: ObjectId; rating: number }[],
+    avatarFilename: string,
 };
 
 export class User extends DbItem {
@@ -30,6 +31,7 @@ export class User extends DbItem {
     achievements: string[];
     // private dbClient = getClient();
     ratedPosts: {postId: ObjectId, rating: number}[];
+    avatarFilename: string;
 
     achievementFuncs = {
         "5 Day Streak": async () => await this.getBestStreak() > 5,
@@ -57,6 +59,7 @@ export class User extends DbItem {
         this.ratedPosts = [];
         this.savedPosts = [];
         this.achievements = [];
+        this.avatarFilename = '';
     }
 
     public static async fromId(userObjectId: ObjectId) {
@@ -72,9 +75,11 @@ export class User extends DbItem {
         user.name = document.name ?? user.name;
         user.followers = document.followers ?? user.followers;
         user.streaks = document.streaks ?? user.streaks;
+        user.bestStreak = document.bestStreak ?? user.bestStreak;
         user.ratedPosts = document.ratedPosts ?? user.ratedPosts;
         user.savedPosts = document.savedPosts ?? user.savedPosts;
         user.achievements = document.achievements ?? user.achievements;
+        user.avatarFilename = document.avatarFilename ?? user.avatarFilename;
         return user;
     }
     /**
@@ -129,6 +134,7 @@ export class User extends DbItem {
     public async addPost(postUID: ObjectId): Promise<void> {
         this.posts.push(postUID);
         const streak = await this.getCurrStreak();
+        this.streaks = streak;
         if (this.bestStreak < streak) {
             this.bestStreak = streak;
         }
@@ -176,6 +182,11 @@ export class User extends DbItem {
 
     public async getRatedPosts(): Promise<{postId: ObjectId, rating: number}[]> {
         return this.ratedPosts;
+    }
+
+    public async setAvatarImageFilename(filename: string) {
+        this.avatarFilename = filename;
+        await this.writeToDatabase();
     }
 
     /**

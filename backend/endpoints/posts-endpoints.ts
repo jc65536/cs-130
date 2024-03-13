@@ -30,7 +30,7 @@ const storage = new GridFsStorage({
     },
 });
 
-const upload = multer({ storage });
+export const upload = multer({ storage });
 
 
 export const posts_router = Router();
