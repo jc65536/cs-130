@@ -138,6 +138,17 @@ posts_router.get("/", async (req: Request, res: Response) => {
     );
 });
 
+// get a user's saved posts
+posts_router.get("/saved", async (req: Request, res: Response) => {
+    const user = await User.fromId(new ObjectId(req.session.userObjectId));
+    const postIds = user?.savedPosts;
+    const savedPosts = postIds ? await Promise.all(postIds.map(async postId => {
+        const post = await Post.fromId(postId);
+        return post.toJson();
+    })) : [];
+    res.status(200).json(savedPosts);
+});
+
 //get trending posts
 posts_router.get("/trending", async (req: Request, res: Response) => {
     const trending = await TrendingPosts.getTrendingPosts();
