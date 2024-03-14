@@ -22,6 +22,12 @@ Run entire application (you should be in repo root):
 $ docker compose up
 ```
 
+## Testing
+```
+cd backend
+npm test
+```
+
 ## Issues
 
 An issue is a unit of tracking work. Issues can be classified into different classes using `labels`. This can be used to classify issues in the scrum process as follows.
