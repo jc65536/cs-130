@@ -60,7 +60,7 @@ export default ({ params: { id } }: { params: { id: string } }) => {
         return <h1><Moai /> Loading post… <Moai /></h1>;
 
     const rating = post.ratingCount === 0 ? "N/A"
-        : post.rating / post.ratingCount;
+        : Math.round(post.rating / post.ratingCount * 10) / 10;
 
     const tags = bbox === null ? [] : post.taggedClothes
         .map((tag, i) => <TagDisplay name={tag.name} x={tag.x * bbox.width} y={tag.y * bbox.height} />);
