@@ -16,7 +16,7 @@ export const getUser = async () => {
 
 export const getUserPosts = async () => {
   try {
-    const response = await fetch(backend_url("/posts"), { credentials: 'include' });
+    const response = await fetch(backend_url("/user/posts"), { credentials: 'include' });
     if (!response.ok) {
       throw new Error('Network response was not ok');
     }
