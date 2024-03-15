@@ -9,7 +9,7 @@
     "build": "tsc",
     "start": "node dist/app.js",
     "test": "node --experimental-vm-modules node_modules/.bin/jest --coverage",
-    "docs": "npx typedoc --out docs --entryPointStrategy expand lib --entryPointStrategy expand endpoints"
+    "docs": "typedoc --out docs --entryPointStrategy expand lib --entryPointStrategy expand endpoints"
   },
   "author": "",
   "license": "GPL-3.0",
