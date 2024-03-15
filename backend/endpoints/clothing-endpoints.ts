@@ -5,9 +5,14 @@ import { Wardrobe } from "../lib/wardrobe";
 
 export const clothes_router = Router();
 
-// search through a user's wardrobe for clothing objects based on query string
-// a clothing is considered a match if the query string is a substring of the clothing's name
-// to get all clothes, use the empty string, aka request from "/clothing/tags/"
+/**
+ * @GET
+ * search through a user's wardrobe for clothing objects based on query string
+ * a clothing is considered a match if the query string is a substring of the clothing's name
+ * to get all clothes, use the empty string, aka request from "/clothing/tags/"
+ * @route GET /tags/:queryString
+ * @returns {{tagName: string, tagId: string}[]} 200 - An array of clothing tags
+ */
 clothes_router.get("/tags/:queryString", async (req: Request, res: Response) => {
     const queryString = req.params.queryString;
     const matchStrings = [];

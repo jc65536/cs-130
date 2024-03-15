@@ -6,7 +6,7 @@ import { ObjectId, WithId } from "mongodb";
 import { Wardrobe } from "./wardrobe";
 import { Post } from "./post";
 
-type UserDatabaseEntry = {
+export type UserDatabaseEntry = {
     _id: ObjectId,
     posts: ObjectId[], // the ids of the Post objects
     wardrobe: ObjectId,
@@ -86,7 +86,7 @@ export class User extends DbItem {
      *
      * @param userObjectId the user's google ID
      * should be retrieved from Google API using the google OAuth token
-     * @returns
+     * @returns the newly created User object as a promise
      */
     public static async create(userObjectId: ObjectId): Promise<User | null> {
         //create wardrobe for the user
