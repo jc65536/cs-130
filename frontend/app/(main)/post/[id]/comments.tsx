@@ -1,5 +1,5 @@
-import { backend_url } from "@/app/settings";
-import { FormEvent, useReducer, useRef } from "react";
+import { HostContext, useHostContext } from "@/app/components/host-context";
+import { FormEvent, useContext, useReducer, useRef } from "react";
 import { FiSend } from "react-icons/fi";
 
 export type CommentProps = {
@@ -8,6 +8,7 @@ export type CommentProps = {
 };
 
 export default (props: CommentProps) => {
+    const backend_url = useHostContext();
     const commentRef = useRef<HTMLTextAreaElement>(null);
     const [comments, addComment] = useReducer(
         (a: string[], c: string) => [...a, c],

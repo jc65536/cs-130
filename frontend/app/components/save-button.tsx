@@ -1,6 +1,6 @@
 import { MdOutlineBookmarkAdd, MdOutlineBookmarkAdded } from "react-icons/md";
 import "./components.css";
-import { backend_url } from "../settings";
+import { useHostContext } from "./host-context";
 
 export type SaveButtonProps = {
     id: string,
@@ -8,6 +8,8 @@ export type SaveButtonProps = {
 };
 
 export default (props: SaveButtonProps) => {
+    const backend_url = useHostContext();
+
     const toggleSaved = async (e: React.MouseEvent) => {
         if (!(e.currentTarget instanceof HTMLElement))
             return;

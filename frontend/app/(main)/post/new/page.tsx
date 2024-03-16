@@ -1,18 +1,19 @@
 "use client"
 
 import NewPostPhoto from "./new-post-photo";
-import { backend_url } from "@/app/settings";
 import { Tag, TagDotProps_ } from "./tag";
 import TagEditor, { TagEditorProps, clearAutocompleteCache } from "./tag-editor";
-import { ChangeEvent, useState, useEffect, useRef } from "react";
+import { ChangeEvent, useState, useEffect, useRef, useContext } from "react";
 import { FaUpload } from "react-icons/fa";
 import { MdOutlineAddAPhoto } from "react-icons/md";
 import { fn } from "@/app/util";
 import "./new-post.css";
 import { useRouter } from "next/navigation";
 import { resize } from "@/app/img-lib";
+import { HostContext, useHostContext } from "@/app/components/host-context";
 
 export default function Home() {
+    const backend_url = useHostContext();
     const router = useRouter();
 
     const blurRef = useRef<HTMLInputElement>(null);

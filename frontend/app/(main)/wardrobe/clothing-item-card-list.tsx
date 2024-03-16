@@ -2,8 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import ClothingItemCard, { Clothing } from './clothing-item-card';
-import { backend_url } from '../../settings';
 import '@/app/card.css';
+import { useHostContext } from '@/app/components/host-context';
 
 // Dummy data for demonstration
 // var clothings: Clothing[] = [];
@@ -13,6 +13,7 @@ import '@/app/card.css';
 
 
 export default function ClothingItemCardList() {
+  const backend_url = useHostContext();
   const [clothings, setClothing] = useState<Clothing[]>([]);
 
   useEffect(() => {

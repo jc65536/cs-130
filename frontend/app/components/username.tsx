@@ -1,8 +1,8 @@
 
 import "./components.css";
-import { backend_url } from "../settings";
 import Link from 'next/link';
-import { PropsWithChildren, useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { useHostContext } from "./host-context";
 
 export type UsernameProps = {
     id: string,
@@ -10,6 +10,8 @@ export type UsernameProps = {
 };
 
 export default (props: UsernameProps) => {
+    const backend_url = useHostContext();
+
     const [username, setUsername] = useState('');
 
     useEffect(() => {

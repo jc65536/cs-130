@@ -1,15 +1,13 @@
 "use client";
 
-import React, { MouseEvent } from 'react';
-import Image from 'next/image';
+import React from 'react';
 import Link from 'next/link';
-import { MdOutlineBookmarkAdd, MdOutlineBookmarkAdded } from "react-icons/md";
 import { Tag } from '../(main)/post/new/tag';
-import { backend_url } from '../settings';
 import SaveButton from './save-button';
 import Username from './username';
 import Slider from "../(main)/post/[id]/slider";
 import { useState, useEffect } from 'react';
+import { useHostContext } from './host-context';
 
 export type Post = {
     id: string,
@@ -25,6 +23,7 @@ export type Post = {
 
 // export default function PostItemCard = ({ id, caption }) => {
 export default function PostItemCard(post: Post) {
+    const backend_url = useHostContext();
     // Assume the detail page route is '/posts/[id]', where [id] is a dynamic segment
     // const detailPagePath = `/posts/${id}`;
 

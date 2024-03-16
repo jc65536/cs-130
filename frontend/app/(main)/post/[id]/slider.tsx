@@ -1,5 +1,5 @@
-import { useRef, useState, useEffect } from "react";
-import { backend_url } from "@/app/settings";
+import { HostContext, useHostContext } from "@/app/components/host-context";
+import { useRef, useState, useEffect, useContext } from "react";
 
 export type SliderProps = {
     id: string
@@ -7,6 +7,7 @@ export type SliderProps = {
 };
 
 export default (props: SliderProps) => {
+    const backend_url = useHostContext();
     const sliderRef = useRef<HTMLDivElement>(null);
     const [frac, setFrac] = useState(props.rating / 5);
 

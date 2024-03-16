@@ -1,11 +1,12 @@
 "use client";
 
-import { PropsWithChildren, useContext, useEffect, useState } from "react";
-import { backend_url } from "../settings";
+import { PropsWithChildren, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Moai from "./moai";
+import { useHostContext } from "./host-context";
 
 export default (props: PropsWithChildren) => {
+    const backend_url = useHostContext();
     const [auth, setAuth] = useState(false);
 
     const router = useRouter();

@@ -3,9 +3,10 @@
 import React, { useEffect, useState } from 'react';
 import PostItemCard, { Post } from './post-item-card';
 import '@/app/card.css';
-import { backend_url } from '../settings';
+import { useHostContext } from './host-context';
 
 export default function PostItemCardList() {
+  const backend_url = useHostContext();
   const [posts, setPosts] = useState<Post[]>([]);
 
   useEffect(() => {

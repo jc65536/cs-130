@@ -1,10 +1,9 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
-import { backend_url } from '@/app/settings';
 import { Post } from '@/app/components/post-item-card';
+import { useHostContext } from '@/app/components/host-context';
 
 export type Clothing = {
     id: number,
@@ -17,6 +16,7 @@ export type Clothing = {
 }
 
 export default function ClothingItemCard({ id, name, rating, reusedCount, cost, onSale, posts }: Clothing) {
+    const backend_url = useHostContext();
     const [postState, setPosts] = useState<Post[]>([]);
     // Assume the detail page route is '/clothing/[id]', where [id] is a dynamic segment
     const detailPagePath = `/clothing/${id}`;

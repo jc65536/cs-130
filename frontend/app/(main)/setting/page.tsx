@@ -2,51 +2,52 @@
 
 import React, { ChangeEvent, useEffect, useState, useRef } from 'react';
 import styles from './Settings.module.css';
-import { backend_url } from "@/app/settings";
 import { useRouter } from 'next/navigation';
 import { FaUpload } from "react-icons/fa";
+import { useHostContext } from '@/app/components/host-context';
 
-
-const getUser = async () => {
-  try {
-    const response = await fetch(backend_url("/user/"), { credentials: 'include' });
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    return await response.json();
-  } catch (error) {
-    console.error("Failed to fetch user:", error);
-    return null;
-  }
-};
-
-const setName = async (oldName: String, newName: String) => {
-  try {
-    const response = await fetch(backend_url(`/user/name/${newName}`), {
-      method: 'POST', // Specifies this is a POST request
-      credentials: 'include', // Keeps the credentials include as before
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    return await response.json();
-  } catch (error) {
-    console.error("Failed to update user name:", error);
-    return null;
-  }
-};
 
 
 export default function Home() {
+  const backend_url = useHostContext();
   const [username, setUsername] = useState('');
   const [oldUsername, setOldUsername] = useState('');
   const [avatarImg, setAvatarImg] = useState<File | null>();
   const [imgSrc, setImgSrc] = useState<string | null>(null);
   const photoRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
+
+  const getUser = async () => {
+    try {
+      const response = await fetch(backend_url("/user/"), { credentials: 'include' });
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return await response.json();
+    } catch (error) {
+      console.error("Failed to fetch user:", error);
+      return null;
+    }
+  };
+
+  const setName = async (oldName: String, newName: String) => {
+    try {
+      const response = await fetch(backend_url(`/user/name/${newName}`), {
+        method: 'POST', // Specifies this is a POST request
+        credentials: 'include', // Keeps the credentials include as before
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return await response.json();
+    } catch (error) {
+      console.error("Failed to update user name:", error);
+      return null;
+    }
+  };
 
   // Handles username change
   const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {

@@ -1,7 +1,7 @@
-import { ChangeEvent, useEffect, useRef, useState } from "react";
+import { ChangeEvent, useContext, useEffect, useRef, useState } from "react";
 import { Tag, TagLabel } from "./tag";
 import { fn } from "@/app/util";
-import { backend_url } from "@/app/settings";
+import { HostContext, useHostContext } from "@/app/components/host-context";
 
 export type TagEditorProps = {
     dotKey: number,
@@ -21,41 +21,41 @@ const [cache, clearCache] = (() => {
 
 export const clearAutocompleteCache = clearCache;
 
-// This will fetch from backend
-const fetchAutocomplete = async (frag: string) => {
-    const res = (await fetch(backend_url(`/clothing/tags/${frag}`), {
-        credentials: "include"
-    }));
-
-    const json: { tagName: string, tagId: string }[] = await res.json();
-
-    return json
-        .map((s, i) => ({ name: s.tagName, id: s.tagId }))
-        .filter(({ name }) => name.startsWith(frag));
-};
-
-const autocomplete = async (frag: string) => {
-    if (frag in cache())
-        return cache()[frag];
-
-    const key = Object.keys(cache()).find(k => frag.startsWith(k));
-
-    if (key !== undefined) {
-        const refined = cache()[key].filter(({ name }) => name.startsWith(frag));
-        cache()[frag] = refined;
-        return refined;
-    } else if (frag.length >= 1) {
-        const fetched = await fetchAutocomplete(frag);
-        cache()[frag] = fetched;
-        return fetched;
-    } else {
-        return [];
-    }
-};
-// autocompleteCache[frag] ?? (autocompleteCache[frag] =
-
 export default function TagEditor(props: TagEditorProps) {
+    const backend_url = useHostContext();
     const [completions, setCompletions] = useState<TagLabel[]>([]);
+
+    // This will fetch from backend
+    const fetchAutocomplete = async (frag: string) => {
+        const res = (await fetch(backend_url(`/clothing/tags/${frag}`), {
+            credentials: "include"
+        }));
+
+        const json: { tagName: string, tagId: string }[] = await res.json();
+
+        return json
+            .map((s, i) => ({ name: s.tagName, id: s.tagId }))
+            .filter(({ name }) => name.startsWith(frag));
+    };
+
+    const autocomplete = async (frag: string) => {
+        if (frag in cache())
+            return cache()[frag];
+
+        const key = Object.keys(cache()).find(k => frag.startsWith(k));
+
+        if (key !== undefined) {
+            const refined = cache()[key].filter(({ name }) => name.startsWith(frag));
+            cache()[frag] = refined;
+            return refined;
+        } else if (frag.length >= 1) {
+            const fetched = await fetchAutocomplete(frag);
+            cache()[frag] = fetched;
+            return fetched;
+        } else {
+            return [];
+        }
+    };
 
     const clickListener = useRef<(e: MouseEvent) => void>(e => {
         if (!(e.target instanceof HTMLElement))
@@ -76,7 +76,7 @@ export default function TagEditor(props: TagEditorProps) {
 
     const addNewTag = () =>
         closeEditor(props.addTag({ name: props.tooltip, id: -1 }));
-    
+
     useEffect(() => {
         autocomplete(props.tooltip).then(setCompletions);
     }, [props.tooltip]);

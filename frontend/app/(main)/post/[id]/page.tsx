@@ -1,19 +1,20 @@
 "use client";
 
-import { ReactElement, useCallback, useEffect, useRef, useState } from "react";
+import { ReactElement, useCallback, useContext, useEffect, useRef, useState } from "react";
 import Slider from "./slider";
 import "./post-details.css";
 import "../../../card.css"
 import Comments from "./comments";
 import { Post } from "@/app/components/post-item-card";
-import { backend_url } from "@/app/settings";
 import Moai from "@/app/components/moai";
 import SaveButton from "@/app/components/save-button";
 import TagDisplay from "./tag";
 
 import "@/app/(main)/post/new/new-post.css";
+import { HostContext, useHostContext } from "@/app/components/host-context";
 
 export default ({ params: { id } }: { params: { id: string } }) => {
+    const backend_url = useHostContext();
     const [bbox, setBbox] = useState<DOMRect | null>(null);
 
     const [post, setPost] = useState<Post | null>(null);
