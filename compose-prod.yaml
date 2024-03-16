@@ -1,0 +1,44 @@
+services:
+  backend:
+    build: backend
+    working_dir: /backend
+    ports:
+      - "8000:8000"
+    command: npm run dev
+    environment:
+      FRONTEND_HOST: "http://localhost:3000"
+      MONGODB_USER_PASSWORD: "oGTU3K4rKEaJyQmP"
+      SESSION_SECRET_KEY: 'ootd is amazing'
+
+  frontend:
+    build: frontend
+    working_dir: /frontend
+    ports:
+      - "3000:3000"
+    command: npm run dev
+    environment:
+      NEXT_PUBLIC_BACKEND_HOST: "http://localhost:8000"
+
+  mongo:
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    volumes:
+      - mongo-volume:/data/db
+
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_BASICAUTH_USERNAME: root
+      ME_CONFIG_BASICAUTH_PASSWORD: pass
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: example
+      ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/
+
+volumes:
+  mongo-volume:

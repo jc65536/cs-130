@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation';
 import { FaUpload } from "react-icons/fa";
 
 
-export const getUser = async () => {
+const getUser = async () => {
   try {
     const response = await fetch(backend_url("/user/"), { credentials: 'include' });
     if (!response.ok) {
@@ -20,7 +20,7 @@ export const getUser = async () => {
   }
 };
 
-export const setName = async (oldName: String, newName: String) => {
+const setName = async (oldName: String, newName: String) => {
   try {
     const response = await fetch(backend_url(`/user/name/${newName}`), {
       method: 'POST', // Specifies this is a POST request
