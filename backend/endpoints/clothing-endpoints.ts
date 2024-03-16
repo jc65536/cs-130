@@ -6,14 +6,18 @@ import { Wardrobe } from "../lib/wardrobe";
 export const clothes_router = Router();
 
 /**
- * Search through a user's wardrobe for clothing items based on a query string.
- * A clothing item is considered a match if the query string is a substring of the clothing's name.
- * An empty query string returns all clothing items.
- * 
- * @route GET /tags/:queryString
- * @param {Request} req The request object, containing the queryString parameter.
- * @param {Response} res The response object used to return the matched items.
- * @returns Returns a JSON array of matching clothing items, each with a tagName and tagId.
+ * @Route("query tags")
+ * search through a user's wardrobe for clothing objects based on query string
+ * a clothing is considered a match if the query string is a substring of the clothing's name
+ * to get all clothes, use the empty string, aka request from "/clothing/tags/"
+ *
+ * @api {get} /clothing/tags/:queryString
+ * @apiName GETMatching clothing tags
+ * @apiGroup Clothing
+ *
+ * @apiParam {queryString} queryString to search clothing tags
+ *
+ * @apiSuccess {Tag[]} name and id of matching tags
  */
 clothes_router.get("/tags/:queryString", async (req: Request, res: Response) => {
     const queryString = req.params.queryString;
