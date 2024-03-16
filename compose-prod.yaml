@@ -17,8 +17,7 @@ services:
       - "3000:3000"
     command: npm start
     environment:
-      NEXT_PUBLIC_BACKEND_HOST: "http://localhost:8000"
-      BACKEND_HOST: "fdsa"
+      BACKEND_HOST: "http://localhost:8000"
 
   mongo:
     image: mongo
