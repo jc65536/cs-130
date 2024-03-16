@@ -4,7 +4,7 @@ services:
     working_dir: /backend
     ports:
       - "8000:8000"
-    command: npm run dev
+    command: npm start
     environment:
       FRONTEND_HOST: "http://localhost:3000"
       MONGODB_USER_PASSWORD: "oGTU3K4rKEaJyQmP"
@@ -15,7 +15,7 @@ services:
     working_dir: /frontend
     ports:
       - "3000:3000"
-    command: npm run dev
+    command: npm start
     environment:
       NEXT_PUBLIC_BACKEND_HOST: "http://localhost:8000"
 
