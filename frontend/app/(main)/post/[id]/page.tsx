@@ -63,7 +63,7 @@ export default ({ params: { id } }: { params: { id: string } }) => {
         : Math.round(post.rating / post.ratingCount * 10) / 10;
 
     const tags = bbox === null ? [] : post.taggedClothes
-        .map((tag, i) => <TagDisplay name={tag.name} x={tag.x * bbox.width} y={tag.y * bbox.height} />);
+        .map((tag, i) => <TagDisplay key={i} name={tag.name} x={tag.x * bbox.width} y={tag.y * bbox.height} />);
 
     return (
         <div className="post-container page-home">

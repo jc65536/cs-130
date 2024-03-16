@@ -58,8 +58,8 @@ export default ({ params: { id } }: { params: { id: string } }) => {
         
         <h2>Posts</h2>
         <div className={styles.postsContainer}>
-        {posts.map((post: any) => (
-            <Link href={`/post/${post.id}`}>
+        {posts.map((post: any, i) => (
+            <Link key={i} href={`/post/${post.id}`}>
                 <div key={post.id} className={styles.postCard}>
                     <div>
                         <img src={backend_url(`/posts/image/${post.imageFilename}`)} alt="Post" className={styles.postImage} />

@@ -101,8 +101,8 @@ export default function Home() {
                 <h4>My Posts</h4>
                 <div className='my-posts' ref={myPostsRef}>
                     <div className={styles.postsContainer}>
-                    {posts.map((post: any) => (
-                        <Link href={`/post/${post.id}`}>
+                    {posts.map((post: any, i) => (
+                        <Link key={i} href={`/post/${post.id}`}>
                             <div key={post.id} className={styles.postCard}>
                                 <div>
                                     <img src={backend_url(`/posts/image/${post.imageFilename}`)} alt="Post" className={styles.postImage} />
@@ -125,8 +125,8 @@ export default function Home() {
                 <h4>Saved Posts</h4>
                 <div className='my-saved-posts' ref={mySavedPostsRef}>
                     <div className={styles.postsContainer}>
-                    {savedPosts.map((post: any) => (
-                        <Link href={`/post/${post.id}`}>
+                    {savedPosts.map((post: any, i) => (
+                        <Link key={i} href={`/post/${post.id}`}>
                             <div key={post.id} className={styles.postCard}>
                                 <div>
                                     <img src={backend_url(`/posts/image/${post.imageFilename}`)} alt="Post" className={styles.postImage} />

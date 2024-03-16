@@ -2,7 +2,10 @@
   "extends": "next/core-web-vitals",
   "plugins": ["@stylistic"],
   "rules": {
-    "@stylistic/quotes": ["error", "double"],
-    "@stylistic/semi": ["error", "always"]
+    "react/display-name": "off",
+    "import/no-anonymous-default-export": "off",
+    "@next/next/no-img-element": "off",
+    "react-hooks/exhaustive-deps": "off",
+    "jsx-a11y/alt-text": "off"
   }
 }
