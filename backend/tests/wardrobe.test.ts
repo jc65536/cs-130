@@ -36,4 +36,11 @@ describe("test Wardrobe", () => {
         expect(await wardrobe?.getClothes()).toEqual([]);
         expect(await wardrobe?.getPosts()).toEqual([]);
     });
+
+    test("fromId", async () => {
+        const id = new ObjectId("123456789012345678901234");
+        const w = await Wardrobe.fromId(id);
+        console.log(w);
+        expect(w).toBeTruthy();
+    });
 });
