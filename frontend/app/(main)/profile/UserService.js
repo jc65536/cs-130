@@ -1,5 +1,4 @@
 export const service = backend_url => ({
-
   getUser: async () => {
     try {
       const response = await fetch(backend_url("/user/"), { credentials: 'include' });
@@ -66,5 +65,4 @@ export const service = backend_url => ({
       return [];
     }
   },
-
 })
