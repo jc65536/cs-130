@@ -30,10 +30,10 @@ describe("test Wardrobe", () => {
         const wardrobe = await Wardrobe.create(userid);
         expect(wardrobe).toBeTruthy();
         const clothing = new ObjectId();
-        wardrobe.addClothes(clothing);
-        expect(await wardrobe.getClothes()).toEqual([clothing]);
-        await wardrobe.clear();
-        expect(await wardrobe.getClothes()).toEqual([]);
-        expect(await wardrobe.getPosts()).toEqual([]);
+        await wardrobe?.addClothes(clothing);
+        expect(await wardrobe?.getClothes()).toEqual([clothing]);
+        await wardrobe?.clear();
+        expect(await wardrobe?.getClothes()).toEqual([]);
+        expect(await wardrobe?.getPosts()).toEqual([]);
     });
 });
