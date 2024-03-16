@@ -5,7 +5,7 @@ import { ObjectId } from "mongodb";
 import { getClient } from "./db-lib/db-client";
 import {Post, PostDatabaseEntry} from './post';
 
-type ClothingDatabaseEntry = {
+export type ClothingDatabaseEntry = {
     _id: ObjectId,
     name: string,
     reusedCount: number,

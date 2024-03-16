@@ -3,7 +3,7 @@ import { COLLECTION } from "./enums";
 import { ObjectId } from "mongodb";
 import { getClient } from "./db-lib/db-client";
 
-type WardrobeDatabaseEntry = {
+export type WardrobeDatabaseEntry = {
     _id: ObjectId,
     posts: ObjectId[],
     clothes: ObjectId[],
