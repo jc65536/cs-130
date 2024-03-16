@@ -2,10 +2,13 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 import { BACKEND_HOST, OAUTH_CLIENT_ID } from "@/app/settings";
 import LoginButton from "./login-button";
 import { HostProvider } from "@/app/components/host-context";
+import { unstable_noStore } from "next/cache";
 
 export default async function Login() {
+  unstable_noStore();
+
   return (
-    <HostProvider host={await BACKEND_HOST()}>
+    <HostProvider host={BACKEND_HOST(process.env)}>
       <main>
         <h1 id="title">
           <span className="o1">O</span>

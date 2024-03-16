@@ -3,6 +3,7 @@ import "@/app/globals.css";
 import NavBar from "@/app/components/nav-bar";
 import AuthCheck from "../components/auth-check";
 import { HostProvider } from "@/app/components/host-context";
+import { unstable_noStore } from "next/cache";
 import { BACKEND_HOST } from "../settings";
 
 export const metadata: Metadata = {
@@ -15,8 +16,10 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  unstable_noStore();
+
   return (
-    <HostProvider host={await BACKEND_HOST()}>
+    <HostProvider host={BACKEND_HOST(process.env)}>
       <html lang="en">
         <body>
           <AuthCheck>

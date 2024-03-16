@@ -18,6 +18,7 @@ services:
     command: npm start
     environment:
       NEXT_PUBLIC_BACKEND_HOST: "http://localhost:8000"
+      BACKEND_HOST: "fdsa"
 
   mongo:
     image: mongo
