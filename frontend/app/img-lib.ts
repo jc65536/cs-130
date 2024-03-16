@@ -6,16 +6,16 @@ import {
 
 import "jimp";
 
-const { Jimp } = window as any;
+const Jimp = () => (window as any).Jimp;
 
 export const resize = async (name: string, src: Blob, cb: (_: File) => void) => {
-    const img = await Jimp.read(await src.arrayBuffer());
+    const img = await Jimp().read(await src.arrayBuffer());
 
     // @ts-ignore
-    img.resize(480, Jimp.AUTO)
+    img.resize(480, Jimp().AUTO)
         .quality(90)
         // @ts-ignore
-        .getBuffer(Jimp.MIME_JPEG, (_, buf) =>
+        .getBuffer(Jimp().MIME_JPEG, (_, buf) =>
             cb(new File([new Blob([buf])], name, { type: "image/jpeg" })));
 };
 
@@ -64,12 +64,12 @@ async function displayImageDetections(detections: Detection[], target: HTMLImage
 
         console.log(left, top, width, height);
 
-        const img = await Jimp.read(target.src);
+        const img = await Jimp().read(target.src);
 
         // @ts-ignore
         img.pixelate(width / 9, left, top, width, height)
             // @ts-ignore
-            .getBuffer(Jimp.MIME_JPEG, (_, buf) => {
+            .getBuffer(Jimp().MIME_JPEG, (_, buf) => {
                 cb(new Blob([buf]));
             });
         

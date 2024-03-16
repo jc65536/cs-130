@@ -1,4 +1,4 @@
-const BACKEND_HOST = process.env["NEXT_PUBLIC_BACKEND_HOST"] || process.exit(1);
+const BACKEND_HOST = "http://localhost:8000";
 
 export const backend_url = (path: string) => BACKEND_HOST + path;
 
