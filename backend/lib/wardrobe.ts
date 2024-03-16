@@ -16,9 +16,8 @@ export class Wardrobe extends DbItem {
     userObjectId: ObjectId;
 
     /**
-     * 
-     * @param 
-     * @returns 
+     * Constructor for a wardrobe
+     * @param ObjectId id for the wardrobe
      */
     constructor(id: ObjectId) {
         super(id, COLLECTION.WARDROBE)
@@ -57,19 +56,31 @@ export class Wardrobe extends DbItem {
         return newWardrobe;
     }
 
+    /**
+     * @returns all clothes in wardrobe
+     */
     public async getClothes(): Promise<ObjectId[]> {
         return this.clothes;
     }
 
+    /**
+     * @param ObjectId id of the clothing to add to wardrobe
+     */
     public async addClothes(clothingObjectId: ObjectId) {
         this.clothes.push(clothingObjectId);
         await this.writeToDatabase();
     }
 
+    /**
+     * @returns all posts in wardrobe
+     */
     public async getPosts(): Promise<ObjectId[] | null> {
         return this.posts;
     }
     
+    /**
+     * removes all the posts and clothes under the wardrobe
+     */
     public async clear() {
         this.clothes = [];
         this.posts = [];

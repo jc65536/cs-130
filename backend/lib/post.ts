@@ -60,6 +60,11 @@ export class Post extends DbItem {
         this.ratingBuckets = [];
     }
 
+    /**
+     * helper to find the post from the database and return it as a dict of information
+     * @param userObjectId the post's ID
+     * @returns post
+     */
     public static async fromId(postObjectId: ObjectId) {
         const dbClient = getClient();
         const document: PostDatabaseEntry = await dbClient.findDbItem(COLLECTION.POSTS, postObjectId);
@@ -116,54 +121,103 @@ export class Post extends DbItem {
         return posts;
     }
 
+    /**
+     * @returns tagged clothes (all tags for this post)
+     */
     public async getTaggedClothes(): Promise<Tag[] | null> {
         return this.taggedClothes;
     }
+
+    /**
+     * @returns image filename for post
+     */
     public async getImageFilename(): Promise<String | null> {
         return this.imageFilename;
     }
+
+    /**
+     * @returns post caption
+     */
     public async getCaption(): Promise<String | null> {
         return this.caption;
     }
+
+    /**
+     * @returns rating for this post
+     */
     public async getRating(): Promise<number | null> {
         return this.rating;
     }
+
+    /**
+     * @returns post's number of ratings
+     */
     public async getRatingCount(): Promise<number | null> {
         return this.ratingCount;
     }
+
+    /**
+     * @returns date psot was created
+     */
     public async getDate(): Promise<Date> {
         return this.date;
     }
 
+    /**
+     * @param tags list of tags (object consisted of coordinates, name, and objectId) to set on post
+     */
     public async setTaggedClothes(tags: Tag[]) {
         this.taggedClothes = tags;
         this.writeToDatabase();
     }
 
+    /**
+     * @param clothingTag single tag to add to post
+     */
     public async addTaggedClothes(clothingTag: Tag[]): Promise<void> {
         this.taggedClothes.concat(clothingTag);
         await this.writeToDatabase();
     }
+
+    /**
+     * @param newImageFilename new filename to change on post
+     */
     public async updateImageFilename(newImageFilename: String): Promise<void> {
         this.imageFilename = newImageFilename;
         await this.writeToDatabase();
     }
+
+    /**
+     * @param newCaption caption to change under the post
+     */
     public async updateCaption(newCaption: String): Promise<void> {
         this.caption = newCaption;
         await this.writeToDatabase();
     }
-    // TODO: double check this, this might be wrong
+
+    /**
+     * @param newRating rating to add to overall rating of post
+     */
     public async updateRating(newRating: number): Promise<void> {
         this.rating = (this.rating * this.ratingCount + newRating) / (this.ratingCount+1);
         this.ratingCount++;
         await this.writeToDatabase();
     }
 
+    /**
+     * when a user changes their rating for the post
+     * @param oldRating the old rating a user gave the post
+     * @param newRating the new rating a user gave the post
+     * @returns user
+     */
     public async updateRatingAfterRated(oldRating: number, newRating: number): Promise<void> {
         this.rating = (this.rating * this.ratingCount - oldRating + newRating) / this.ratingCount;
         this.writeToDatabase();
     }
 
+    /**
+     * for trending posts algorithm, calculates the number of ratings for the day
+     */
     public async updateRatingBuckets(): Promise<void> {
         // get the current date
         const currentDate = new Date();
@@ -180,10 +234,17 @@ export class Post extends DbItem {
         await this.writeToDatabase();
     }
 
+    /**
+     * @returns the rating buckets to calculate trending
+     */
     public async getRatingBuckets(): Promise<{date: Date, numRatings: number}[]> {
         return this.ratingBuckets;
     }
 
+    /**
+     * setting the rating buckets
+     * @param newRatingBuckets consists of date and the number of ratings
+     */
     public async setRatingBuckets(newRatingBuckets: {date: Date, numRatings: number}[]): Promise<void> {
         this.ratingBuckets = newRatingBuckets;
         await this.writeToDatabase();
@@ -208,6 +269,9 @@ export class Post extends DbItem {
         };
     }
 
+    /**
+     * @param c new comment to add to post
+     */
     public async addComment(c: String) {
         this.comments.push(c);
         await this.writeToDatabase();

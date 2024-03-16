@@ -62,6 +62,11 @@ export class User extends DbItem {
         this.avatarFilename = '';
     }
 
+    /**
+     * helper to find the user from the database and return it as a dict of information
+     * @param userObjectId the user's ID
+     * @returns user
+     */
     public static async fromId(userObjectId: ObjectId) {
         const dbClient = getClient();
         const document: UserDatabaseEntry = await dbClient.findDbItem(COLLECTION.USERS, userObjectId);
@@ -106,6 +111,9 @@ export class User extends DbItem {
         return this.posts;
     }
 
+    /**
+     * @returns the current streak of the user
+     */
     public async getCurrStreak(): Promise<number> {
         var streak = 1;
         for (var i = this.posts.length - 1; i > 0; i--) {
@@ -122,6 +130,9 @@ export class User extends DbItem {
         return streak;
     }
 
+    /**
+     * @returns the best streak number for the user
+     */
     public async getBestStreak(): Promise<number> {
         return this.bestStreak;
     }
@@ -150,6 +161,9 @@ export class User extends DbItem {
         await this.writeToDatabase();
     }
 
+    /**
+     * @param newName new name to change to
+     */
     public async setName(newName: string) {
         this.name = newName;
         await this.writeToDatabase();
@@ -169,6 +183,10 @@ export class User extends DbItem {
         return 0;
     }
 
+    /**
+     * @param postId the id of the post
+     * @param rating rating for the post
+     */
     public async setRatingForPost(postId: ObjectId, rating: number): Promise<void> {
         // check if the post is already rated
         const index = this.ratedPosts.findIndex((entry) => entry.postId.equals(postId));
@@ -180,10 +198,16 @@ export class User extends DbItem {
         await this.writeToDatabase();
     }
 
+    /**
+     * @returns all posts that a user has rated and its rating
+     */
     public async getRatedPosts(): Promise<{postId: ObjectId, rating: number}[]> {
         return this.ratedPosts;
     }
 
+    /**
+     * @param filename new filename to change avatar into
+     */
     public async setAvatarImageFilename(filename: string) {
         this.avatarFilename = filename;
         await this.writeToDatabase();
@@ -205,6 +229,10 @@ export class User extends DbItem {
         };
     }
 
+    /**
+     * @param postId the id of the post
+     * @returns whether the post was saved or not (0 or 1)
+     */
     public async toggleSavePost(postID: ObjectId) {
         const idx = this.savedPosts.findIndex(id => postID.equals(id));
         const add = idx === -1;
@@ -217,6 +245,10 @@ export class User extends DbItem {
         return add;
     }
 
+    /**
+     * @param postId the id of the post
+     * @returns whether the post was saved or not
+     */
     public hasSavedPost(postId: ObjectId) {
         return this.savedPosts.some(id => postId.equals(id));
     }

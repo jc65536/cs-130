@@ -29,6 +29,10 @@ export class TrendingPosts extends DbItem {
         this.dateLastUpdated = new Date();
     }
 
+    /**
+     * Gets all the trending posts to display on home page
+     * @returns TrendingPosts = a list of posts and the date
+     */
     public static async getTrendingPosts(): Promise<TrendingPosts> {
         const dbClient = getClient();
         console.log("AKSDJAKLSD " + convertTo24CharHex("0"));
@@ -46,6 +50,9 @@ export class TrendingPosts extends DbItem {
         }
     }
 
+    /**
+     * Updates the trending posts of the home page
+     */
     public async updateTrendingPosts() {
             // get all posts
             const allPosts = await Post.all();
