@@ -35,9 +35,17 @@ export const upload = multer({ storage });
 
 export const posts_router = Router();
 
-// for uploading an image from a user and adds the image to the user's posts list
-// the postId is the id of an existing post, this attaches an image to an existing post
-// the filename to use when downloading the image from the server will be in the filename property in the response
+
+/**
+ * Uploads an image from a user for a specific post and and adds the image to the user's posts list.
+ * The postId is the id of an existing post, this attaches an image to an existing post, 
+ * The filename to use when downloading the image from the server will be in the filename property in the response
+ *
+ * @route POST /upload-image/:postId
+ * @param {Request} req The request object, containing the postId parameter and image file.
+ * @param {Response} res The response object.
+ * @returns Returns the file information of the uploaded image.
+ */
 posts_router.post("/upload-image/:postId", upload.single('image'), async (req: Request, res: Response) => {
     // const user = await User.fromId(new ObjectId(req.session.userObjectId));
     // TODO: change this to create a new Posts object and add the post id to User
@@ -53,8 +61,14 @@ posts_router.post("/upload-image/:postId", upload.single('image'), async (req: R
     res.status(200).json(req.file);
 });
 
-// creates a new post object and adds it to the user
-// returns a postId that can be used to upload an image to that post object
+/**
+ * Creates a new post with specified details and tags, associating it with the user's wardrobe.
+ *
+ * @route POST /new
+ * @param {Request} req The request object, must include body with caption, blur, tags.
+ * @param {Response} res The response object.
+ * @returns Returns the postId of the newly created post.
+ */
 posts_router.post("/new", async (req: Request, res: Response) => {
     // const user = await User.fromId(new ObjectId(req.session.userObjectId));
     const userObjId = new ObjectId(req.session.userObjectId);
@@ -102,7 +116,14 @@ posts_router.post("/new", async (req: Request, res: Response) => {
     res.status(200).json({ postId: post?.id });
 })
 
-// download an existing image
+/**
+ * Downloads an image by filename from the 'photos' bucket.
+ *
+ * @route GET /image/:filename
+ * @param {Request} req The request object, containing the filename parameter.
+ * @param {Response} res The response object.
+ * @returns Streams the image file or sends an error if not found.
+ */
 posts_router.get('/image/:filename', (req, res) => {
     try {
         const dbClient = getClient();
@@ -136,9 +157,13 @@ posts_router.get('/image/:filename', (req, res) => {
 });
 
 /**
- * Response type: post.toJSON() & { saved: boolean }
+ * Retrieves all posts, annotating each with whether the current user has saved it.
+ *
+ * @route GET /
+ * @param {Request} req The request object, includes the user session.
+ * @param {Response} res The response object.
+ * @returns Returns an array of posts with a 'saved' flag for each.
  */
-
 posts_router.get("/", async (req: Request, res: Response) => {
     const posts = await Post.all();
     const user = await User.fromId(new ObjectId(req.session.userObjectId));
@@ -151,7 +176,14 @@ posts_router.get("/", async (req: Request, res: Response) => {
     );
 });
 
-// get a user's saved posts
+/**
+ * Retrieves the posts saved by the current user.
+ *
+ * @route GET /saved
+ * @param {Request} req The request object, includes the user session.
+ * @param {Response} res The response object.
+ * @returns Returns an array of the user's saved posts.
+ */
 posts_router.get("/saved", async (req: Request, res: Response) => {
     const user = await User.fromId(new ObjectId(req.session.userObjectId));
     const postIds = user?.savedPosts;
@@ -162,7 +194,14 @@ posts_router.get("/saved", async (req: Request, res: Response) => {
     res.status(200).json(savedPosts);
 });
 
-//get trending posts
+/**
+ * Retrieves and updates trending posts, then returns them.
+ *
+ * @route GET /trending
+ * @param {Request} req The request object.
+ * @param {Response} res The response object.
+ * @returns Returns an array of trending posts after updating.
+ */
 posts_router.get("/trending", async (req: Request, res: Response) => {
     const trending = await TrendingPosts.getTrendingPosts();
     await trending.updateTrendingPosts();
@@ -173,18 +212,28 @@ posts_router.get("/trending", async (req: Request, res: Response) => {
     res.status(200).json(posts);
 });
 
+/**
+ * Updates trending posts without returning them.
+ *
+ * @route GET /trending/update
+ * @param {Request} req The request object.
+ * @param {Response} res The response object.
+ * @returns Acknowledges the operation with a 200 status code.
+ */
 posts_router.get("/trending/update", async (req: Request, res: Response) => {
     const trending = await TrendingPosts.getTrendingPosts();
     await trending.updateTrendingPosts();
     res.status(200).json();
 });
 
-//get post object
-
 /**
- * Response type: post.toJSON() & { saved: boolean }
+ * Retrieves a single post by postId, annotating it with whether the current user has saved it.
+ *
+ * @route GET /:postId
+ * @param {Request} req The request object, containing the postId parameter.
+ * @param {Response} res The response object.
+ * @returns Returns the post with a 'saved' flag.
  */
-
 posts_router.get("/:postId", async (req: Request, res: Response) => {
     const post = await Post.fromId(new ObjectId(req.params["postId"]));
     const user = await User.fromId(new ObjectId(req.session.userObjectId));
@@ -192,13 +241,27 @@ posts_router.get("/:postId", async (req: Request, res: Response) => {
     res.status(200).json({ saved: user?.hasSavedPost(json.id), ...json });
 });
 
-//get post's rating
+/**
+ * Updates the rating of a specific post.
+ *
+ * @route POST /:postId/rating
+ * @param {Request} req The request object, containing the new rating in the body.
+ * @param {Response} res The response object.
+ * @returns Acknowledges the rating update with a 200 status code.
+ */
 posts_router.get("/:postId/rating", async (req: Request, res: Response) => {
     const post = await Post.fromId(new ObjectId(req.params["postId"]));
     res.status(200).json(post.rating);
 });
 
-//update post's rating with single new rating
+/**
+ * Retrieves the tagged clothes associated with a post.
+ *
+ * @route GET /:postId/tagged-clothes
+ * @param {Request} req The request object, containing the postId parameter.
+ * @param {Response} res The response object.
+ * @returns Returns an array of tagged clothes for the post.
+ */
 posts_router.post("/:postId/rating", async (req: Request, res: Response) => {
     const post = await Post.fromId(new ObjectId(req.params["postId"]));
 
@@ -229,29 +292,54 @@ posts_router.post("/:postId/rating", async (req: Request, res: Response) => {
 });
 
 
-//gets clothes from post
+/**
+ * Retrieves the tagged clothes associated with a post.
+ *
+ * @route GET /:postId/tagged-clothes
+ * @param {Request} req The request object, containing the postId parameter.
+ * @param {Response} res The response object.
+ * @returns Returns an array of tagged clothes for the post.
+ */
 posts_router.get("/:postId/tagged-clothes", async (req: Request, res: Response) => {
     const post = await Post.fromId(new ObjectId(req.params["postId"]));
     res.status(200).json(post.taggedClothes);
 });
 
-//add clothes to post
+/**
+ * Adds tagged clothes to a post.
+ *
+ * @route POST /:postId/tagged-clothes
+ * @param {Request} req The request object, containing the postId parameter and clothes array in the body.
+ * @param {Response} res The response object.
+ * @returns Acknowledges the addition of tagged clothes with a 200 status code.
+ */
 posts_router.post("/:postId/tagged-clothes", async (req: Request, res: Response) => {
     const post = await Post.fromId(new ObjectId(req.params["postId"]));
     await post.addTaggedClothes(req.body.clothes); //expects array
     res.status(200).json();
 });
 
+/**
+ * Toggles the save status of a post for the current user.
+ *
+ * @route POST /:postId/toggleSave
+ * @param {Request} req The request object, containing the postId parameter.
+ * @param {Response} res The response object.
+ * @returns Returns the new save status of the post.
+ */
 posts_router.post("/:postId/toggleSave", async (req: Request, res: Response) => {
     const user = await User.fromId(new ObjectId(req.session.userObjectId));
     res.status(200).json(await user?.toggleSavePost(new ObjectId(req.params.postId)));
 });
 
 /**
- * req: "string"
- * res: 200
+ * Adds a comment to a specific post.
+ *
+ * @route POST /:postId/addComment
+ * @param {Request} req The request object, containing the postId parameter and comment in the body.
+ * @param {Response} res The response object.
+ * @returns Acknowledges the comment addition with an empty response body.
  */
-
 posts_router.post("/:postId/addComment", async (req: Request, res: Response) => {
     const post = await Post.fromId(new ObjectId(req.params["postId"]));
     await post.addComment(req.body["comment"]);
