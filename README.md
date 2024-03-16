@@ -5,7 +5,17 @@
 
 This repo serves as a template for a repository that follows the Scrum process. The following information describes how the native features/workflows of Github can be customized to work in a scrum development process.
 
+## How to trigger build (production)
+1. [Install Docker.](https://docs.docker.com/get-docker/)
+2. Enter project root
+3. Run the following command to build, package, and deploy the application:
+   ```
+   $ docker compose -f compose-prod.yaml up
+   ```
+
 ## Development setup
+This section is for development workflow. For triggering builds, see previous section.
+
 Create `.env`:
 ```
 $ echo "UID_GID=$(id -u):$(id -g)" > .env
